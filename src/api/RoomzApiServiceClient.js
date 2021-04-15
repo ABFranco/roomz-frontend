@@ -65,7 +65,7 @@ function signIn(data) {
 function createRoom(data) {
     var request = new CreateRoomRequest();
     request.setUserId(data['userId']);
-    request.setUserName(data['username']);
+    request.setUserName(data['userName']);
     request.setPassword(data['password']);
     request.setIsStrict(data['isStrict']);
 

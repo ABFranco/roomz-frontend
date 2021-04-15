@@ -3,8 +3,7 @@ import {
     BrowserRouter as Router,
     Switch,
     Route
-} from 'react-router-dom'; 
-import store from '../store';
+} from 'react-router-dom';
 import './App.css';
 import './Landing.css';
 
@@ -14,29 +13,26 @@ import RoomForm from '../components/RoomForm';
 import Room from '../components/Room';
 
 
-function App(props) {
-
-    console.log(':App: Initial state: ', store.getState());
-
-    const [userInfo, setUserInfo] = useState({
-        isHost        : false,
-        signedIn      : false,
-        userId        : null,
-        name          : null,
-        firstName     : null,
-        lastName      : null,
-        email         : null,
-        password      : null
-    });
-    const [roomInfo, setRoomInfo] = useState({
-        roomId         : null,
-        userIsHost     : false,
-        isStrict       : false,
-        userInRoom     : false,
-        userIsJoining  : false,
-        chatHistory    : [],
-        token          : null
-    });
+function App() {
+    // const [userInfo, setUserInfo] = useState({
+    //     isHost        : false,
+    //     signedIn      : false,
+    //     userId        : null,
+    //     name          : null,
+    //     firstName     : null,
+    //     lastName      : null,
+    //     email         : null,
+    //     password      : null
+    // });
+    // const [roomInfo, setRoomInfo] = useState({
+    //     roomId         : null,
+    //     userIsHost     : false,
+    //     isStrict       : false,
+    //     userInRoom     : false,
+    //     userIsJoining  : false,
+    //     chatHistory    : [],
+    //     token          : null
+    // });
 
 
     return (
@@ -55,41 +51,14 @@ function App(props) {
                       </Route>
 
                       <Route path="/room/create">
-                      <RoomForm
-                          isCreateRoom={true}
-
-                          // user
-                          // userInfo={userInfo}
-                          // updateUserName={updateUserName}
-                          // updateUserId={updateUserId}
-
-                          // room
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
+                        <RoomForm />
                       </Route>
-
                       <Route path="/room/join">
-                      <RoomForm
-                          isCreateRoom={false}
-
-                          // user
-                          // userInfo={userInfo}
-                          // updateUserName={updateUserName}
-                          // updateUserId={updateUserId}
-
-                          // room
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
+                        <RoomForm />
                       </Route>
 
                       <Route path="/room/:roomId">
-                      <Room
-                          userInfo={userInfo}
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
+                        <Room/>
                       </Route>
 
                   </Switch>

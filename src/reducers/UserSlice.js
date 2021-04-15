@@ -15,7 +15,7 @@ const accountLogin = createAsyncThunk(
     const response = await apiClient.signIn(data);
     
     // thunk payload
-    let payload = {
+    const payload = {
       userId: response.getUserId(), 
       firstName: response.getFirstName(), 
       lastName: response.getLastName(), 
@@ -37,7 +37,7 @@ const accountCreate = createAsyncThunk(
     const response = await apiClient.createAccount(data);
     
     // thunk payload
-    let payload = {
+    const payload = {
       userId: response.getUserId(),
     }
     return payload
