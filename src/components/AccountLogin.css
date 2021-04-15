@@ -1,0 +1,42 @@
+.account-login-container {
+    padding: 40px;
+    width: 80vw;
+    max-width: 400px;
+}
+
+.account-login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 20px 0px;
+}
+
+.account-login-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.account-login-form-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 100%;
+    text-align: left;
+}
+
+
+label {
+    margin: 4px 0px;
+}
+
+input {
+    margin: 4px 0px 20px;
+}
+
+.account-login-actions .account-login-btn {
+    margin: 0px;
+}

@@ -1,0 +1,169 @@
+.super-room-container {
+    display: flex;
+}
+
+.room-container {
+    padding: 40px;
+    width: 80vw;
+    max-width: 400px;
+}
+
+.room-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 20px 0px;
+}
+
+.room-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.room-form-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 100%;
+    text-align: left;
+}
+
+.room-form-checkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.room-form-checkbox input[type='checkbox'] {
+    margin: 0px 12px 0px 0px;
+}
+
+
+label {
+    margin: 4px 0px;
+}
+
+input {
+    margin: 4px 0px 20px;
+}
+
+.room-actions .room-form-btn {
+    margin: 0px;
+}
+
+.room-header p {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.room-joining-strict {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+@keyframes loadingFade {
+    from {opacity: 1.0;}
+    to {opacity: 0.4;}
+}
+
+.room-joining-strict h2 {
+    text-align: center;
+    margin: 20px 0px 20px;
+    animation: 500ms ease 0ms infinite alternate-reverse loadingFade;
+}
+
+.room-id-label {
+    text-align: center;
+    margin: 8px 0px 20px;
+}
+
+.room-joining-strict .room-actions {
+    margin-top: 40px;
+}
+
+.room-view .room-actions {
+    margin-top: 20px;
+}
+
+.room-requests-view {
+    background: transparent;
+    padding: 10px;
+}
+
+.requests-container {
+    background: transparent;
+    display: flex;
+    padding-top: 20%;
+}
+
+.pending-requests-title {
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+    padding: 10px 10px;
+    width: 100%;
+    display: flex;
+}
+
+.pending-request-object {
+    margin: 5px 0px 0px 0px;
+    font-size: 10px;
+    text-align: left;
+    display: flex;
+    max-height: 20px;
+    padding-bottom: 25px;
+}
+
+.pending-request-object-name {
+    font-weight: bold;
+    display: block;
+    padding: 20% 0;
+    font-size: 12px;
+
+}
+
+.pending-img {
+    background: transparent;
+    height: 20px;
+    width: 20px;
+}
+
+.pending-select-options-container {
+    max-width: 20%;
+    text-align: center;
+    display: block;
+    padding: 10% 10px 0 0;
+}
+
+.pending-select-option {
+    margin: 4px 5px 0 0;
+}
+
+#passwordConfirmMsg {
+    margin-bottom: 12px;
+    color: var(--orange);
+}
+
+.hidden-message {
+    display: none;
+    transition: 500ms;
+}
+
+.hidden {
+    display: none;
+}
+
+.invalid-room {
+    padding: 12px;
+}

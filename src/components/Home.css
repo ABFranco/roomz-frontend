@@ -1,0 +1,28 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.home-actions-account {
+    display: flex;
+    flex-direction: row;
+}
+
+.hidden-message {
+    display: none;
+    transition: 500ms;
+}
+
+.link-button-wrapper {
+    display: flex;
+}
+
+.link-button-wrapper button {
+    width: 100%;
+}
