@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { getCachedObject, setCachedObject } from '../util/cache';
+import { getCachedObject, setCachedObject } from '../../util/cache';
 import './RoomForm.css';
-import * as apiClient from '../api/RoomzApiServiceClient.js'
+import * as apiClient from '../../api/RoomzApiServiceClient.js'
 
 function RoomForm(props) {
     const history = useHistory();

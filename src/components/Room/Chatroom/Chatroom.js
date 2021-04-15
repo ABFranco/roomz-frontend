@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useReducer } from 'react';
 import './Chatroom.css';
-import Message from '../elements/Message.js';
-import * as apiClient from '../api/RoomzApiServiceClient.js'
+import Message from '../../../elements/Message.js';
+import * as apiClient from '../../../api/RoomzApiServiceClient.js'
 
 function Chatroom(props) {
     const [chatHistory, dispatchChatHistory] = useReducer(receiveChatMessage, props.roomInfo.chatHistory);

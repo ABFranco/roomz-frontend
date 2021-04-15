@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { setCachedObject } from '../util/cache';
+import { setCachedObject } from '../../util/cache';
 import Chatroom from './Chatroom';
-import thumbsUp from '../assets/thumbs_up.png';
-import thumbsDown from '../assets/thumbs_down.png';
+import thumbsUp from '../../assets/thumbs_up.png';
+import thumbsDown from '../../assets/thumbs_down.png';
 import './Room.css';
-import * as apiClient from '../api/RoomzApiServiceClient.js'
+import * as apiClient from '../../api/RoomzApiServiceClient.js'
 
 function Room(props) {
     const history = useHistory();
