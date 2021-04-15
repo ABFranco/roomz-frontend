@@ -3,7 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { roomCreate, setRoomUserName } from '../../../reducers/RoomSlice';
+import { roomCreate, setRoomUserName, clearRoomData } from '../../../reducers/RoomSlice';
+import { clearChatHistory } from '../../../reducers/ChatroomSlice';
 import store from '../../../store';
 
 function RoomCreate() {
@@ -51,7 +52,8 @@ function RoomCreate() {
         // room successfully created
         console.log(":RoomCreate.roomCreateSubmit: response=%o", response);
 
-        // add username to state
+        // clear chatroom data, add userName to state
+        dispatch(clearChatHistory());
         dispatch(setRoomUserName(data['userName']));
 
         // TODO: instead of joining room immedietly, go into vestibule

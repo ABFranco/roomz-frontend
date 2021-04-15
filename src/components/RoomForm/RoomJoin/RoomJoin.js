@@ -4,8 +4,8 @@ import '../RoomForm.css';
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, setWaitingRoom, setLeaveRoom  } from '../../../reducers/RoomSlice';
-import { setChatHistory } from '../../../reducers/ChatroomSlice';
+import { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData  } from '../../../reducers/RoomSlice';
+import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
 import store from '../../../store';
 
 function RoomJoin() {
@@ -78,9 +78,6 @@ function RoomJoin() {
     let roomId = response.getRoomId();
     let status = response.getStatus();
 
-    // add userName to state
-    dispatch(setRoomUserName(response.getUserId()));
-
     if (status === 'accept') {
       console.log(':RoomForm.receiveJoinRoomResponse: Accepted, joining room');
       
@@ -90,7 +87,7 @@ function RoomJoin() {
       let chatHistoryData = [];
       for (var i = 0; i < chatHistory.length; i++) {
         chatHistoryData.push({
-          userID: chatHistory[i].getUserId(),
+          userId: chatHistory[i].getUserId(),
           name: chatHistory[i].getUserName(),
           message: chatHistory[i].getMessage(),
           timestamp: chatHistory[i].getTimestamp()
@@ -120,11 +117,9 @@ function RoomJoin() {
 
     } else if (status === 'reject') {
       console.warn(":RoomForm.receiveJoinRoomResponse: Failed to join room.");
-      dispatch(setLeaveRoom());
       setErrorMessage("Failed to join room.");
     } else {
       console.warn(":RoomForm.receiveJoinRoomResponse: Unknown error.");
-      dispatch(setLeaveRoom());
       setErrorMessage("Unknown error.");
     }
   }
@@ -142,6 +137,11 @@ function RoomJoin() {
         userName: joinRoomName.current.value,
         isGuest: store.getState().user.userId == null,
     }
+
+    // reset room data, add userName to state
+    dispatch(clearRoomData());
+    dispatch(clearChatHistory());
+    dispatch(setRoomUserName(joinRoomName.current.value));
 
     // update user info upon fresh join submit
 
@@ -203,7 +203,7 @@ function RoomJoin() {
     console.log(':RoomForm.roomJoinCancel:; leaving waiting room...');
     
     // set state to leave room, regardless of success with backend
-    dispatch(setLeaveRoom());
+    dispatch(clearRoomData());
 
     let data = {
         roomId: store.getState().room.roomId,

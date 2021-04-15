@@ -94,10 +94,10 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setLeaveRoom - Reset all room data to initial state
+     * @reduxAction 'room/clearRoomData - Reset all room data to initial state
      * @param {Object} state - Initial state
      */
-    setLeaveRoom: (state) => {
+    clearRoomData: (state) => {
       state.roomId = null;
       state.token = null;
       state.isStrict = false;
@@ -150,7 +150,7 @@ const roomSlice = createSlice({
 /**
  * Actions
  */
-export const { setRoomUserName, setJoinedRoom, setWaitingRoom, setLeaveRoom } = roomSlice.actions;
+export const { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData } = roomSlice.actions;
 export { roomCreate, roomDelete }
 
 export default roomSlice;
