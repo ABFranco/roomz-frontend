@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
-import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
+import { joinRoom, awaitRoomClosure } from '../../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData  } from '../../../reducers/RoomSlice';
@@ -22,7 +22,11 @@ function RoomJoin() {
   const joinRoomPassword = useRef();
   const joinRoomName = useRef();
 
-  
+  useEffect(() => {
+    // this should only occur once when a non-host
+    joinRoomClosureStream();
+  },[]);
+
   // useEffect(() => {
   //     // upon initial render, retrieve waiting room info in cache
   //     // determine if the user is supposed to be in the waiting room
@@ -230,6 +234,40 @@ function RoomJoin() {
     //     });  
       
       
+  }
+
+  /**
+   * @function joinRoomClosureStream - Join stream to detect when host closes the room
+   */
+  async function joinRoomClosureStream() {
+    let data = {
+      roomId: store.getState().room.roomId,
+      userId: store.getState().room.userId,
+      token: store.getState().room.token,
+    };
+    console.log(':Chatroom.joinRoomClosureStream: Attempting to join closure stream with data=%o', data);
+
+    try {
+      const closureStream = await awaitRoomClosure(data);
+      
+      // stream successfully joined
+      console.log(':Chatroom.joinRoomClosureStream: Receieved closureStream=%o', closureStream);
+
+      closureStream.on('data', (data) => {
+        console.log(':Chatroom.joinRoomClosureStream: Host closed room!');
+
+        // exit room
+        dispatch(clearRoomData());
+        
+    });
+
+      closureStream.on('end', () => {
+          console.log(':Chatroom.joinRoomClosureStream: Stream ended.');
+      });
+
+    } catch (err) {
+      console.log(':Chatroom.joinRoomClosureStream: Failed to receive closure stream. err=%o', err);
+    }
   }
 
   // function roomJoinSubmitForm() {

@@ -30,51 +30,14 @@ function Chatroom() {
   // },[chatHistory]);
 
 
-  function joinRoomClosureStream() {}
-  //     // request stream that awaits room closure by the host
-
-  //     let data = {
-  //         'roomId'    : props.roomInfo.roomId,
-  //         'userId'    : props.userInfo.userId,
-  //         'token'     : props.roomInfo.token
-  //     };
-  //     console.log(':Chatroom.joinRoomClosureStream: Attempting to join closure stream with data=%o', data);
-
-  //     apiClient.awaitRoomClosure(data)
-  //         .then(closureStream => {
-  //             console.log(':Chatroom.joinRoomClosureStream: Receieved closureStream=%o', closureStream);
-  //             closureStream.on('data', (data) => {
-  //                 console.log(':Chatroom.joinRoomClosureStream: Host closed room!');
-
-  //                 // exit room
-  //                 props.setRoomInfo((prevRoomInfo) => ({
-  //                     ...prevRoomInfo,
-  //                     roomId        : null,
-  //                     userIsHost    : false,
-  //                     isStrict      : null,
-  //                     userIsJoining : false,
-  //                     userInRoom    : false
-  //                 }));
-                  
-  //             });
-
-  //             closureStream.on('end', () => {
-  //                 console.log(':Chatroom.joinRoomClosureStream: Stream ended.');
-  //             });
-
-  //         })
-  //         .catch(error => {
-  //             console.log(':Chatroom.joinRoomClosureStream: Failed to receive closure stream. error=%o', error);
-  //         });
-  // }
-
-
-  // joins the chat room. Access a stream to receive incoming chatroom messages
+  /**
+   * @function joinChatRoomStream - Join stream to receive incoming chatroom messages
+   */
   async function joinChatRoomStream() {
     let data = {
-      'roomId': store.getState().room.roomId,
-      'userId': store.getState().user.userId,
-      'token': store.getState().room.token
+      roomId: store.getState().room.roomId,
+      userId: store.getState().user.userId,
+      token: store.getState().room.token
     };
     console.log(':Chatroom.joinChatRoomStream: Attempting to join chatroom with data=%o', data);
 
@@ -94,12 +57,7 @@ function Chatroom() {
       });
 
     } catch (err) {
-      console.warn(':Chatroom.joinChatRoomStream: Failed to join chatroom. err=%o', err);
-      // let errorMessage = "An unexpected error has occurred when joining Chatroom stream.";
-      // if (err && 'message' in err) {
-      //     errorMessage = err['message'];
-      // }
-      // setErrorMessage(errorMessage);
+      console.warn(':Chatroom.joinChatRoomStream: Failed to join chatroom stream. err=%o', err);
     }
   }
 
