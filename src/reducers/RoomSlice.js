@@ -36,6 +36,19 @@ const roomDelete = createAsyncThunk(
   }
 )
 
+/**
+ * @function roomLeave - thunk to call api for leaveRoom
+ * 
+ */
+const roomLeave = createAsyncThunk(
+  'room/roomLeave',
+  async(data) => {
+    // main api call
+    const response = await apiClient.leaveRoom(data);
+    return {}
+  }
+)
+
 
 /**
  * Slice for actions related to creating and joining a Room
@@ -144,6 +157,20 @@ const roomSlice = createSlice({
       state.roomUserName = null;
     },
 
+    /**
+     * @reduxAction 'room/roomLeave/fulfilled' - set `room` state upon successful leave
+     * @param {Object} state - Initial state
+     */
+    [roomDelete.fulfilled]: (state) => {
+      state.roomId = null;
+      state.token = null;
+      state.isStrict = false;
+      state.userIsHost = false;
+      state.userInRoom = false;
+      state.userIsJoining = false;
+      state.roomUserName = null;
+    },
+
   }
 })
 
@@ -151,6 +178,6 @@ const roomSlice = createSlice({
  * Actions
  */
 export const { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData } = roomSlice.actions;
-export { roomCreate, roomDelete }
+export { roomCreate, roomDelete, roomLeave }
 
 export default roomSlice;

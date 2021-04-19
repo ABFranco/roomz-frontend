@@ -9,7 +9,7 @@ import thumbsDown from '../../assets/thumbs_down.png';
 import './Room.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { roomDelete } from '../../reducers/RoomSlice';
+import { roomDelete, roomLeave } from '../../reducers/RoomSlice';
 import { clearChatHistory } from '../../reducers/ChatroomSlice';
 import store from '../../store';
 
@@ -42,52 +42,45 @@ function Room() {
   //     }))
   // }
 
-  // non-host leaves the room
-  function roomLeave() {
-    return
-  }
+  /**
+   * @function roomLeaveAsNonHost - non-host leaves the room
+   */
+  async function roomLeaveAsNonHost() {
+    let data = {
+      roomId: store.getState().room.roomId,
+      userId: store.getState().user.userId,
+    }
+
+    console.log(':Room.roomLeave: Leaving room with data=%o', data);
+
+    try {
+      const response = await dispatch(roomLeave(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
       
-  //     let data = {
-  //         'roomId'       : roomId,
-  //         'userId'       : props.userInfo.userId,
-  //     }
+      // room successfully left
+      console.log(":RoomForm.roomLeaveAsNonHost: response=%o", response);
 
-  //     // update cache 'in waiting room' logic
-  //     setCachedObject('inWaitingRoom', false);
-  //     console.log(':Room.roomLeave: marking cache as false');
+      // clear chatroom's chat history
+      dispatch(clearChatHistory());
 
-  //     console.log(':Room.roomLeave: Leaving room with data=%o', data);
+      // room left, go home
+      history.push("/");
 
-  //     apiClient.leaveRoom(data)
-  //         .then(response => {
-  //             console.log(':RoomForm.roomLeave: response=%o', response);
-  //             // Note: leaveRoom returns no data. Knowing the response was successful is all that's needed
+    } catch (err) {
+      console.log(':RoomForm.roomLeaveAsNonHost: err=%o', err);
+      let errorMessage = "An unexpected error has occurred when leaving the Room.";
+      if (err && 'message' in err) {
+          errorMessage = err['message'];
+      }
+      setErrorMessage(errorMessage);
+    }
+  }
 
-  //             props.setRoomInfo((prevRoomInfo) => ({
-  //                 ...prevRoomInfo,
-  //                 roomId      : null,
-  //                 userIsHost  : false,
-  //                 isStrict    : false,
-  //                 userInRoom  : false,
-  //                 chatHistory : []
-  //             }));
-
-  //             // go home
-  //             history.push("/");
-  //         })
-  //         .catch(error => {
-  //             console.log(':RoomForm.roomLeave: error=%o', error);
-
-  //             let errorMessage = "An unexpected error has occurred when leaving the Room.";
-  //             if (error && "message" in error) {
-  //                 errorMessage = error["message"];
-  //             }
-
-  //             console.warn(errorMessage);
-  //             setErrorMessage(errorMessage);
-  //         });
-  // }
-
+  /**
+   * @function roomCancel - room participant cancels request to join a room
+   */
   function roomCancel() {
     return
   }
@@ -262,7 +255,7 @@ function Room() {
     } else {
       return (
         <div className="room-actions">
-          <button className="room-form-btn button-secondary" onClick={roomLeave}>Leave Room</button>
+          <button className="room-form-btn button-secondary" onClick={roomLeaveAsNonHost}>Leave Room</button>
           <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
         </div>
       )
