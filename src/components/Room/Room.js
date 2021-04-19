@@ -8,9 +8,13 @@ import thumbsDown from '../../assets/thumbs_down.png';
 
 import './Room.css';
 
+import { getJoinRequests, handleJoinRequest } from '../../api/RoomzApiServiceClient.js'
+
 import { useDispatch, useSelector } from 'react-redux';
-import { roomDelete, roomLeave } from '../../reducers/RoomSlice';
+import { roomDelete, roomLeave, clearRoomData } from '../../reducers/RoomSlice';
 import { clearChatHistory } from '../../reducers/ChatroomSlice';
+
+
 import store from '../../store';
 
 function Room() {
@@ -19,28 +23,8 @@ function Room() {
   const userInRoom = useSelector(state => (state.room.userInRoom !== null));
 
   const history = useHistory();
-
-  const [roomId, setRoomId] = useState(null);            // ID of room the user is currently in
   const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
   const [errorMessage, setErrorMessage] = useState("");  // error message
-
-
-  // update local hook
-  // useEffect(() => {
-  //     setRoomId(props.roomInfo.roomId);
-  // }, [props.roomInfo])
-
-
-  // function resetRoomInfo() {
-  //     props.setRoomInfo((prevRoomInfo) => ({
-  //         ...prevRoomInfo,
-  //         roomId        : null,
-  //         userIsHost    : false,
-  //         isStrict      : null,
-  //         userIsJoining : false,
-  //         userInRoom    : false
-  //     }))
-  // }
 
   /**
    * @function roomLeaveAsNonHost - non-host leaves the room
@@ -78,17 +62,17 @@ function Room() {
     }
   }
 
-  /**
-   * @function roomCancel - room participant cancels request to join a room
-   */
-  function roomCancel() {
-    return
-  }
-  //     // room participant is in an invalid room url and exits
 
-  //     // NOTE: going home via React Router Link
-  //     resetRoomInfo();
-  // }
+  /**
+   * @function roomLeaveInvalid - room participant is in an invalid room url and exits
+   */
+  function roomLeaveInvalid() {
+    dispatch(clearRoomData());
+    dispatch(clearChatHistory());
+
+    // go home
+    history.push("/");
+  }
 
 
   /**
@@ -96,7 +80,7 @@ function Room() {
    */
   async function roomDeleteAsHost() {
     let data = {
-        'roomId' : store.getState().room.roomId,
+        roomId: store.getState().room.roomId,
         // 'host_user_id' : props.userInfo.userId
     }
 
@@ -126,105 +110,111 @@ function Room() {
   }
 
 
-  // set join request data into state
-  function handleGetJoinRequestsResp(response) {}
-  //     let joinRequests = [];
-  //     let incomingJoinRequests = response.getJoinRequestsList();
-  //     console.log(':Room.handleGetJoinRequestsResp: incomingJoinRequests=%o', incomingJoinRequests);
+  /**
+   * @function updateJoinRequests - retrieve the current join requests that are pending
+   */
+  async function updateJoinRequests() {
+    // retrieve current join requests
+    let data = {
+      roomId: store.getState().room.roomId,
+      userId: store.getState().user.userId,
+    }
 
-  //     for (var i = 0; i < incomingJoinRequests.length; i++) {
-  //         joinRequests.push({
-  //             'userId' : incomingJoinRequests[i].getUserId(),
-  //             'name' : incomingJoinRequests[i].getUserName()
-  //         })
-  //     }
+    try {
+      const response = await getJoinRequests(data);
+      if ('error' in response) {
+        throw response['error'];
+      }
 
-  //     // set state
-  //     setJoinRequests(joinRequests);
-  // }
+      // received current join requests, update state
+      let joinRequests = [];
+      let incomingJoinRequests = response.getJoinRequestsList();
 
-  // retrieve the current join requests that are pending
-  function updateJoinRequests() {}
-  //     // retrieve current join requests
-  //     let data = {
-  //         'roomId' : roomId,
-  //         'userId' : props.userInfo.userId
-  //     }
+      for (var i = 0; i < incomingJoinRequests.length; i++) {
+        joinRequests.push({
+          userId: incomingJoinRequests[i].getUserId(),
+          name: incomingJoinRequests[i].getUserName()
+        })
+      }
+
+      setJoinRequests(joinRequests);
+
+    } catch (err) {
+      console.log(':RoomForm.updateJoinRequests: err=%o', err);
+      let errorMessage = "An unexpected error has occurred when retrieving join requests.";
+      if (err && 'message' in err) {
+          errorMessage = err['message'];
+      }
+      setErrorMessage(errorMessage);
+    }
+  }
+
+
+  /** 
+   * @function requestsViewClick - open/close requests window
+   */ 
+  function requestsViewClick() {
+    if (document.getElementById("requestsView").classList.contains("hidden")) {
+      document.getElementById("requestsView").classList.remove("hidden");
+
+      // retreive current join requests
+      updateJoinRequests();
+    } else {
+      document.getElementById("requestsView").classList.add("hidden");
+    }
+  }
+
+
+  /**
+   * @function respondToJoinRequest - handler for host accepting/rejecting join request as host
+   * @param {Object} userEntry - object with "userId" and "name"
+   * @param {boolean} accept - true or false
+   */
+  async function respondToJoinRequest(userEntry, accept) {
+    let data = {
+      roomId: store.getState().room.roomId,
+      userIdToHandle: userEntry.userId,
+      decision: accept ? 'accept' : 'reject'
+    }
+
+    try {
+      const response = await handleJoinRequest(data);
+      if ('error' in response) {
+        throw response['error'];
+      }
+      console.log(':RoomForm.respondToJoinRequest: response=%o', response);
+
+      // resposne sent, refresh join requests
+      updateJoinRequests();
       
-  //     apiClient.getJoinRequests(data)
-  //         .then(response => {
-  //             console.log(':Room.updateJoinRequests: response=%o', response);
-  //             handleGetJoinRequestsResp(response);
-  //         })
-  //         .catch(error => {
-  //             console.log(':Room.updateJoinRequests: error=%o', error);
 
-  //             let errorMessage = "An unexpected error has occurred when retrieving join requests.";
-  //             if (error && "message" in error) {
-  //                 errorMessage = error["message"];
-  //             }
-  //             console.warn(errorMessage);
-  //         });
-  // }
+    } catch (err) {
+      console.log(':RoomForm.respondToJoinRequest: err=%o', err);
+      let errorMessage = "An unexpected error has occurred when handling a join request.";
+      if (err && 'message' in err) {
+          errorMessage = err['message'];
+      }
+      setErrorMessage(errorMessage);
+    }
+  }
 
-  // open/close requests window
-  function requestsViewClick() {}
-      
-
-  //     if (document.getElementById("requestsView").classList.contains("hidden")) {
-  //         document.getElementById("requestsView").classList.remove("hidden");
-
-  //         // retreive current join requests
-  //         updateJoinRequests();
-  //     } else {
-  //         document.getElementById("requestsView").classList.add("hidden");
-  //     }
-  // }
-
-  // handler for host accepting/rejecting join request
-  function handleRequest(userEntry, accept) {}
-      
-
-  //     let data = {
-  //         'roomId'         : roomId,
-  //         'userIdToHandle' : userEntry.userId,
-  //         'decision'       : accept ? 'accept' : 'reject'
-  //     }
-
-  //     apiClient.handleJoinRequest(data)
-  //         .then(response => {
-  //             console.log(':Room.handleRequest: Sucessfully handled join request. response=%o', response);
-
-  //             // refresh join requests
-  //             updateJoinRequests();
-  //         })
-  //         .catch(error => {
-  //             console.log(':Room.handleRequest: error=%o', error);
-
-  //             let errorMessage = "An unexpected error has occurred when handling a join request.";
-  //             if (error && "message" in error) {
-  //                 errorMessage = error["message"];
-  //             }
-  //             console.warn(errorMessage);
-  //         });
-  // }
 
   function requestsView() {
-      return (
-          <div className="room-requests-view">
-              {/* <p className="requests-title">Join Room Requests:</p>
-              {joinRequests.map((r, index) => (
-                  <div key={("request-%s", index)} className="pending-request-object">
-                      <div className="pending-select-options-container">
-                          <img id={("press-yes-%s", r.userId)} className="pending-img" src={thumbsUp} onClick={() => handleRequest(r, true)} alt="yes"/>
-                          <br></br>
-                          <img id={("press-no-%s", r.userId)} className="pending-img" src={thumbsDown} onClick={() => handleRequest(r, false)} alt="no"/>
-                      </div>
-                      <p className="pending-request-object-name">{r.name}</p>
-                  </div>
-              ))} */}
+    return (
+      <div className="room-requests-view">
+        <p className="requests-title">Join Room Requests:</p>
+        {joinRequests.map((r, index) => (
+          <div key={("request-%s", index)} className="pending-request-object">
+            <div className="pending-select-options-container">
+              <img id={("press-yes-%s", r.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(r, true)} alt="yes"/>
+              <br></br>
+              <img id={("press-no-%s", r.userId)} className="pending-img" src={thumbsDown} onClick={() => respondToJoinRequest(r, false)} alt="no"/>
+            </div>
+            <p className="pending-request-object-name">{r.name}</p>
           </div>
-      )
+        ))}
+      </div>
+    )
   }
 
   function roomShare() {
@@ -303,7 +293,7 @@ function Room() {
             <h2>Invalid Room Id</h2>
           </div>
           <Link to="/">
-            <button className="room-form-btn button-secondary" onClick={roomCancel}>Return Home</button>
+            <button className="room-form-btn button-secondary" onClick={roomLeaveInvalid}>Return Home</button>
           </Link>
         </div>
       )
