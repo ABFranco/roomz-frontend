@@ -18,7 +18,6 @@ function Chatroom() {
   useEffect(() => {
       // this should only occur once
       joinChatRoomStream();
-      // joinRoomClosureStream();
   },[]);
 
 

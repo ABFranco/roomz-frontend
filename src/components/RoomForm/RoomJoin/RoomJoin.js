@@ -4,17 +4,15 @@ import '../RoomForm.css';
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData  } from '../../../reducers/RoomSlice';
+import { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
 import store from '../../../store';
 
 function RoomJoin() {
   const dispatch = useDispatch();
+  const inWaitingRoom = useSelector(state => (state.room.userIsJoining === true));
 
   const history = useHistory();
-
-  const grantedRoomAccess = useSelector(state => (state.room.userIsRoom === true));
-  const inWaitingRoom = useSelector(state => (state.room.userIsJoining === true));
 
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -48,25 +46,6 @@ function RoomJoin() {
   //     }
   // }, [])
 
-
-  
-  // useEffect(() => {
-  //     // catch room id update, go to room page
-  //     if (props.roomInfo.roomId !== null && props.roomInfo.token !== null && grantedRoomAccess) {
-  //         console.log(':RoomForm: Granted room access with a valid room ID!');
-  //         history.push(`/room/${props.roomInfo.roomId}`)
-  //     }
-
-  //     setRequestedRoomId(props.roomInfo.roomId)
-  // }, [props.roomInfo.roomId, grantedRoomAccess]);
-
-
-  // function _updateInWaitingRoom(value) {
-  //     // update inWaitingRoom hook and cache values
-  //     console.log(':RoomForm.updateInWaitingRoom: Updating and caching inWaitingRoom to: %s', value);
-  //     setInWaitingRoom(value);
-  //     // setCachedObject('inWaitingRoom', value);
-  // }
   
 
   /**
@@ -130,11 +109,11 @@ function RoomJoin() {
   async function roomJoinSubmit() {
 
     let data = {
-        roomId: joinRoomId.current.value,
-        roomPassword: joinRoomPassword.current.value,
-        userId: store.getState().user.userId,
-        userName: joinRoomName.current.value,
-        isGuest: store.getState().user.userId == null,
+      roomId: joinRoomId.current.value,
+      roomPassword: joinRoomPassword.current.value,
+      userId: store.getState().user.userId,
+      userName: joinRoomName.current.value,
+      isGuest: store.getState().user.userId == null,
     }
 
     // reset room data, add userName to state
@@ -176,7 +155,7 @@ function RoomJoin() {
         console.log(':RoomForm.roomJoinSubmit: error: %o', err);
         let errorMessage = 'An unexpected error has occurred when joining a Room.';
         if (err && 'message' in err) {
-            errorMessage = err['message'];
+          errorMessage = err['message'];
         }
         setErrorMessage(errorMessage);
       });
@@ -189,46 +168,43 @@ function RoomJoin() {
       console.log(':RoomJoin.roomJoinSubmit: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when joining a Room.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
   }
 
-  /**
-   * @function roomJoinCancel - cancel join request when waiting for host acceptance
-   */
-  function roomJoinCancel() {
-    console.log(':RoomForm.roomJoinCancel:; leaving waiting room...');
-    
-    // set state to leave room, regardless of success with backend
-    dispatch(clearRoomData());
 
+  /**
+   * @function cancelRoomJoin - cancel join request when waiting for host acceptance
+   */
+  async function cancelRoomJoin() {
     let data = {
         roomId: store.getState().room.roomId,
         userId: store.getState().user.userId,
     }
 
-    console.log(':RoomForm.roomJoinCancel: Cancelling join request with data=%o', data);
+    console.log(':RoomForm.cancelRoomJoin: Cancelling join request with data=%o', data);
 
-    // apiClient.cancelJoinRequest(data)
-    //     .then(response => {
-    //         console.log(':RoomForm.roomJoinCancel: response=%o', response);
+    try {
+      const response = await dispatch(roomJoinCancel(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
+      console.log(':RoomForm.cancelRoomJoin: Success, response=%o', data);
 
-    //     })
-    //     .catch(error => {
-    //         console.log(':RoomForm.roomJoinCancel: error=%o', error);
+      // set state to leave room
+      dispatch(clearRoomData());
+      dispatch(clearChatHistory());
 
-    //         let errorMessage = "Failed to cancel room join.";
-    //         if (error && "message" in error) {
-    //             errorMessage = error["message"];
-    //         }
-
-    //         setSubmitError(true);
-    //         setErrorMessage(errorMessage);
-    //     });  
-      
-      
+    } catch (err) {
+      console.log(':RoomJoin.cancelRoomJoin: err=%o', err);
+      let errorMessage = 'An unexpected error has occurred when cancelling Room join.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      setErrorMessage(errorMessage);
+    }
   }
 
 
@@ -301,7 +277,7 @@ function RoomJoin() {
 
         <div className="room-actions">
           <Link to="/">
-            <button className="room-form-btn button-secondary" onClick={roomJoinCancel}>Cancel</button>
+            <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
           </Link>
         </div>
       </div>

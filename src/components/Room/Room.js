@@ -19,10 +19,10 @@ import store from '../../store';
 
 function Room() {
   const dispatch = useDispatch();
-
   const userInRoom = useSelector(state => (state.room.userInRoom !== null));
 
   const history = useHistory();
+
   const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
   const [errorMessage, setErrorMessage] = useState("");  // error message
 
