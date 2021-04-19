@@ -8,7 +8,7 @@ import thumbsDown from '../../assets/thumbs_down.png';
 
 import './Room.css';
 
-import { getJoinRequests, handleJoinRequest } from '../../api/RoomzApiServiceClient.js'
+import { awaitRoomClosure, getJoinRequests, handleJoinRequest } from '../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { roomDelete, roomLeave, clearRoomData } from '../../reducers/RoomSlice';
@@ -25,6 +25,14 @@ function Room() {
   const history = useHistory();
   const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
   const [errorMessage, setErrorMessage] = useState("");  // error message
+
+
+  useEffect(() => {
+    // this should only occur once when a non-host
+    if (!store.getState().room.userIsHost) {
+      joinRoomClosureStream();
+    }
+  },[]);
 
   /**
    * @function roomLeaveAsNonHost - non-host leaves the room
@@ -111,6 +119,43 @@ function Room() {
 
 
   /**
+   * @function joinRoomClosureStream - If non-host, join stream to detect when host closes the room
+   */
+  async function joinRoomClosureStream() {
+    let data = {
+      roomId: store.getState().room.roomId,
+      userId: store.getState().room.userId,
+      token: store.getState().room.token,
+    };
+    console.log(':Chatroom.joinRoomClosureStream: Attempting to join closure stream with data=%o', data);
+
+    try {
+      const closureStream = await awaitRoomClosure(data);
+      
+      // stream successfully joined
+      console.log(':Chatroom.joinRoomClosureStream: Receieved closureStream=%o', closureStream);
+
+      closureStream.on('data', (data) => {
+        console.log(':Chatroom.joinRoomClosureStream: Host closed room!');
+
+        // exit room
+        dispatch(clearRoomData());
+        dispatch(clearChatHistory());
+        history.push("/");
+        
+    });
+
+      closureStream.on('end', () => {
+          console.log(':Chatroom.joinRoomClosureStream: Stream ended.');
+      });
+
+    } catch (err) {
+      console.log(':Chatroom.joinRoomClosureStream: Failed to receive closure stream. err=%o', err);
+    }
+  }
+
+
+  /**
    * @function updateJoinRequests - retrieve the current join requests that are pending
    */
   async function updateJoinRequests() {
@@ -167,13 +212,13 @@ function Room() {
 
   /**
    * @function respondToJoinRequest - handler for host accepting/rejecting join request as host
-   * @param {Object} userEntry - object with "userId" and "name"
+   * @param {Object} joinEntry - object with "userId" and "name"
    * @param {boolean} accept - true or false
    */
-  async function respondToJoinRequest(userEntry, accept) {
+  async function respondToJoinRequest(joinEntry, accept) {
     let data = {
       roomId: store.getState().room.roomId,
-      userIdToHandle: userEntry.userId,
+      userIdToHandle: joinEntry.userId,
       decision: accept ? 'accept' : 'reject'
     }
 
@@ -203,14 +248,14 @@ function Room() {
     return (
       <div className="room-requests-view">
         <p className="requests-title">Join Room Requests:</p>
-        {joinRequests.map((r, index) => (
+        {joinRequests.map((joinEntry, index) => (
           <div key={("request-%s", index)} className="pending-request-object">
             <div className="pending-select-options-container">
-              <img id={("press-yes-%s", r.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(r, true)} alt="yes"/>
+              <img id={("press-yes-%s", joinEntry.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(joinEntry, true)} alt="yes"/>
               <br></br>
-              <img id={("press-no-%s", r.userId)} className="pending-img" src={thumbsDown} onClick={() => respondToJoinRequest(r, false)} alt="no"/>
+              <img id={("press-no-%s", joinEntry.userId)} className="pending-img" src={thumbsDown} onClick={() => respondToJoinRequest(joinEntry, false)} alt="no"/>
             </div>
-            <p className="pending-request-object-name">{r.name}</p>
+            <p className="pending-request-object-name">{joinEntry.name}</p>
           </div>
         ))}
       </div>

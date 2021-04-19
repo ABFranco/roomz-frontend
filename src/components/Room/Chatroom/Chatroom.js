@@ -21,14 +21,6 @@ function Chatroom() {
       // joinRoomClosureStream();
   },[]);
 
-  // useEffect(() => {
-  //     // update roomInfo object for caching
-  //     props.setRoomInfo((prevRoomInfo) => ({
-  //         ...prevRoomInfo,
-  //         chatHistory: [...chatHistory]
-  //     })); 
-  // },[chatHistory]);
-
 
   /**
    * @function joinChatRoomStream - Join stream to receive incoming chatroom messages
@@ -66,34 +58,29 @@ function Chatroom() {
    * @function handleSendChatMessage - send chatroom message
    */
   async function handleSendChatMessage() {
-
     if (message.current.value.length === 0) {
       return
     }
 
-    // send chat message to room
-    let name = store.getState().room.roomUserName;
-    let userId = store.getState().user.userId;
-
     let data = {
-        'roomId': store.getState().room.roomId,
-        'userId': userId,
-        'username': name,
-        'message': message.current.value,
-        'timestamp': String(Date.now())
+        roomId: store.getState().room.roomId,
+        userId: store.getState().user.userId,
+        username: store.getState().room.roomUserName,
+        message: message.current.value,
+        timestamp: String(Date.now())
     };
 
-    console.log(':Chatroom.sendChatMessage: Sending chat message with data=%o', data);
+    console.log(':Chatroom.handleSendChatMessage: Sending chat message with data=%o', data);
     try {
       const response = await dispatch(sendChatMessage(data));
       if ('error' in response) {
         throw response['error'];
       }
 
-      console.log(':Chatroom.sendChatMessage: Message successfully sent. response=%o', response);
+      console.log(':Chatroom.handleSendChatMessage: Message successfully sent. response=%o', response);
 
     } catch (err) {
-      console.log(':Chatroom.joinChatRoomStream: Failed to send chat message. err=%o', err);
+      console.log(':Chatroom.handleSendChatMessage: Failed to send chat message. err=%o', err);
       let errorMessage = "An unexpected error has occurred when sending a chat message.";
       if (err && "message" in err) {
           errorMessage = err["message"];
