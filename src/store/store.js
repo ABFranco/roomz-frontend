@@ -13,6 +13,7 @@ function retrieveCachedState() {
   const cachedUser = getCachedObject('user');
   const cachedRoom = getCachedObject('room');
   const cachedChatroom = getCachedObject('chatroom');
+  const cachedVestibule = getCachedObject('vestibule');
 
   // at the moment, only user data exists
   if (cachedUser) {
@@ -31,6 +32,12 @@ function retrieveCachedState() {
     cachedState = {
       ...cachedState,
       chatroom: cachedChatroom,
+    }
+  }
+  if (cachedVestibule) {
+    cachedState = {
+      ...cachedState,
+      vestibule: cachedVestibule,
     }
   }
 
@@ -68,6 +75,7 @@ store.subscribe(() => {
   setCachedObject('user', store.getState().user);
   setCachedObject('room', store.getState().room);
   setCachedObject('chatroom', store.getState().chatroom);
+  setCachedObject('vestibule', store.getState().vestibule);
 })
 
 

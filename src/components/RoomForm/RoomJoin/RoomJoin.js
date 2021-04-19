@@ -50,7 +50,7 @@ function RoomJoin() {
 
   /**
    * @function receiveJoinRoomResponse - response after requesting to join a Room
-   * @param {*} response 
+   * @param {Object} response 
    */
   function receiveJoinRoomResponse(response) {
     let roomId = response.getRoomId();
@@ -206,12 +206,6 @@ function RoomJoin() {
       setErrorMessage(errorMessage);
     }
   }
-
-
-  // function roomJoinSubmitForm() {
-  //     // handle form submit when performing form submission action
-  //     roomJoinSubmit(joinRoomId.current.value, joinRoomPassword.current.value, joinRoomName.current.value);
-  // }
 
 
   function keyboardCreateJoin(event) {
