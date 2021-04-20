@@ -39,8 +39,6 @@ function RoomJoin() {
     let status = response.getStatus();
 
     if (status === 'accept') {
-      console.log(':RoomForm.receiveJoinRoomResponse: Accepted, joining room');
-
       dispatch(clearVestibuleData());
       
       // cleanup chatHistory json
@@ -70,11 +68,11 @@ function RoomJoin() {
       console.log(':RoomForm.receiveJoinRoomResponse: Detected wait room');
 
     } else if (status === 'reject') {
-      console.warn(":RoomForm.receiveJoinRoomResponse: Failed to join room.");
-      setErrorMessage("Failed to join room.");
+      console.warn(':RoomForm.receiveJoinRoomResponse: Failed to join room.');
+      setErrorMessage('Failed to join room.');
     } else {
-      console.warn(":RoomForm.receiveJoinRoomResponse: Unknown error.");
-      setErrorMessage("Unknown error.");
+      console.warn(':RoomForm.receiveJoinRoomResponse: Unknown error.');
+      setErrorMessage('Unknown error.');
     }
   }
 
@@ -135,17 +133,11 @@ function RoomJoin() {
     console.log(':RoomJoin.roomJoinSubmit: Attempting to join room with data=%o', data);
     
     try {
-      // const response = await dispatch(roomJoin(data));
-      // if ('error' in response) {
-      //   throw response['error'];
-      // }
       // TODO: relocate joinRoom into vestibuleSlice
       const joinRoomResponseStream = await joinRoom(data);
 
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
-        console.log(':RoomForm.roomJoinSubmit: response=%o', response);
-
         // TODO: instead of joining room immedietly, go into vestibule
         receiveJoinRoomResponse(response);
           
@@ -216,7 +208,7 @@ function RoomJoin() {
 
   function keyboardCreateJoin(event) {
       // handle keyboard input
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
           if (!inVestibule) {
             roomJoinSubmit();
           }

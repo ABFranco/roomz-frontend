@@ -34,6 +34,7 @@ function Room() {
     }
   },[]);
 
+
   /**
    * @function roomLeaveAsNonHost - non-host leaves the room
    */
@@ -50,19 +51,13 @@ function Room() {
       if ('error' in response) {
         throw response['error'];
       }
-      
-      // room successfully left
-      console.log(":RoomForm.roomLeaveAsNonHost: response=%o", response);
 
-      // clear chatroom's chat history
       dispatch(clearChatHistory());
-
-      // room left, go home
-      history.push("/");
+      history.push('/');
 
     } catch (err) {
       console.log(':RoomForm.roomLeaveAsNonHost: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when leaving the Room.";
+      let errorMessage = 'An unexpected error has occurred when leaving the Room.';
       if (err && 'message' in err) {
           errorMessage = err['message'];
       }
@@ -77,9 +72,7 @@ function Room() {
   function roomLeaveInvalid() {
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
-
-    // go home
-    history.push("/");
+    history.push('/');
   }
 
 
@@ -89,7 +82,6 @@ function Room() {
   async function roomDeleteAsHost() {
     let data = {
         roomId: store.getState().room.roomId,
-        // 'host_user_id' : props.userInfo.userId
     }
 
     try {
@@ -97,19 +89,13 @@ function Room() {
       if ('error' in response) {
         throw response['error'];
       }
-      
-      // room successfully deleted
-      console.log(":RoomForm.roomDelete: response=%o", response);
 
-      // clear chatroom's chat history
       dispatch(clearChatHistory());
-
-      // room closed, go home
-      history.push("/");
+      history.push('/');
 
     } catch (err) {
       console.log(':RoomForm.roomDelete: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when closing the Room.";
+      let errorMessage = 'An unexpected error has occurred when closing the Room.';
       if (err && 'message' in err) {
           errorMessage = err['message'];
       }
@@ -132,21 +118,14 @@ function Room() {
     try {
       const closureStream = await awaitRoomClosure(data);
       
-      // stream successfully joined
-      console.log(':Chatroom.joinRoomClosureStream: Receieved closureStream=%o', closureStream);
-
       closureStream.on('data', (data) => {
-        console.log(':Chatroom.joinRoomClosureStream: Host closed room!');
-
-        // exit room
         dispatch(clearRoomData());
         dispatch(clearChatHistory());
-        history.push("/");
-        
-    });
+        history.push('/');
+      });
 
       closureStream.on('end', () => {
-          console.log(':Chatroom.joinRoomClosureStream: Stream ended.');
+        console.log(':Chatroom.joinRoomClosureStream: Stream ended.');
       });
 
     } catch (err) {
@@ -186,7 +165,7 @@ function Room() {
 
     } catch (err) {
       console.log(':RoomForm.updateJoinRequests: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when retrieving join requests.";
+      let errorMessage = 'An unexpected error has occurred when retrieving join requests.';
       if (err && 'message' in err) {
           errorMessage = err['message'];
       }
@@ -199,13 +178,13 @@ function Room() {
    * @function requestsViewClick - open/close requests window
    */ 
   function requestsViewClick() {
-    if (document.getElementById("requestsView").classList.contains("hidden")) {
-      document.getElementById("requestsView").classList.remove("hidden");
+    if (document.getElementById('requestsView').classList.contains('hidden')) {
+      document.getElementById('requestsView').classList.remove('hidden');
 
       // retreive current join requests
       updateJoinRequests();
     } else {
-      document.getElementById("requestsView").classList.add("hidden");
+      document.getElementById('requestsView').classList.add('hidden');
     }
   }
 
@@ -219,7 +198,7 @@ function Room() {
     let data = {
       roomId: store.getState().room.roomId,
       userIdToHandle: joinEntry.userId,
-      decision: accept ? 'accept' : 'reject'
+      decision: accept ? 'accept' : 'reject',
     }
 
     try {
@@ -227,15 +206,12 @@ function Room() {
       if ('error' in response) {
         throw response['error'];
       }
-      console.log(':RoomForm.respondToJoinRequest: response=%o', response);
 
-      // resposne sent, refresh join requests
       updateJoinRequests();
-      
 
     } catch (err) {
       console.log(':RoomForm.respondToJoinRequest: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when handling a join request.";
+      let errorMessage = 'An unexpected error has occurred when handling a join request.';
       if (err && 'message' in err) {
           errorMessage = err['message'];
       }
@@ -263,7 +239,6 @@ function Room() {
   }
 
   function roomShare() {
-      // view "share" link
       // TODO
       return
   }

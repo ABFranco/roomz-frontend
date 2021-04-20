@@ -28,10 +28,8 @@ function RoomCreate() {
   async function roomCreateSubmit() {
     // submits Create Room form
     if (passwordInput.current.value !== passwordConfirmInput.current.value) {
-      setErrorMessage("Both passwords must match!");
+      setErrorMessage('Both passwords must match!');
     } else {
-      console.log(":RoomCreate.roomCreateSubmit: Passwords match");
-
       let userId = store.getState().user.userId;
       let userName = createRoomName.current.value;
       let data = { 
@@ -40,24 +38,20 @@ function RoomCreate() {
         password: passwordInput.current.value,
         isStrict: !(isStrictInput.current.checked)
       }
-        
-      console.log(":RoomCreate.roomCreateSubmit: Attempting to create room with data=%o", data);
+
+      console.log(':RoomCreate.roomCreateSubmit: Attempting to create room with data=%o', data);
 
       try {
         const response = await dispatch(roomCreate(data));
         if ('error' in response) {
           throw response['error'];
         }
-        
-        // room successfully created
-        console.log(":RoomCreate.roomCreateSubmit: response=%o", response);
 
         // clear chatroom data, add userName to state
         dispatch(clearChatHistory());
         dispatch(setRoomUserName(data['userName']));
 
         // TODO: instead of joining room immedietly, go into vestibule
-
         history.push(`/room/${store.getState().room.roomId}`)
   
       } catch (err) {
@@ -74,7 +68,7 @@ function RoomCreate() {
 
   function keyboardCreateJoin(event) {
     // handle keyboard input
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
         roomCreateSubmit();
     }
   }

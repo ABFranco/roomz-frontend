@@ -14,9 +14,9 @@ function Chatroom() {
 
   const message = useRef();
   
-  // join chat room upon entering the view
+
   useEffect(() => {
-      // this should only occur once
+      // join chat room upon entering the view, this should only occur once
       joinChatRoomStream();
   },[]);
 
@@ -34,9 +34,6 @@ function Chatroom() {
 
     try {
       const chatStream = await enterChatRoom(data);
-      
-      // chatroom successfully joined
-      console.log(":Chatroom.joinChatRoomStream: chatStream=%o", chatStream);
 
       chatStream.on('data', (data) => {
         console.log(':Chatroom.joinChatRoomStream: Received data: %o', data);
@@ -76,11 +73,9 @@ function Chatroom() {
         throw response['error'];
       }
 
-      console.log(':Chatroom.handleSendChatMessage: Message successfully sent. response=%o', response);
-
     } catch (err) {
       console.log(':Chatroom.handleSendChatMessage: Failed to send chat message. err=%o', err);
-      let errorMessage = "An unexpected error has occurred when sending a chat message.";
+      let errorMessage = 'An unexpected error has occurred when sending a chat message.';
       if (err && "message" in err) {
           errorMessage = err["message"];
       }
@@ -98,20 +93,18 @@ function Chatroom() {
    */
   function receiveChatMessage(data) {
       let newMessage= {
-          'userID' : data.getUserId(),
-          'name' : data.getUserName(),
-          'message' : data.getMessage(),
-          'timestamp' : (new Date(parseInt(data.getTimestamp()))).toLocaleTimeString([], {hour: '2-digit', minute: "2-digit"})
+          userId: data.getUserId(),
+          name: data.getUserName(),
+          message: data.getMessage(),
+          timestamp: (new Date(parseInt(data.getTimestamp()))).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
       };
-
-      console.log(":Chatroom.receiveChatMessage: newMessage=%o", newMessage);
 
       dispatch(appendChatMessage(newMessage));
   }
 
   // handle keyboard input
   function keyboardSendChatMessage(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       handleSendChatMessage();
     }
 }
