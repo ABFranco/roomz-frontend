@@ -4,13 +4,14 @@ import '../RoomForm.css';
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
+import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
+import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import store from '../../../store';
 
 function RoomJoin() {
   const dispatch = useDispatch();
-  const inWaitingRoom = useSelector(state => (state.room.userIsJoining === true));
+  const inVestibule = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
 
   const history = useHistory();
 
@@ -20,31 +21,12 @@ function RoomJoin() {
   const joinRoomPassword = useRef();
   const joinRoomName = useRef();
 
-  // useEffect(() => {
-  //     // upon initial render, retrieve waiting room info in cache
-  //     // determine if the user is supposed to be in the waiting room
-  //     let cachedInWaitingRoom = getCachedObject('inWaitingRoom');
-  //     console.log(':RoomForm: cachedInWaitingRoom=%s', cachedInWaitingRoom)
-  //     if (cachedInWaitingRoom !== null) {
-  //         // error check against incorrect caching
-  //         if (props.roomInfo.userInRoom && cachedInWaitingRoom) {
-  //             console.warn(':RoomForm: bad caching! setting inWaitingRoom to false')
-  //             setCachedObject('inWaitingRoom', false)
-  //             setInWaitingRoom(false)
-  //         } else {
-  //             console.log(':RoomForm: Setting inWaitingRoom for cachedInWaitingRoom=%s', cachedInWaitingRoom);
-  //             setInWaitingRoom(cachedInWaitingRoom);
-
-  //             if (cachedInWaitingRoom) {
-  //                 // obtain original form data from cache and re-send another join request
-  //                 let cacheData = getCachedObject('joinRoomData');
-  //                 console.log(':RoomForm: cacheData=%o', cacheData);
-  //                 roomJoinSubmit(cacheData['roomId'], cacheData['roomPassword'], cacheData['userName']);
-  //             }
-
-  //         }
-  //     }
-  // }, [])
+  useEffect(() => {
+    // upon initial load, determine if the user is supposed to be in vestibule based on cache
+    if (inVestibule) {
+      roomJoinSubmit();
+    }
+  }, [])
 
   
 
@@ -58,6 +40,8 @@ function RoomJoin() {
 
     if (status === 'accept') {
       console.log(':RoomForm.receiveJoinRoomResponse: Accepted, joining room');
+
+      dispatch(clearVestibuleData());
       
       // cleanup chatHistory json
       let chatHistory = response.getChatHistoryList();
@@ -73,25 +57,17 @@ function RoomJoin() {
       }
       dispatch(setChatHistory(chatHistoryData));
 
+      // enter the room
       let payload = {
         roomId: roomId,
         token: response.getToken(),
         isStrict: false, // TODO: does this matter?
       }
       dispatch(setJoinedRoom(payload));
-
-      console.log(':RoomForm.receiveJoinRoomResponse: test');
-      
       history.push(`/room/${roomId}`)
 
     } else if (status === 'wait') {
       console.log(':RoomForm.receiveJoinRoomResponse: Detected wait room');
-
-      // edit room info
-      let payload = {
-        roomId : roomId,
-      }
-      dispatch(setWaitingRoom(payload));
 
     } else if (status === 'reject') {
       console.warn(":RoomForm.receiveJoinRoomResponse: Failed to join room.");
@@ -107,40 +83,64 @@ function RoomJoin() {
    * @function roomJoinSubmit - submit form to join a room
    */
   async function roomJoinSubmit() {
+    console.log(":RoomJoin.roomJoinSubmit: test");
+
+    let roomId, roomPassword, userName;
+
+    try {
+      if (inVestibule) {
+        roomId = store.getState().vestibule.roomId;
+        roomPassword = store.getState().vestibule.roomPassword;
+        userName = store.getState().vestibule.userName;
+      } else {
+        roomId = joinRoomId.current.value;
+        roomPassword = joinRoomPassword.current.value;
+        userName = joinRoomName.current.value;
+      }
+        
+      if (roomId === '') {
+        throw 'Enter a Room ID';
+      } else if (roomPassword === '') {
+        throw 'Enter a Room Password';
+      } else if (userName === '') {
+        throw 'Enter a personal Name';
+      }
+    } catch (err) {
+      setErrorMessage(err);
+      return
+    }
 
     let data = {
-      roomId: joinRoomId.current.value,
-      roomPassword: joinRoomPassword.current.value,
+      roomId: roomId,
+      roomPassword: roomPassword,
+      userName: userName,
       userId: store.getState().user.userId,
-      userName: joinRoomName.current.value,
       isGuest: store.getState().user.userId == null,
     }
 
     // reset room data, add userName to state
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
-    dispatch(setRoomUserName(joinRoomName.current.value));
+    dispatch(setRoomUserName(userName));
 
-    // update user info upon fresh join submit
 
-    // TODO: update store to save data into cache, maybe in vestibuleSlice?
-    // let cacheData = {
-    //     'roomId'       : roomId,
-    //     'roomPassword' : roomPassword,
-    //     'userName'     : userName,
-    // }
-    // setCachedObject('joinRoomData', cacheData);
+    // update vestibule state
+    let vestibulePayload = {
+      roomId: roomId,
+      roomPassword: roomPassword,
+      userName: userName,
+    }
+    dispatch(setVestibuleJoin(vestibulePayload));
 
-    console.log(":RoomJoin.roomJoinSubmit: Attempting to join room with data=%o", data);
-
+    console.log(':RoomJoin.roomJoinSubmit: Attempting to join room with data=%o', data);
+    
     try {
       // const response = await dispatch(roomJoin(data));
       // if ('error' in response) {
       //   throw response['error'];
       // }
+      // TODO: relocate joinRoom into vestibuleSlice
       const joinRoomResponseStream = await joinRoom(data);
-
-      console.log(':RoomForm.roomJoinSubmit: joinRoomResponseStream=%o', joinRoomResponseStream);
 
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
@@ -182,20 +182,18 @@ function RoomJoin() {
     let data = {
         roomId: store.getState().room.roomId,
         userId: store.getState().user.userId,
-    }
+    };
 
-    console.log(':RoomForm.cancelRoomJoin: Cancelling join request with data=%o', data);
+    // set state to leave room
+    dispatch(clearRoomData());
+    dispatch(clearChatHistory());
+    dispatch(clearVestibuleData());
 
     try {
       const response = await dispatch(roomJoinCancel(data));
       if ('error' in response) {
         throw response['error'];
       }
-      console.log(':RoomForm.cancelRoomJoin: Success, response=%o', data);
-
-      // set state to leave room
-      dispatch(clearRoomData());
-      dispatch(clearChatHistory());
 
     } catch (err) {
       console.log(':RoomJoin.cancelRoomJoin: err=%o', err);
@@ -208,10 +206,18 @@ function RoomJoin() {
   }
 
 
+  /**
+   * @function leaveRoomJoinForm - leave the join room form
+   */
+  function leaveRoomJoinForm() {
+    dispatch(clearVestibuleData());
+  }
+
+
   function keyboardCreateJoin(event) {
       // handle keyboard input
       if (event.key === "Enter") {
-          if (!inWaitingRoom) {
+          if (!inVestibule) {
             roomJoinSubmit();
           }
       }
@@ -252,7 +258,7 @@ function RoomJoin() {
     return (
       <div className="room-actions">
         <Link to="/">
-        <button className="room-form-btn button-secondary">Cancel</button>
+        <button className="room-form-btn button-secondary" onClick={leaveRoomJoinForm}>Cancel</button>
         </Link>
         <button className="room-form-btn button-primary" onClick={roomJoinSubmit}>Join</button>
       </div>
@@ -279,7 +285,7 @@ function RoomJoin() {
   }
 
   function view() {
-    if (inWaitingRoom) {
+    if (inVestibule) {
       return (
         <div className="room-container">
           {waitingRoom()}

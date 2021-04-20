@@ -75,7 +75,6 @@ const roomSlice = createSlice({
     isStrict: false, 
     userIsHost: false,
     userInRoom: false,
-    userIsJoining: false,
     roomUserName: null
   },
   reducers: {
@@ -102,21 +101,6 @@ const roomSlice = createSlice({
       state.isStrict = action.payload.isStrict;;
       state.userIsHost = false;
       state.userInRoom = true;
-      state.userIsJoining = false;
-    },
-
-    /**
-     * @reduxAction 'room/setWaitingRoom - Set room as waiting room state
-     * @param {Object} state - Initial state
-     * @param {Object} action.payload
-     * @param {number} action.payload.roomId
-     */
-    setWaitingRoom: (state, action) => {
-      state.roomId = action.payload.roomId;
-      state.isStrict = true;
-      state.userIsHost = false;
-      state.userInRoom = false;
-      state.userIsJoining = true;
     },
 
     /**
@@ -129,7 +113,6 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
-      state.userIsJoining = false;
       state.roomUserName = null;
     },
 
@@ -151,7 +134,6 @@ const roomSlice = createSlice({
       state.isStrict = action.payload.isStrict;
       state.userIsHost = true;
       state.userInRoom = true;
-      state.userIsJoining = false;
     },
     [roomCreate.pending]: () => {},
     [roomCreate.rejected]: (action) => {},
@@ -166,7 +148,6 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
-      state.userIsJoining = false;
       state.roomUserName = null;
     },
 
@@ -180,7 +161,6 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
-      state.userIsJoining = false;
       state.roomUserName = null;
     },
 
@@ -194,7 +174,6 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
-      state.userIsJoining = false;
       state.roomUserName = null;
     },
 
@@ -204,7 +183,7 @@ const roomSlice = createSlice({
 /**
  * Actions
  */
-export const { setRoomUserName, setJoinedRoom, setWaitingRoom, clearRoomData } = roomSlice.actions;
+export const { setRoomUserName, setJoinedRoom, clearRoomData } = roomSlice.actions;
 export { roomCreate, roomDelete, roomLeave, roomJoinCancel }
 
 export default roomSlice;
