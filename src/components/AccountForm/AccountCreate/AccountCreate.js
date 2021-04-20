@@ -27,8 +27,16 @@ function AccountCreate() {
    */
   async function accountCreateSubmit() {
     if (password.current.value !== passwordVerify.current.value) {
-      // ensure passwords are correct
-      setErrorMessage("Passwords do not match!");
+      setErrorMessage('Passwords do not match!');
+      return
+    }
+    
+    let data = {
+      'firstName' : firstName.current.value,
+      'lastName'  : lastName.current.value,
+      'email'     : email.current.value,
+      'password'  : password.current.value
+    }
 
     } else {
       let data = {
@@ -37,34 +45,21 @@ function AccountCreate() {
         'email'     : email.current.value,
         'password'  : password.current.value
       }
-
-      try {
-        const response = await dispatch(accountCreate(data));
-        if ('error' in response) {
-          throw response['error'];
-        }
-        
-        // account successfully created, attempt to login with these details
-        let accountLoginData = {
-          'email'     : email.current.value,
-          'password'  : password.current.value
-        }
-        const responseLogin = await dispatch(accountLogin(accountLoginData));
-        if ('error' in responseLogin) {
-          throw responseLogin['error'];
-        }
-  
-        // creation and login successful, state updated, go home
-        history.push('/')
-  
-      } catch (err) {
-        console.log(':accountCreateSubmit: err=%o', err);
-        let errorMessage = 'An unexpected error has occurred when creating an account.';
-        if (err && 'message' in err) {
-            errorMessage = err['message'];
-        }
-        setErrorMessage(errorMessage);
+      const responseLogin = await dispatch(accountLogin(accountLoginData));
+      if ('error' in responseLogin) {
+        throw responseLogin['error'];
       }
+
+      // creation and login successful, state updated, go home
+      history.push('/')
+
+    } catch (err) {
+      console.log(':accountCreateSubmit: err=%o', err);
+      let errorMessage = 'An unexpected error has occurred when creating an account.';
+      if (err && 'message' in err) {
+          errorMessage = err['message'];
+      }
+      setErrorMessage(errorMessage);
     }
   }
 

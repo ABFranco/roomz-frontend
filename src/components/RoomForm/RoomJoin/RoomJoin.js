@@ -97,11 +97,11 @@ function RoomJoin() {
       }
         
       if (roomId === '') {
-        throw 'Enter a Room ID';
+        throw new Error('Enter a Room ID');
       } else if (roomPassword === '') {
-        throw 'Enter a Room Password';
+        throw new Error('Enter a Room Password');
       } else if (userName === '') {
-        throw 'Enter a personal Name';
+        throw new Error('Enter a personal Name');
       }
     } catch (err) {
       setErrorMessage(err);

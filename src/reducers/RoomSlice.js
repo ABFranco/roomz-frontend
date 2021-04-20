@@ -31,7 +31,7 @@ const roomDelete = createAsyncThunk(
   'room/roomDelete',
   async(data) => {
     // main api call
-    const response = await apiClient.closeRoom(data);
+    await apiClient.closeRoom(data);
     return {}
   }
 )
@@ -44,7 +44,7 @@ const roomLeave = createAsyncThunk(
   'room/roomLeave',
   async(data) => {
     // main api call
-    const response = await apiClient.leaveRoom(data);
+    await apiClient.leaveRoom(data);
     return {}
   }
 )
@@ -57,7 +57,7 @@ const roomJoinCancel = createAsyncThunk(
   'room/roomJoinCancel',
   async(data) => {
     // main api call
-    const response = await apiClient.cancelJoinRequest(data);
+    await apiClient.cancelJoinRequest(data);
     return {}
   }
 )

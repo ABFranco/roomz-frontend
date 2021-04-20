@@ -11,7 +11,7 @@ const sendChatMessage = createAsyncThunk(
   'room/sendChatMessage',
   async(data) => {
     // main api call
-    const response = await apiClient.chatMessage(data);
+    await apiClient.chatMessage(data);
     return {}
   }
 )
