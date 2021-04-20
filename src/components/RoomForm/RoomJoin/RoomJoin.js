@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
-import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
+import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
@@ -117,7 +117,7 @@ function RoomJoin() {
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
     dispatch(setRoomUserName(userName));
-    
+
     console.log(':RoomJoin.roomJoinSubmit: Attempting to join room with data=%o', data);
     
     try {
