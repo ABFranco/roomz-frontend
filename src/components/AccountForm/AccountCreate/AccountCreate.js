@@ -38,10 +38,14 @@ function AccountCreate() {
       'password'  : password.current.value
     }
 
-    } else {
-      let data = {
-        'firstName' : firstName.current.value,
-        'lastName'  : lastName.current.value,
+    try {
+      const response = await dispatch(accountCreate(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
+      
+      // account successfully created, attempt to login with these details
+      let accountLoginData = {
         'email'     : email.current.value,
         'password'  : password.current.value
       }
