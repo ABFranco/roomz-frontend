@@ -12,9 +12,9 @@ const sendChatMessage = createAsyncThunk(
   async(data) => {
     // main api call
     await apiClient.chatMessage(data);
-    return {}
+    return {};
   }
-)
+);
 
 
 /**
@@ -29,7 +29,7 @@ const chatroomSlice = createSlice({
   reducers: {
 
     /**
-     * @reduxAction 'chatroom/appendChatMessage' - Add additional chat message to history
+     * @reduxAction 'chatroom/setChatHistory' - Add additional chat message to history
      * @param {Object} state - Initial state
      * @param {Object} action.payload
      */
@@ -40,7 +40,7 @@ const chatroomSlice = createSlice({
     /**
      * @reduxAction 'chatroom/appendChatMessage' - Add additional chat message to history
      * @param {Object} state - Initial state
-     * @param {string} action.payload
+     * @param {Object} action.payload
      */
     appendChatMessage: (state, action) => {
       state.chatHistory = [
@@ -58,7 +58,7 @@ const chatroomSlice = createSlice({
     },
   },
   extraReducers: {}
-})
+});
 
 /**
  * Actions

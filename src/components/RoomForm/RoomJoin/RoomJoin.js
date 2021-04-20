@@ -50,7 +50,7 @@ function RoomJoin() {
           userId: chatHistory[i].getUserId(),
           name: chatHistory[i].getUserName(),
           message: chatHistory[i].getMessage(),
-          timestamp: chatHistory[i].getTimestamp()
+          timestamp: chatHistory[i].getTimestamp(),
         });
       }
       dispatch(setChatHistory(chatHistoryData));
@@ -101,7 +101,7 @@ function RoomJoin() {
         throw new Error('Enter a personal Name');
       }
     } catch (err) {
-      setErrorMessage(err);
+      setErrorMessage(err.message);
       return;
     }
 
@@ -111,22 +111,13 @@ function RoomJoin() {
       userName: userName,
       userId: store.getState().user.userId,
       isGuest: store.getState().user.userId == null,
-    }
+    };
 
     // reset room data, add userName to state
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
     dispatch(setRoomUserName(userName));
-
-
-    // update vestibule state
-    let vestibulePayload = {
-      roomId: roomId,
-      roomPassword: roomPassword,
-      userName: userName,
-    }
-    dispatch(setVestibuleJoin(vestibulePayload));
-
+    
     console.log(':RoomJoin.roomJoinSubmit: Attempting to join room with data=%o', data);
     
     try {
@@ -136,11 +127,20 @@ function RoomJoin() {
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
         // TODO: instead of joining room immedietly, go into vestibule
+
+        // update vestibule state
+        let vestibulePayload = {
+          roomId: roomId,
+          roomPassword: roomPassword,
+          userName: userName,
+        };
+        dispatch(setVestibuleJoin(vestibulePayload));
+
         receiveJoinRoomResponse(response);
       });
 
       joinRoomResponseStream.on('error', (err) => {
-        console.log(':RoomForm.roomJoinSubmit: error: %o', err);
+        console.log(':RoomForm.roomJoinSubmit: Stream error: %o', err);
         let errorMessage = 'An unexpected error has occurred when joining a Room.';
         if (err && 'message' in err) {
           errorMessage = err['message'];
@@ -204,12 +204,10 @@ function RoomJoin() {
 
 
   function keyboardCreateJoin(event) {
-      // handle keyboard input
-      if (event.key === 'Enter') {
-          if (!inVestibule) {
-            roomJoinSubmit();
-          }
-      }
+    // handle keyboard input
+    if (event.key === 'Enter' && !inVestibule) {
+      roomJoinSubmit();
+    }
   }
 
 
@@ -241,7 +239,6 @@ function RoomJoin() {
       );
     }
   }
-
 
   function roomFormActions() {
     return (

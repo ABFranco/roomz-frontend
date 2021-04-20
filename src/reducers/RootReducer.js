@@ -15,4 +15,4 @@ export const rootReducer = combineReducers({
   room: roomSlice.reducer,
   chatroom: chatroomSlice.reducer,
   vestibule: vestibuleSlice.reducer,
-})
+});

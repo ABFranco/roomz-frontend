@@ -33,7 +33,7 @@ function AccountCreate() {
       lastName: lastName.current.value,
       email: email.current.value,
       password: password.current.value,
-    }
+    };
 
     try {
       const response = await dispatch(accountCreate(data));
@@ -45,7 +45,7 @@ function AccountCreate() {
       let accountLoginData = {
         email: email.current.value,
         password: password.current.value,
-      }
+      };
       const responseLogin = await dispatch(accountLogin(accountLoginData));
       if ('error' in responseLogin) {
         throw responseLogin['error'];

@@ -1,18 +1,17 @@
 import  { RoomzApiServiceClient } from './../proto/roomzapi_grpc_web_pb';
 import {
-    CreateAccountRequest, 
-    SignInRequest, 
-    CreateRoomRequest, 
-    CloseRoomRequest,
-    AwaitRoomClosureRequest,
-    JoinRoomRequest,
-    LeaveRoomRequest,
-    EnterChatRoomRequest,
-    ChatMessage,
-    GetJoinRequestsRequest,
-    HandleJoinRequestRequest,
-    CancelJoinRequestRequest
-
+  CreateAccountRequest, 
+  SignInRequest, 
+  CreateRoomRequest, 
+  CloseRoomRequest,
+  AwaitRoomClosureRequest,
+  JoinRoomRequest,
+  LeaveRoomRequest,
+  EnterChatRoomRequest,
+  ChatMessage,
+  GetJoinRequestsRequest,
+  HandleJoinRequestRequest,
+  CancelJoinRequestRequest
 } from './../proto/roomzapi_pb';
 
 const client = new RoomzApiServiceClient("http://localhost:8080", null, null);

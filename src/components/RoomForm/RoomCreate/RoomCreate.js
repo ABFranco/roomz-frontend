@@ -7,6 +7,7 @@ import { roomCreate, setRoomUserName, clearRoomData } from '../../../reducers/Ro
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
 import store from '../../../store';
 
+
 function RoomCreate() {
   const dispatch = useDispatch();
   const signedIn = useSelector(state => (state.user.userId !== null));
@@ -35,7 +36,7 @@ function RoomCreate() {
         userName: userName,
         password: passwordInput.current.value,
         isStrict: !(isStrictInput.current.checked),
-      }
+      };
 
       console.log(':RoomCreate.roomCreateSubmit: Attempting to create room with data=%o', data);
 
@@ -79,7 +80,7 @@ function RoomCreate() {
     }
   }
 
-  
+
   function roomForm() {
     return (
       <form className="room-form">
@@ -113,7 +114,6 @@ function RoomCreate() {
     }
   }
 
-
   function roomFormActions() {
     return (
       <div className="room-actions">
@@ -124,7 +124,6 @@ function RoomCreate() {
       </div>
     );
   }
-
 
   function view() {
     if (!signedIn) {

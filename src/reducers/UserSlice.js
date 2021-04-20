@@ -20,10 +20,10 @@ const accountLogin = createAsyncThunk(
       firstName: response.getFirstName(), 
       lastName: response.getLastName(), 
       email: data['email'],
-    }
-    return payload
+    };
+    return payload;
   }
-)
+);
 
 
 /**
@@ -39,10 +39,10 @@ const accountCreate = createAsyncThunk(
     // thunk payload
     const payload = {
       userId: response.getUserId(),
-    }
-    return payload
+    };
+    return payload;
   }
-)
+);
 
 
 /**
@@ -70,7 +70,6 @@ const userSlice = createSlice({
     },
   },
   extraReducers: {
-    [accountLogin.pending]: () => {},
 
     /**
      * @reduxAction 'user/accountLogin/fulfilled' - set `user` state upon successful login
@@ -88,9 +87,8 @@ const userSlice = createSlice({
       state.email = action.payload.email;
     },
     
-    [accountLogin.rejected]: (action) => {}
   }
-})
+});
 
 /**
  * Actions

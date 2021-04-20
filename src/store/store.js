@@ -76,7 +76,7 @@ store.subscribe(() => {
   setCachedObject('room', store.getState().room);
   setCachedObject('chatroom', store.getState().chatroom);
   setCachedObject('vestibule', store.getState().vestibule);
-})
+});
 
 
 export default store;

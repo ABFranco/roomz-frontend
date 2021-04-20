@@ -23,7 +23,7 @@ function AccountLogin() {
     let data = {
       email: loginEmail.current.value,
       password: loginPassword.current.value,
-    }
+    };
 
     try {
       const response = await dispatch(accountLogin(data));

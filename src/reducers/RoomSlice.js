@@ -18,10 +18,10 @@ const roomCreate = createAsyncThunk(
       roomId: response.getRoomId(), 
       token: response.getToken(), 
       isStrict: response.getIsStrict(),
-    }
-    return payload
+    };
+    return payload;
   }
-)
+);
 
 /**
  * @function roomDelete - thunk to call api for closeRoom
@@ -32,9 +32,9 @@ const roomDelete = createAsyncThunk(
   async(data) => {
     // main api call
     await apiClient.closeRoom(data);
-    return {}
+    return {};
   }
-)
+);
 
 /**
  * @function roomLeave - thunk to call api for leaveRoom
@@ -45,12 +45,12 @@ const roomLeave = createAsyncThunk(
   async(data) => {
     // main api call
     await apiClient.leaveRoom(data);
-    return {}
+    return {};
   }
-)
+);
 
 /**
- * @function roomJoinCancel - thunk to call api for leaveRoom
+ * @function roomJoinCancel - thunk to call api for cancelJoinRequest
  * 
  */
 const roomJoinCancel = createAsyncThunk(
@@ -58,9 +58,9 @@ const roomJoinCancel = createAsyncThunk(
   async(data) => {
     // main api call
     await apiClient.cancelJoinRequest(data);
-    return {}
+    return {};
   }
-)
+);
 
 
 /**
@@ -165,7 +165,7 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/roomJoinCancel/fulfilled' - set `room` state upon successful leave
+     * @reduxAction 'room/roomJoinCancel/fulfilled' - set `room` state upon successful join cancel
      * @param {Object} state - Initial state
      */
     [roomJoinCancel.fulfilled]: (state) => {
@@ -178,7 +178,7 @@ const roomSlice = createSlice({
     },
 
   }
-})
+});
 
 /**
  * Actions

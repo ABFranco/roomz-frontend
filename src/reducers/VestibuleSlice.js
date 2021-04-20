@@ -22,7 +22,7 @@ const vestibuleSlice = createSlice({
      * @param {Object} action.payload
      * @param {number} action.payload.roomId
      * @param {string} action.payload.roomPassword
-     * @param {string} action.payload.roomPassword
+     * @param {string} action.payload.userName
      */
     setVestibuleJoin: (state, action) => {
       state.roomId = action.payload.roomId;
@@ -41,12 +41,11 @@ const vestibuleSlice = createSlice({
     },
   },
   extraReducers: {}
-})
+});
 
 /**
  * Actions
  */
 export const { setVestibuleJoin, clearVestibuleData } = vestibuleSlice.actions;
-// export {  }
 
 export default vestibuleSlice;

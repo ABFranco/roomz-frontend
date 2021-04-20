@@ -39,7 +39,7 @@ function Room() {
     let data = {
       roomId: store.getState().room.roomId,
       userId: store.getState().user.userId,
-    }
+    };
 
     console.log(':Room.roomLeave: Leaving room with data=%o', data);
 
@@ -79,7 +79,7 @@ function Room() {
   async function roomDeleteAsHost() {
     let data = {
       roomId: store.getState().room.roomId,
-    }
+    };
 
     try {
       const response = await dispatch(roomDelete(data));
@@ -139,7 +139,7 @@ function Room() {
     let data = {
       roomId: store.getState().room.roomId,
       userId: store.getState().user.userId,
-    }
+    };
 
     try {
       const response = await getJoinRequests(data);
@@ -155,7 +155,7 @@ function Room() {
         joinRequests.push({
           userId: incomingJoinRequests[i].getUserId(),
           name: incomingJoinRequests[i].getUserName(),
-        })
+        });
       }
 
       setJoinRequests(joinRequests);
@@ -196,7 +196,7 @@ function Room() {
       roomId: store.getState().room.roomId,
       userIdToHandle: joinEntry.userId,
       decision: accept ? 'accept' : 'reject',
-    }
+    };
 
     try {
       const response = await handleJoinRequest(data);
