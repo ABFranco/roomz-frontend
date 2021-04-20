@@ -202,6 +202,7 @@ function RoomJoin() {
    * @function leaveRoomJoinForm - leave the join room form
    */
   function leaveRoomJoinForm() {
+    dispatch(clearRoomData());
     dispatch(clearVestibuleData());
   }
 

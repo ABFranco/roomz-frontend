@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
     BrowserRouter as Router,
     Switch,
@@ -16,7 +16,7 @@ import Room from '../components/Room';
 function App() {
     return (
       <div className="App">
-        <div className='landing-container'>
+        <div className="landing-container">
           <div className="home-page">
             <br></br>
             <Router>

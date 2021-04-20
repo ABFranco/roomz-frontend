@@ -11,7 +11,7 @@ function Home() {
   const signedIn = useSelector(state => (state.user.userId !== null));
 
   const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState("error");
+  const [errorMessage, setErrorMessage] = useState('error');
 
   
   /**
@@ -19,10 +19,10 @@ function Home() {
    */
   function roomCreate() {
     if (signedIn) {
-      history.push("/room/create");
+      history.push('/room/create');
     } else {
-      document.getElementById("homeErrorMsg").classList.remove("hidden-message");
-      setErrorMessage("Sign-in before creating a room!");
+      document.getElementById('homeErrorMsg').classList.remove('hidden-message');
+      setErrorMessage('Sign-in before creating a room!');
     }
   }
 

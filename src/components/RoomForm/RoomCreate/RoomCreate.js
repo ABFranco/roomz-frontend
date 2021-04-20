@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
@@ -66,6 +66,14 @@ function RoomCreate() {
   }
 
 
+  /**
+   * @function leaveRoomCreateForm - leave the join create form
+   */
+  function leaveRoomCreateForm() {
+    dispatch(clearRoomData());
+  }
+
+
   function keyboardCreateJoin(event) {
     // handle keyboard input
     if (event.key === 'Enter') {
@@ -111,7 +119,7 @@ function RoomCreate() {
     return (
       <div className="room-actions">
         <Link to="/">
-          <button className="room-form-btn button-secondary">Cancel</button>
+          <button className="room-form-btn button-secondary" onClick={leaveRoomCreateForm}>Cancel</button>
         </Link>
         <button className="room-form-btn button-primary" onClick={roomCreateSubmit}>Create</button>
       </div>

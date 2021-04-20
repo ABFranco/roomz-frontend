@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useReducer } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Chatroom.css';
 import Message from '../../../elements/Message.js';
 

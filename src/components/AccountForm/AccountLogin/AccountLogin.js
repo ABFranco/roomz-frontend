@@ -18,7 +18,7 @@ function AccountLogin() {
 
 
   /**
-   * @function accountLoginSubmit - Call api to attempt user login
+   * @function accountLoginSubmit - Submit form and attempt user login
    */
   async function accountLoginSubmit() {
     let data = {
@@ -32,14 +32,13 @@ function AccountLogin() {
         throw response['error'];
       }
 
-       // login successful, state updated, go home
-       history.push("/")
+      history.push('/')
 
     } catch (err) {
       console.log(':accountLoginSubmit: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when signing in.";
-      if (err && "message" in err) {
-          errorMessage = err["message"];
+      let errorMessage = 'An unexpected error has occurred when signing in.';
+      if (err && 'message' in err) {
+          errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -47,7 +46,7 @@ function AccountLogin() {
 
 
   function keyboardFormSubmit(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       accountLoginSubmit();
     }
   }

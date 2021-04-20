@@ -54,8 +54,8 @@ function AccountCreate() {
           throw responseLogin['error'];
         }
   
-         // creation and login successful, state updated, go home
-         history.push("/")
+        // creation and login successful, state updated, go home
+        history.push('/')
   
       } catch (err) {
         console.log(':accountCreateSubmit: err=%o', err);
@@ -70,7 +70,7 @@ function AccountCreate() {
 
   
   function keyboardFormSubmit(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       accountCreateSubmit();
     }
   }

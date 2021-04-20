@@ -24,7 +24,7 @@ function Room() {
   const history = useHistory();
 
   const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
-  const [errorMessage, setErrorMessage] = useState("");  // error message
+  const [errorMessage, setErrorMessage] = useState('');  // error message
 
 
   useEffect(() => {
