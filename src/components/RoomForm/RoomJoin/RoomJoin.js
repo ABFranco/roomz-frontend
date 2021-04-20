@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
+
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js'
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,10 +27,9 @@ function RoomJoin() {
     if (inVestibule) {
       roomJoinSubmit();
     }
-  }, [])
+  }, []);
 
   
-
   /**
    * @function receiveJoinRoomResponse - response after requesting to join a Room
    * @param {Object} response 
@@ -62,16 +62,15 @@ function RoomJoin() {
         isStrict: false, // TODO: does this matter?
       }
       dispatch(setJoinedRoom(payload));
-      history.push(`/room/${roomId}`)
+      history.push(`/room/${roomId}`);
 
     } else if (status === 'wait') {
-      console.log(':RoomForm.receiveJoinRoomResponse: Detected wait room');
-
+      console.log(':RoomJoin.receiveJoinRoomResponse: Detected wait room');
     } else if (status === 'reject') {
-      console.warn(':RoomForm.receiveJoinRoomResponse: Failed to join room.');
+      console.warn(':RoomJoin.receiveJoinRoomResponse: Failed to join room.');
       setErrorMessage('Failed to join room.');
     } else {
-      console.warn(':RoomForm.receiveJoinRoomResponse: Unknown error.');
+      console.warn(':RoomJoin.receiveJoinRoomResponse: Unknown error.');
       setErrorMessage('Unknown error.');
     }
   }
@@ -81,8 +80,6 @@ function RoomJoin() {
    * @function roomJoinSubmit - submit form to join a room
    */
   async function roomJoinSubmit() {
-    console.log(":RoomJoin.roomJoinSubmit: test");
-
     let roomId, roomPassword, userName;
 
     try {
@@ -105,7 +102,7 @@ function RoomJoin() {
       }
     } catch (err) {
       setErrorMessage(err);
-      return
+      return;
     }
 
     let data = {
@@ -140,7 +137,6 @@ function RoomJoin() {
       joinRoomResponseStream.on('data', (response) => {
         // TODO: instead of joining room immedietly, go into vestibule
         receiveJoinRoomResponse(response);
-          
       });
 
       joinRoomResponseStream.on('error', (err) => {
@@ -172,8 +168,8 @@ function RoomJoin() {
    */
   async function cancelRoomJoin() {
     let data = {
-        roomId: store.getState().room.roomId,
-        userId: store.getState().user.userId,
+      roomId: store.getState().room.roomId,
+      userId: store.getState().user.userId,
     };
 
     // set state to leave room
@@ -233,7 +229,7 @@ function RoomJoin() {
           <input id="name" ref={joinRoomName} type="text" autoComplete="name"/>
         </div>
       </form>
-    )   
+    );
   }
 
   function errorMessageDisplay() {
@@ -242,7 +238,7 @@ function RoomJoin() {
         <div className="room-submit-error-area">
           <p className="room-submit-error-msg">{errorMessage}</p>
         </div>
-      )
+      );
     }
   }
 
@@ -255,7 +251,7 @@ function RoomJoin() {
         </Link>
         <button className="room-form-btn button-primary" onClick={roomJoinSubmit}>Join</button>
       </div>
-    )   
+    );
   }
 
   function waitingRoom() {
@@ -283,7 +279,7 @@ function RoomJoin() {
         <div className="room-container">
           {waitingRoom()}
         </div>
-      )
+      );
     }  else {
       return (
         <div className="room-container" onKeyPress={keyboardCreateJoin}>
@@ -294,7 +290,7 @@ function RoomJoin() {
           {errorMessageDisplay()}
           {roomFormActions()}
         </div>
-      )
+      );
     }
   }
 

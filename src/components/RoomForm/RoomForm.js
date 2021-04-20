@@ -18,8 +18,7 @@ function RoomForm() {
         <RoomJoin />
       </Route>
     </Switch>
-    
-  )
+  );
 }
 
 export default RoomForm;

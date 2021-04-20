@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
-import Chatroom from './Chatroom';
-
 import thumbsUp from '../../assets/thumbs_up.png';
 import thumbsDown from '../../assets/thumbs_down.png';
-
 import './Room.css';
 
-import { awaitRoomClosure, getJoinRequests, handleJoinRequest } from '../../api/RoomzApiServiceClient.js'
+import Chatroom from './Chatroom';
+import { awaitRoomClosure, getJoinRequests, handleJoinRequest } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { roomDelete, roomLeave, clearRoomData } from '../../reducers/RoomSlice';
@@ -59,7 +56,7 @@ function Room() {
       console.log(':RoomForm.roomLeaveAsNonHost: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when leaving the Room.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -81,7 +78,7 @@ function Room() {
    */
   async function roomDeleteAsHost() {
     let data = {
-        roomId: store.getState().room.roomId,
+      roomId: store.getState().room.roomId,
     }
 
     try {
@@ -97,7 +94,7 @@ function Room() {
       console.log(':RoomForm.roomDelete: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when closing the Room.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -157,7 +154,7 @@ function Room() {
       for (var i = 0; i < incomingJoinRequests.length; i++) {
         joinRequests.push({
           userId: incomingJoinRequests[i].getUserId(),
-          name: incomingJoinRequests[i].getUserName()
+          name: incomingJoinRequests[i].getUserName(),
         })
       }
 
@@ -167,7 +164,7 @@ function Room() {
       console.log(':RoomForm.updateJoinRequests: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when retrieving join requests.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -213,7 +210,7 @@ function Room() {
       console.log(':RoomForm.respondToJoinRequest: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when handling a join request.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -240,7 +237,7 @@ function Room() {
 
   function roomShare() {
       // TODO
-      return
+      return;
   }
 
   function roomViewActions() {
@@ -252,14 +249,14 @@ function Room() {
             <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
             <button id="joinRequestsBtn" className="room-form-btn button-primary" onClick={requestsViewClick}>Join Requests</button>
           </div>
-        )
+        );
       } else {
         return (
           <div className="room-actions">
             <button className="room-form-btn button-secondary" onClick={roomDeleteAsHost}>Close Room</button>
             <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
           </div>
-        )
+        );
       }
         
     } else {
@@ -268,7 +265,7 @@ function Room() {
           <button className="room-form-btn button-secondary" onClick={roomLeaveAsNonHost}>Leave Room</button>
           <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
         </div>
-      )
+      );
         
     }
   }
@@ -305,7 +302,7 @@ function Room() {
             {requestsView()}
           </div>
         </div>
-      )
+      );
     } else {
       return (
         <div className="room-container">
@@ -316,7 +313,7 @@ function Room() {
             <button className="room-form-btn button-secondary" onClick={roomLeaveInvalid}>Return Home</button>
           </Link>
         </div>
-      )
+      );
     }
   }
 

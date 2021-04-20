@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
 import '../AccountForm.css';
 
 import { useDispatch } from 'react-redux';
@@ -22,20 +21,18 @@ function AccountCreate() {
   
   /**
    * @function accountCreateSubmit - Submit the create Account form and create the Account
-   * 
-   * If createAccount is successful, user will automatically login
    */
   async function accountCreateSubmit() {
     if (password.current.value !== passwordVerify.current.value) {
       setErrorMessage('Passwords do not match!');
-      return
+      return;
     }
     
     let data = {
-      'firstName' : firstName.current.value,
-      'lastName'  : lastName.current.value,
-      'email'     : email.current.value,
-      'password'  : password.current.value
+      firstName: firstName.current.value,
+      lastName: lastName.current.value,
+      email: email.current.value,
+      password: password.current.value,
     }
 
     try {
@@ -46,8 +43,8 @@ function AccountCreate() {
       
       // account successfully created, attempt to login with these details
       let accountLoginData = {
-        'email'     : email.current.value,
-        'password'  : password.current.value
+        email: email.current.value,
+        password: password.current.value,
       }
       const responseLogin = await dispatch(accountLogin(accountLoginData));
       if ('error' in responseLogin) {
@@ -55,13 +52,13 @@ function AccountCreate() {
       }
 
       // creation and login successful, state updated, go home
-      history.push('/')
+      history.push('/');
 
     } catch (err) {
       console.log(':accountCreateSubmit: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when creating an account.';
       if (err && 'message' in err) {
-          errorMessage = err['message'];
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -98,7 +95,7 @@ function AccountCreate() {
           <input id="passwordConfirm" type="password" ref={passwordVerify}/>
         </div>
       </form>
-    )
+    );
   }
 
   function createActions() {
@@ -109,7 +106,7 @@ function AccountCreate() {
         </Link>
         <button className="account-form-btn button-primary" onClick={accountCreateSubmit}>Register</button>
       </div>
-    )
+    );
   }
 
   function errorMessageDisplay() {
@@ -118,7 +115,7 @@ function AccountCreate() {
         <div className="account-form-error-area">
           <p className="account-form-error-msg">{errorMessage}</p>
         </div>
-      )
+      );
     }
   }
 
@@ -126,13 +123,13 @@ function AccountCreate() {
   return (
     <div className="account-form-container" onKeyPress={keyboardFormSubmit}>
       <div className="account-form-header">
-          <h1>Create an account</h1>
+        <h1>Create an account</h1>
       </div>
       {createForm()}
       {createActions()}
       {errorMessageDisplay()}
     </div>
-  )
+  );
 }
 
 export default AccountCreate;

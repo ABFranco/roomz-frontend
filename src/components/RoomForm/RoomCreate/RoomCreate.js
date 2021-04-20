@@ -13,11 +13,10 @@ function RoomCreate() {
 
   const history = useHistory();
 
-  // const [grantedRoomAccess, setGrantedRoomAccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  let passwordInput = useRef();
-  let passwordConfirmInput = useRef();
+  const passwordInput = useRef();
+  const passwordConfirmInput = useRef();
   const createRoomName = useRef();
   const isStrictInput = useRef();
 
@@ -26,7 +25,6 @@ function RoomCreate() {
    * @function roomCreateSubmit - submit form to create a Room
    */
   async function roomCreateSubmit() {
-    // submits Create Room form
     if (passwordInput.current.value !== passwordConfirmInput.current.value) {
       setErrorMessage('Both passwords must match!');
     } else {
@@ -36,7 +34,7 @@ function RoomCreate() {
         userId: userId,
         userName: userName,
         password: passwordInput.current.value,
-        isStrict: !(isStrictInput.current.checked)
+        isStrict: !(isStrictInput.current.checked),
       }
 
       console.log(':RoomCreate.roomCreateSubmit: Attempting to create room with data=%o', data);
@@ -52,13 +50,13 @@ function RoomCreate() {
         dispatch(setRoomUserName(data['userName']));
 
         // TODO: instead of joining room immedietly, go into vestibule
-        history.push(`/room/${store.getState().room.roomId}`)
+        history.push(`/room/${store.getState().room.roomId}`);
   
       } catch (err) {
         console.log(':RoomForm.roomCreateSubmit: err=%o', err);
         let errorMessage = 'An unexpected error has occurred when creating a Room.';
         if (err && 'message' in err) {
-            errorMessage = err['message'];
+          errorMessage = err['message'];
         }
         setErrorMessage(errorMessage);
       }
@@ -77,10 +75,11 @@ function RoomCreate() {
   function keyboardCreateJoin(event) {
     // handle keyboard input
     if (event.key === 'Enter') {
-        roomCreateSubmit();
+      roomCreateSubmit();
     }
   }
 
+  
   function roomForm() {
     return (
       <form className="room-form">
@@ -101,7 +100,7 @@ function RoomCreate() {
           <label htmlFor="passwordRequired">Anyone with password can join</label>
         </div>
       </form>
-    )
+    );
   }
 
   function errorMessageDisplay() {
@@ -110,7 +109,7 @@ function RoomCreate() {
         <div className="room-submit-error-area">
           <p className="room-submit-error-msg">{errorMessage}</p>
         </div>
-      )
+      );
     }
   }
 
@@ -123,7 +122,7 @@ function RoomCreate() {
         </Link>
         <button className="room-form-btn button-primary" onClick={roomCreateSubmit}>Create</button>
       </div>
-    )
+    );
   }
 
 
@@ -149,7 +148,7 @@ function RoomCreate() {
           {errorMessageDisplay()}
           {roomFormActions()}
         </div>
-      )
+      );
     }
   }
 
