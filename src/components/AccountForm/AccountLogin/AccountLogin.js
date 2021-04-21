@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import '../AccountForm.css';
-import { Snackbar } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 
 import { useDispatch } from 'react-redux';
 import { accountLogin } from '../../../reducers/UserSlice';
@@ -12,8 +12,7 @@ function AccountLogin() {
   const dispatch = useDispatch();
   
   const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [errorOpen, setErrorOpen] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const loginEmail = useRef();
   const loginPassword = useRef();
@@ -42,8 +41,9 @@ function AccountLogin() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
-      setErrorOpen(true);
+      enqueueSnackbar(errorMessage, {
+        anchorOrigin: { vertical: 'top', horizontal: 'center' }
+      });
     }
   }
 
@@ -52,12 +52,6 @@ function AccountLogin() {
     if (event.key === 'Enter') {
       accountLoginSubmit();
     }
-  }
-
-
-  function closeSnackbar() {
-    setErrorMessage(null);
-    setErrorOpen(false);
   }
 
 
@@ -87,20 +81,6 @@ function AccountLogin() {
     );
   }
 
-
-  function snackbarDisplay() {
-    return (
-      <Snackbar 
-        open={errorOpen}
-        onClose={closeSnackbar}
-        message={errorMessage}
-        autoHideDuration={5000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      />
-    );
-  }
-
-
   return (
     <div className="account-form-container" onKeyPress={keyboardFormSubmit}>
       <div className="account-form-header">
@@ -108,7 +88,6 @@ function AccountLogin() {
       </div>
       {loginForm()}
       {loginActions()}
-      {snackbarDisplay()}
     </div>
   );
 }

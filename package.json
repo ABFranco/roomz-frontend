@@ -12,6 +12,7 @@
     "gh-pages": "^2.0.1",
     "google-protobuf": "^3.14.0",
     "grpc-web": "^1.2.1",
+    "notistack": "^1.0.6",
     "rc-progress": "^3.0.0",
     "react": "^16.8.2",
     "react-chartjs-2": "^2.7.4",
