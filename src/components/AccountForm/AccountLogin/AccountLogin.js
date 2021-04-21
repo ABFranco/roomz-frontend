@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+
 import '../AccountForm.css';
+import { Snackbar } from '@material-ui/core';
 
 import { useDispatch } from 'react-redux';
 import { accountLogin } from '../../../reducers/UserSlice';
@@ -11,6 +13,7 @@ function AccountLogin() {
   
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState(null);
+  const [errorOpen, setErrorOpen] = useState(false);
 
   const loginEmail = useRef();
   const loginPassword = useRef();
@@ -40,6 +43,7 @@ function AccountLogin() {
         errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
+      setErrorOpen(true);
     }
   }
 
@@ -49,6 +53,13 @@ function AccountLogin() {
       accountLoginSubmit();
     }
   }
+
+
+  function closeSnackbar() {
+    setErrorMessage(null);
+    setErrorOpen(false);
+  }
+
 
   function loginForm() {
     return (
@@ -76,14 +87,17 @@ function AccountLogin() {
     );
   }
 
-  function errorMessageDisplay() {
-    if (errorMessage) {
-      return (
-        <div className="account-form-error-area">
-          <p className="account-form-error-msg">{errorMessage}</p>
-        </div>
-      );
-    }
+
+  function snackbarDisplay() {
+    return (
+      <Snackbar 
+        open={errorOpen}
+        onClose={closeSnackbar}
+        message={errorMessage}
+        autoHideDuration={5000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      />
+    );
   }
 
 
@@ -94,7 +108,7 @@ function AccountLogin() {
       </div>
       {loginForm()}
       {loginActions()}
-      {errorMessageDisplay()}
+      {snackbarDisplay()}
     </div>
   );
 }
