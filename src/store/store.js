@@ -11,11 +11,33 @@ import { getCachedObject, setCachedObject } from '../util/cache';
 function retrieveCachedState() {
   let cachedState = {}
   const cachedUser = getCachedObject('user');
+  const cachedRoom = getCachedObject('room');
+  const cachedChatroom = getCachedObject('chatroom');
+  const cachedVestibule = getCachedObject('vestibule');
 
   // at the moment, only user data exists
   if (cachedUser) {
     cachedState = {
+      ...cachedState,
       user: cachedUser,
+    }
+  }
+  if (cachedRoom) {
+    cachedState = {
+      ...cachedState,
+      room: cachedRoom,
+    }
+  }
+  if (cachedChatroom) {
+    cachedState = {
+      ...cachedState,
+      chatroom: cachedChatroom,
+    }
+  }
+  if (cachedVestibule) {
+    cachedState = {
+      ...cachedState,
+      vestibule: cachedVestibule,
     }
   }
 
@@ -51,7 +73,10 @@ const store = configureStore({
  */
 store.subscribe(() => {
   setCachedObject('user', store.getState().user);
-})
+  setCachedObject('room', store.getState().room);
+  setCachedObject('chatroom', store.getState().chatroom);
+  setCachedObject('vestibule', store.getState().vestibule);
+});
 
 
 export default store;

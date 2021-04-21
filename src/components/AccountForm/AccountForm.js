@@ -18,8 +18,7 @@ function AccountForm() {
         <AccountLogin />
       </Route>
     </Switch>
-    
-  )
+  );
 }
 
 export default AccountForm;

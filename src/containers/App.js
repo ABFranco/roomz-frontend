@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
     BrowserRouter as Router,
     Switch,
     Route
-} from 'react-router-dom'; 
-import store from '../store';
+} from 'react-router-dom';
 import './App.css';
 import './Landing.css';
 
@@ -14,90 +13,39 @@ import RoomForm from '../components/RoomForm';
 import Room from '../components/Room';
 
 
-function App(props) {
+function App() {
+  return (
+    <div className="App">
+      <div className="landing-container">
+        <div className="home-page">
+          <br></br>
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
 
-    console.log(':App: Initial state: ', store.getState());
+              <Route path="/account">
+                <AccountForm />
+              </Route>
 
-    const [userInfo, setUserInfo] = useState({
-        isHost        : false,
-        signedIn      : false,
-        userId        : null,
-        name          : null,
-        firstName     : null,
-        lastName      : null,
-        email         : null,
-        password      : null
-    });
-    const [roomInfo, setRoomInfo] = useState({
-        roomId         : null,
-        userIsHost     : false,
-        isStrict       : false,
-        userInRoom     : false,
-        userIsJoining  : false,
-        chatHistory    : [],
-        token          : null
-    });
+              <Route path="/room/create">
+                <RoomForm />
+              </Route>
+              <Route path="/room/join">
+                <RoomForm />
+              </Route>
 
-
-    return (
-        <div className="App">
-            <div className='landing-container'>
-            <div className="home-page">
-                <br></br>
-                <Router>
-                  <Switch>
-                      <Route exact path="/">
-                        <Home />
-                      </Route>
-
-                      <Route path="/account">
-                        <AccountForm />
-                      </Route>
-
-                      <Route path="/room/create">
-                      <RoomForm
-                          isCreateRoom={true}
-
-                          // user
-                          // userInfo={userInfo}
-                          // updateUserName={updateUserName}
-                          // updateUserId={updateUserId}
-
-                          // room
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
-                      </Route>
-
-                      <Route path="/room/join">
-                      <RoomForm
-                          isCreateRoom={false}
-
-                          // user
-                          // userInfo={userInfo}
-                          // updateUserName={updateUserName}
-                          // updateUserId={updateUserId}
-
-                          // room
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
-                      </Route>
-
-                      <Route path="/room/:roomId">
-                      <Room
-                          userInfo={userInfo}
-                          roomInfo={roomInfo}
-                          setRoomInfo={setRoomInfo}
-                          />
-                      </Route>
-
-                  </Switch>
-                </Router>
-            </div>
-            </div>
+              <Route path="/room/:roomId">
+                <Room/>
+              </Route>
+              
+            </Switch>
+          </Router>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default App;

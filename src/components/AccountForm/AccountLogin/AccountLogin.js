@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
 import '../AccountForm.css';
 
 import { useDispatch } from 'react-redux';
@@ -18,13 +17,13 @@ function AccountLogin() {
 
 
   /**
-   * @function accountLoginSubmit - Call api to attempt user login
+   * @function accountLoginSubmit - Submit form and attempt user login
    */
   async function accountLoginSubmit() {
     let data = {
-      'email'     : loginEmail.current.value,
-      'password'  : loginPassword.current.value
-    }
+      email: loginEmail.current.value,
+      password: loginPassword.current.value,
+    };
 
     try {
       const response = await dispatch(accountLogin(data));
@@ -32,14 +31,13 @@ function AccountLogin() {
         throw response['error'];
       }
 
-       // login successful, state updated, go home
-       history.push("/")
+      history.push('/');
 
     } catch (err) {
       console.log(':accountLoginSubmit: err=%o', err);
-      let errorMessage = "An unexpected error has occurred when signing in.";
-      if (err && "message" in err) {
-          errorMessage = err["message"];
+      let errorMessage = 'An unexpected error has occurred when signing in.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
       }
       setErrorMessage(errorMessage);
     }
@@ -47,7 +45,7 @@ function AccountLogin() {
 
 
   function keyboardFormSubmit(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       accountLoginSubmit();
     }
   }
@@ -56,15 +54,15 @@ function AccountLogin() {
     return (
       <form className="account-form">
         <div className="account-form-input">
-            <label htmlFor="login-email">Email</label>
-            <input id="login-email" type="email" ref={loginEmail} autoFocus/>
+          <label htmlFor="login-email">Email</label>
+          <input id="login-email" type="email" ref={loginEmail} autoFocus/>
         </div>
         <div className="account-form-input">
-            <label htmlFor="login-password">Password</label>
-            <input id="login-password" type="password" ref={loginPassword} />
+          <label htmlFor="login-password">Password</label>
+          <input id="login-password" type="password" ref={loginPassword} />
         </div>
       </form>
-    )
+    );
   }
 
   function loginActions() {
@@ -75,7 +73,7 @@ function AccountLogin() {
         </Link>
         <button className="account-form-btn button-primary" onClick={accountLoginSubmit}>Log In</button>
       </div>
-    )
+    );
   }
 
   function errorMessageDisplay() {
@@ -84,7 +82,7 @@ function AccountLogin() {
         <div className="account-form-error-area">
           <p className="account-form-error-msg">{errorMessage}</p>
         </div>
-      )
+      );
     }
   }
 
@@ -92,13 +90,13 @@ function AccountLogin() {
   return (
     <div className="account-form-container" onKeyPress={keyboardFormSubmit}>
       <div className="account-form-header">
-          <h1>Log in</h1>
+        <h1>Log in</h1>
       </div>
       {loginForm()}
       {loginActions()}
       {errorMessageDisplay()}
     </div>
-  )
+  );
 }
 
 export default AccountLogin;

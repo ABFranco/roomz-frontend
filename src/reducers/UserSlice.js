@@ -11,19 +11,17 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 const accountLogin = createAsyncThunk(
   'user/accountLogin',
   async(data) => {
-    // main api call
     const response = await apiClient.signIn(data);
     
-    // thunk payload
-    let payload = {
+    const payload = {
       userId: response.getUserId(), 
       firstName: response.getFirstName(), 
       lastName: response.getLastName(), 
       email: data['email'],
-    }
-    return payload
+    };
+    return payload;
   }
-)
+);
 
 
 /**
@@ -33,16 +31,14 @@ const accountLogin = createAsyncThunk(
 const accountCreate = createAsyncThunk(
   'user/accountCreate',
   async(data) => {
-    // main api call
     const response = await apiClient.createAccount(data);
     
-    // thunk payload
-    let payload = {
+    const payload = {
       userId: response.getUserId(),
-    }
-    return payload
+    };
+    return payload;
   }
-)
+);
 
 
 /**
@@ -70,7 +66,6 @@ const userSlice = createSlice({
     },
   },
   extraReducers: {
-    [accountLogin.pending]: () => {},
 
     /**
      * @reduxAction 'user/accountLogin/fulfilled' - set `user` state upon successful login
@@ -88,9 +83,8 @@ const userSlice = createSlice({
       state.email = action.payload.email;
     },
     
-    [accountLogin.rejected]: (action) => {}
   }
-})
+});
 
 /**
  * Actions
