@@ -4,13 +4,12 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 
 
 /**
- * @function sendChatMessage - thunk to call api for enterChatRoom
+ * @function sendChatMessage - thunk to call api for chatMessage
  * 
  */
 const sendChatMessage = createAsyncThunk(
   'room/sendChatMessage',
   async(data) => {
-    // main api call
     await apiClient.chatMessage(data);
     return {};
   }
@@ -29,7 +28,7 @@ const chatroomSlice = createSlice({
   reducers: {
 
     /**
-     * @reduxAction 'chatroom/setChatHistory' - Add additional chat message to history
+     * @reduxAction 'chatroom/setChatHistory' - Set chat message history
      * @param {Object} state - Initial state
      * @param {Object} action.payload
      */

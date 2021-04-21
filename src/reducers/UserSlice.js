@@ -11,10 +11,8 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 const accountLogin = createAsyncThunk(
   'user/accountLogin',
   async(data) => {
-    // main api call
     const response = await apiClient.signIn(data);
     
-    // thunk payload
     const payload = {
       userId: response.getUserId(), 
       firstName: response.getFirstName(), 
@@ -33,10 +31,8 @@ const accountLogin = createAsyncThunk(
 const accountCreate = createAsyncThunk(
   'user/accountCreate',
   async(data) => {
-    // main api call
     const response = await apiClient.createAccount(data);
     
-    // thunk payload
     const payload = {
       userId: response.getUserId(),
     };

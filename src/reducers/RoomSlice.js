@@ -10,10 +10,8 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 const roomCreate = createAsyncThunk(
   'room/roomCreate',
   async(data) => {
-    // main api call
     const response = await apiClient.createRoom(data);
-
-    // thunk payload
+    
     const payload = {
       roomId: response.getRoomId(), 
       token: response.getToken(), 
@@ -30,7 +28,6 @@ const roomCreate = createAsyncThunk(
 const roomDelete = createAsyncThunk(
   'room/roomDelete',
   async(data) => {
-    // main api call
     await apiClient.closeRoom(data);
     return {};
   }
@@ -43,7 +40,6 @@ const roomDelete = createAsyncThunk(
 const roomLeave = createAsyncThunk(
   'room/roomLeave',
   async(data) => {
-    // main api call
     await apiClient.leaveRoom(data);
     return {};
   }
@@ -56,7 +52,6 @@ const roomLeave = createAsyncThunk(
 const roomJoinCancel = createAsyncThunk(
   'room/roomJoinCancel',
   async(data) => {
-    // main api call
     await apiClient.cancelJoinRequest(data);
     return {};
   }
