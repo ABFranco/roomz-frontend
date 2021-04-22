@@ -7,13 +7,9 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from "react-redux";
 import store from "./store/store";
 
-import { SnackbarProvider } from 'notistack';
-
 ReactDOM.render(
   <Provider store={store}>
-    <SnackbarProvider maxSnack={1}>
-      <App />
-    </SnackbarProvider>
+    <App />
   </Provider>, 
   document.getElementById('root')
 );

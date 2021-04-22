@@ -1,18 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import '../AccountForm.css';
-import { useSnackbar } from 'notistack';
 
 import { useDispatch } from 'react-redux';
 import { accountLogin } from '../../../reducers/UserSlice';
+import { setErrorMessage } from '../../../reducers/NotificationSlice';
 
 
 function AccountLogin() {
   const dispatch = useDispatch();
-  
+
   const history = useHistory();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const loginEmail = useRef();
   const loginPassword = useRef();
@@ -41,9 +40,7 @@ function AccountLogin() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      enqueueSnackbar(errorMessage, {
-        anchorOrigin: { vertical: 'top', horizontal: 'center' }
-      });
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
