@@ -11,7 +11,7 @@ import { SnackbarProvider } from 'notistack';
 
 ReactDOM.render(
   <Provider store={store}>
-    <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider maxSnack={1}>
       <App />
     </SnackbarProvider>
   </Provider>, 
