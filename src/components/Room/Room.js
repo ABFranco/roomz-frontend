@@ -10,6 +10,7 @@ import { awaitRoomClosure, getJoinRequests, handleJoinRequest } from '../../api/
 import { useDispatch, useSelector } from 'react-redux';
 import { roomDelete, roomLeave, clearRoomData } from '../../reducers/RoomSlice';
 import { clearChatHistory } from '../../reducers/ChatroomSlice';
+import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 
 import store from '../../store';
@@ -21,7 +22,6 @@ function Room() {
   const history = useHistory();
 
   const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
-  const [errorMessage, setErrorMessage] = useState('');  // error message
 
 
   useEffect(() => {
@@ -58,7 +58,7 @@ function Room() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -96,7 +96,7 @@ function Room() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -166,7 +166,7 @@ function Room() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -212,7 +212,7 @@ function Room() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -283,10 +283,7 @@ function Room() {
         <div className="room-actions">
           {roomViewActions()}
         </div>
-
         <Chatroom />
-
-        <p id="roomErrorMsg" className="">{errorMessage}</p>
       </div>
     ) 
   }

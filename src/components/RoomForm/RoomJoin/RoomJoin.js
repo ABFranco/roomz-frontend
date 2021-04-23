@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
 import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/VestibuleSlice';
+import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
 function RoomJoin() {
@@ -15,8 +16,6 @@ function RoomJoin() {
   const inVestibule = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
 
   const history = useHistory();
-
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const joinRoomId = useRef();
   const joinRoomPassword = useRef();
@@ -68,10 +67,10 @@ function RoomJoin() {
       console.log(':RoomJoin.receiveJoinRoomResponse: Detected wait room');
     } else if (status === 'reject') {
       console.warn(':RoomJoin.receiveJoinRoomResponse: Failed to join room.');
-      setErrorMessage('Failed to join room.');
+      dispatch(setErrorMessage('Failed to join room.'));
     } else {
       console.warn(':RoomJoin.receiveJoinRoomResponse: Unknown error.');
-      setErrorMessage('Unknown error.');
+      dispatch(setErrorMessage('Unknown error.'));
     }
   }
 
@@ -101,7 +100,7 @@ function RoomJoin() {
         throw new Error('Enter a personal Name');
       }
     } catch (err) {
-      setErrorMessage(err.message);
+      dispatch(setErrorMessage(err.message));
       return;
     }
 
@@ -145,7 +144,7 @@ function RoomJoin() {
         if (err && 'message' in err) {
           errorMessage = err['message'];
         }
-        setErrorMessage(errorMessage);
+        dispatch(setErrorMessage(errorMessage));
       });
 
       joinRoomResponseStream.on('end', () => {
@@ -158,7 +157,7 @@ function RoomJoin() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -189,7 +188,7 @@ function RoomJoin() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -228,16 +227,6 @@ function RoomJoin() {
         </div>
       </form>
     );
-  }
-
-  function errorMessageDisplay() {
-    if (errorMessage) {
-      return (
-        <div className="room-submit-error-area">
-          <p className="room-submit-error-msg">{errorMessage}</p>
-        </div>
-      );
-    }
   }
 
   function roomFormActions() {
@@ -284,7 +273,6 @@ function RoomJoin() {
             <h1>Join a Room</h1>
           </div>
           {roomForm()}
-          {errorMessageDisplay()}
           {roomFormActions()}
         </div>
       );

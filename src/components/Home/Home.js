@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './Home.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../store';
 import { clearSignInData } from '../../reducers/UserSlice';
+import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 function Home() {
   const dispatch = useDispatch();
   const signedIn = useSelector(state => (state.user.userId !== null));
 
   const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState('error');
 
   
   /**
@@ -21,8 +21,7 @@ function Home() {
     if (signedIn) {
       history.push('/room/create');
     } else {
-      document.getElementById('homeErrorMsg').classList.remove('hidden-message');
-      setErrorMessage('Sign-in before creating a room!');
+      dispatch(setErrorMessage('Sign-in before creating a room!'));
     }
   }
 
@@ -90,7 +89,6 @@ function Home() {
           <button className="button-primary">Join Room</button>
         </Link>
         {determineHomeActions()}
-        <p id="homeErrorMsg" className="hidden-message">{errorMessage}</p>
       </div>
     </div>
   )

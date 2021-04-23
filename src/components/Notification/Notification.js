@@ -13,7 +13,7 @@ function Notification() {
 
   return (
     <Snackbar
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={errorMessage !== null}
       autoHideDuration={5000}
       onClose={() => {dispatch(clearErrorMessage())}}

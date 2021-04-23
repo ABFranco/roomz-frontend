@@ -1,4 +1,4 @@
-import React, {  useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../AccountForm.css';
 
