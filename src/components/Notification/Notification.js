@@ -1,5 +1,6 @@
 import React from 'react';
 
+import './Notification.css';
 import { Snackbar, IconButton }from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
@@ -18,6 +19,9 @@ function Notification() {
       autoHideDuration={5000}
       onClose={() => {dispatch(clearErrorMessage())}}
       message={errorMessage}
+      classes={{
+        root: 'error-notification',
+      }}
       action={
         <React.Fragment>
           <IconButton size="small" aria-label="close" color="inherit" onClick={() => {dispatch(clearErrorMessage())}}>
