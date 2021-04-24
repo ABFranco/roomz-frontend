@@ -6,6 +6,7 @@ import { enterChatRoom } from '../../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { sendChatMessage, appendChatMessage } from '../../../reducers/ChatroomSlice';
+import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
 
@@ -46,6 +47,7 @@ function Chatroom() {
 
     } catch (err) {
       console.warn(':Chatroom.joinChatRoomStream: Failed to join chatroom stream. err=%o', err);
+      dispatch(setErrorMessage(String(err)));
     }
   }
 
@@ -79,7 +81,7 @@ function Chatroom() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      console.warn(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
     
     // clear value after submitting

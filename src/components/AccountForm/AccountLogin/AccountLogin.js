@@ -1,16 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+
 import '../AccountForm.css';
 
 import { useDispatch } from 'react-redux';
 import { accountLogin } from '../../../reducers/UserSlice';
+import { setErrorMessage } from '../../../reducers/NotificationSlice';
 
 
 function AccountLogin() {
   const dispatch = useDispatch();
-  
+
   const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const loginEmail = useRef();
   const loginPassword = useRef();
@@ -39,7 +40,7 @@ function AccountLogin() {
       if (err && 'message' in err) {
         errorMessage = err['message'];
       }
-      setErrorMessage(errorMessage);
+      dispatch(setErrorMessage(errorMessage));
     }
   }
 
@@ -49,6 +50,7 @@ function AccountLogin() {
       accountLoginSubmit();
     }
   }
+
 
   function loginForm() {
     return (
@@ -76,17 +78,6 @@ function AccountLogin() {
     );
   }
 
-  function errorMessageDisplay() {
-    if (errorMessage) {
-      return (
-        <div className="account-form-error-area">
-          <p className="account-form-error-msg">{errorMessage}</p>
-        </div>
-      );
-    }
-  }
-
-
   return (
     <div className="account-form-container" onKeyPress={keyboardFormSubmit}>
       <div className="account-form-header">
@@ -94,7 +85,6 @@ function AccountLogin() {
       </div>
       {loginForm()}
       {loginActions()}
-      {errorMessageDisplay()}
     </div>
   );
 }

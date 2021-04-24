@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { roomCreate, setRoomUserName, clearRoomData } from '../../../reducers/RoomSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
+import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
 
@@ -13,8 +14,6 @@ function RoomCreate() {
   const signedIn = useSelector(state => (state.user.userId !== null));
 
   const history = useHistory();
-
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const passwordInput = useRef();
   const passwordConfirmInput = useRef();
@@ -27,7 +26,7 @@ function RoomCreate() {
    */
   async function roomCreateSubmit() {
     if (passwordInput.current.value !== passwordConfirmInput.current.value) {
-      setErrorMessage('Both passwords must match!');
+      dispatch(setErrorMessage('Both passwords must match!'));
     } else {
       let userId = store.getState().user.userId;
       let userName = createRoomName.current.value;
@@ -59,7 +58,7 @@ function RoomCreate() {
         if (err && 'message' in err) {
           errorMessage = err['message'];
         }
-        setErrorMessage(errorMessage);
+        dispatch(setErrorMessage(errorMessage));
       }
     }
   }
@@ -104,16 +103,6 @@ function RoomCreate() {
     );
   }
 
-  function errorMessageDisplay() {
-    if (errorMessage) {
-      return (
-        <div className="room-submit-error-area">
-          <p className="room-submit-error-msg">{errorMessage}</p>
-        </div>
-      );
-    }
-  }
-
   function roomFormActions() {
     return (
       <div className="room-actions">
@@ -144,7 +133,6 @@ function RoomCreate() {
             <h1>Create a Room</h1>
           </div>
           {roomForm()}
-          {errorMessageDisplay()}
           {roomFormActions()}
         </div>
       );

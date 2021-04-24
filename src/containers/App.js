@@ -11,6 +11,7 @@ import Home from '../components/Home';
 import AccountForm from '../components/AccountForm';
 import RoomForm from '../components/RoomForm';
 import Room from '../components/Room';
+import Notification from '../components/Notification';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
             </Switch>
           </Router>
         </div>
+        <Notification />
       </div>
     </div>
   );
