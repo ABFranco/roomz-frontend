@@ -36,10 +36,8 @@ function Chatroom() {
 
     try {
       const chatStream = await enterChatRoom(data);
-      console.log(':Chatroom.joinChatRoomStream: chatStream=%o', chatStream);
 
       chatStream.on('data', (data) => {
-        console.log(':Chatroom: Received chat message');
         receiveChatMessage(data);
       });
 

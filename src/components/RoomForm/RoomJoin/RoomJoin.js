@@ -26,7 +26,7 @@ function RoomJoin() {
    */
   async function roomJoinSubmit() {
     let roomId, roomPassword, userName;
-    
+
     try {
       roomId = joinRoomId.current.value;
       roomPassword = joinRoomPassword.current.value;
@@ -55,6 +55,7 @@ function RoomJoin() {
     // reset room data, add userName to state
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
+    dispatch(clearVestibuleData());
     dispatch(setRoomUserName(userName));
 
     try {

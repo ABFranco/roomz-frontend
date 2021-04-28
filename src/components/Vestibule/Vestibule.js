@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { joinRoom } from '../../api/RoomzApiServiceClient.js';
@@ -16,11 +16,14 @@ function Vestibule() {
 
   const history = useHistory();
 
+  const [vestibuleStatus, setVestibuleStatus] = useState('Pending host acceptance...');
+
   useEffect(() => {
     // upon initial load, determine if the user is still waiting for host response based on cache
     if (isWaiting) {
       reattemptRoomJoinSubmit();
-      
+    } else {
+      setVestibuleStatus('Enter Room ID: ' + store.getState().room.roomId);
     }
   }, []);
 
@@ -81,14 +84,14 @@ function Vestibule() {
       }
       dispatch(setChatHistory(chatHistoryData));
 
-      // enter the room
+      // update state to allow entering room
       let payload = {
         roomId: roomId,
         token: response.getToken(),
         isStrict: false, // TODO: does this matter?
       }
       dispatch(setJoinedRoom(payload));
-      history.push(`/room/${roomId}`);
+      setVestibuleStatus('Enter Room ID: ' + roomId);
 
     } else if (status === 'wait') {
       console.log(':Vestibule.receiveJoinRoomResponse: Detected wait room');
@@ -149,23 +152,40 @@ function Vestibule() {
 
 
   function waitingRoom() {
-    return (
-      <div className="room-joining-strict">
-        <div className="room-header">
-          <h1>Joining Room</h1>
+    if (isWaiting) {
+      return (
+        <div className="room-joining-strict">
+          <div className="room-header">
+            <h1>Joining Room</h1>
+          </div>
+  
+          <p className="room-id-label"><b>Room ID: </b>{store.getState().vestibule.roomId}</p>
+          <h2>{ vestibuleStatus }</h2>
+  
+          <div className="room-actions">
+            <Link to="/">
+              <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
+            </Link>
+            <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
+          </div>
         </div>
-
-        <p className="room-id-label"><b>Room ID: </b>{store.getState().vestibule.roomId}</p>
-        <h2>Pending host acceptance...</h2>
-
-        <div className="room-actions">
-          <Link to="/">
-            <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
-          </Link>
-          <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
+      )
+    } else {
+      return (
+        <div className="room-joining-strict">
+          <div className="room-header">
+            <h1>{ vestibuleStatus }</h1>
+          </div>
+  
+          <div className="room-actions">
+            <Link to="/">
+              <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
+            </Link>
+            <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
+          </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 
   function view() {
