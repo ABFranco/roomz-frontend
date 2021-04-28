@@ -36,8 +36,10 @@ function Chatroom() {
 
     try {
       const chatStream = await enterChatRoom(data);
+      console.log(':Chatroom.joinChatRoomStream: chatStream=%o', chatStream);
 
       chatStream.on('data', (data) => {
+        console.log(':Chatroom: Received chat message');
         receiveChatMessage(data);
       });
 
@@ -74,6 +76,7 @@ function Chatroom() {
       if ('error' in response) {
         throw response['error'];
       }
+      console.log(':Chatroom.handleSendChatMessage: response=%o', response);
 
     } catch (err) {
       console.log(':Chatroom.handleSendChatMessage: Failed to send chat message. err=%o', err);

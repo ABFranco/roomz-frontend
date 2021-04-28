@@ -11,6 +11,7 @@ import Home from '../components/Home';
 import AccountForm from '../components/AccountForm';
 import RoomForm from '../components/RoomForm';
 import Room from '../components/Room';
+import Vestibule from '../components/Vestibule';
 import Notification from '../components/Notification';
 
 
@@ -37,8 +38,12 @@ function App() {
                 <RoomForm />
               </Route>
 
+              <Route path="/vestibule/:roomId">
+                <Vestibule />
+              </Route>
+
               <Route path="/room/:roomId">
-                <Room/>
+                <Room />
               </Route>
               
             </Switch>

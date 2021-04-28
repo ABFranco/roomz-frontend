@@ -1,20 +1,59 @@
 import React, { useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
+import { joinRoom } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
-import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/VestibuleSlice';
-import { setErrorMessage } from '../../../reducers/NotificationSlice';
-import store from '../../../store';
+import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../reducers/RoomSlice';
+import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
+import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
+import { setErrorMessage } from '../../reducers/NotificationSlice';
+import store from '../../store';
 
 function Vestibule() {
   const dispatch = useDispatch();
-  const inVestibule = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
+  const isWaiting = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
 
   const history = useHistory();
+
+  useEffect(() => {
+    // upon initial load, determine if the user is still waiting for host response based on cache
+    if (isWaiting) {
+      reattemptRoomJoinSubmit();
+      
+    }
+  }, []);
+
+
+  /**
+   * @function reattemptRoomJoinSubmit - reattmpet to join the room again
+   */
+  async function reattemptRoomJoinSubmit() {
+
+    let data = {
+      roomId: store.getState().vestibule.roomId,
+      roomPassword: store.getState().vestibule.roomPassword,
+      userName: store.getState().vestibule.userName,
+      userId: store.getState().user.userId,
+      isGuest: store.getState().user.userId == null,
+    };
+
+    try {
+      const joinRoomResponseStream = await joinRoom(data);
+
+      joinRoomResponseStream.on('data', (response) => {
+        receiveJoinRoomResponse(response);
+      });
+
+    } catch (err) {
+      let errorMessage = 'An unexpected error has occurred when joining a Room.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      dispatch(setErrorMessage(errorMessage));
+    }
+  }
+   
 
   
   /**
@@ -32,7 +71,7 @@ function Vestibule() {
       let chatHistory = response.getChatHistoryList();
 
       let chatHistoryData = [];
-      for (var i = 0; i < chatHistory.length; i++) {
+      for (let i = 0; i < chatHistory.length; i++) {
         chatHistoryData.push({
           userId: chatHistory[i].getUserId(),
           name: chatHistory[i].getUserName(),
@@ -59,6 +98,21 @@ function Vestibule() {
     } else {
       console.warn(':Vestibule.receiveJoinRoomResponse: Unknown error.');
       dispatch(setErrorMessage('Unknown error.'));
+    }
+  }
+  
+
+  /**
+   * @function enterRoom - upon host acceptance, enter the room
+   */
+  async function enterRoom() {
+    let token = store.getState().room.token;
+
+    if (token !== null) {
+      let roomId = store.getState().room.roomId;
+      history.push(`/room/${roomId}`);
+    } else {
+      dispatch(setErrorMessage('You do not yet have access to join the room.'));
     }
   }
 
@@ -101,13 +155,14 @@ function Vestibule() {
           <h1>Joining Room</h1>
         </div>
 
-        <p className="room-id-label"><b>Room ID: </b>{store.getState().room.roomId}</p>
+        <p className="room-id-label"><b>Room ID: </b>{store.getState().vestibule.roomId}</p>
         <h2>Pending host acceptance...</h2>
 
         <div className="room-actions">
           <Link to="/">
             <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
           </Link>
+          <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
         </div>
       </div>
     )
