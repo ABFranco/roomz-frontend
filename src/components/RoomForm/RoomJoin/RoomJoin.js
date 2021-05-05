@@ -64,7 +64,6 @@ function RoomJoin() {
 
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
-        // TODO: instead of joining room immedietly, go into vestibule
         // update vestibule state
         let vestibulePayload = {
           roomId: roomId,

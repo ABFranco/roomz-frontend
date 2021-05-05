@@ -50,7 +50,6 @@ function RoomCreate() {
         dispatch(setRoomUserName(data['userName']));
 
         history.push(`/vestibule/${store.getState().room.roomId}`);
-        // history.push(`/room/${store.getState().room.roomId}`);
   
       } catch (err) {
         console.log(':RoomForm.roomCreateSubmit: err=%o', err);

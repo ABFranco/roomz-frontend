@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { joinRoom } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setJoinedRoom, clearRoomData, roomJoinCancel, roomDelete  } from '../../reducers/RoomSlice';
+import { setJoinedRoom, clearRoomData, roomJoinCancel, roomDelete, roomLeave } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
@@ -57,7 +57,6 @@ function Vestibule() {
       dispatch(setErrorMessage(errorMessage));
     }
   }
-   
 
   
   /**
@@ -142,7 +141,6 @@ function Vestibule() {
       }
 
     } catch (err) {
-      console.log(':Vestibule.cancelRoomJoin: err=%o', err);
       let errorMessage = 'An unexpected error has occurred when cancelling Room join.';
       if (err && 'message' in err) {
         errorMessage = err['message'];
@@ -180,14 +178,44 @@ function Vestibule() {
 
 
   /**
+   * @function roomLeaveAsNonHost - non-host leaves the room if leaving Vestibule
+   */
+  async function roomLeaveAsNonHost() {
+    let data = {
+      roomId: store.getState().room.roomId,
+      userId: store.getState().user.userId,
+    };
+
+    try {
+      const response = await dispatch(roomLeave(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
+
+      dispatch(clearChatHistory());
+      history.push('/');
+
+    } catch (err) {
+      let errorMessage = 'An unexpected error has occurred when leaving the Room.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      dispatch(setErrorMessage(errorMessage));
+    }
+  }
+
+
+  /**
    * @function cancelVestibule - cancel button clicked in Vestibule
    */
   function cancelVestibule() {
     if (isHost) {
       roomDeleteAsHost();
-    } else {
+    } else if (isWaiting) {
       cancelRoomJoin();
-    } 
+    } else {
+      roomLeaveAsNonHost();
+    }
   }
 
 
