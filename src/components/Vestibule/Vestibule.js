@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { joinRoom } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../reducers/RoomSlice';
+import { setJoinedRoom, clearRoomData, roomJoinCancel, roomDelete  } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
@@ -13,6 +13,7 @@ import store from '../../store';
 function Vestibule() {
   const dispatch = useDispatch();
   const isWaiting = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
+  const isHost = useSelector(state => state.room.userIsHost);
 
   const history = useHistory();
 
@@ -151,6 +152,45 @@ function Vestibule() {
   }
 
 
+  /**
+   * @function roomDeleteAsHost - Host closes the Room if leaving Vestibule
+   */
+  async function roomDeleteAsHost() {
+    let data = {
+      roomId: store.getState().room.roomId,
+    };
+
+    try {
+      const response = await dispatch(roomDelete(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
+
+      dispatch(clearChatHistory());
+      history.push('/');
+
+    } catch (err) {
+      let errorMessage = 'An unexpected error has occurred when closing the Room.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      dispatch(setErrorMessage(errorMessage));
+    }
+  }
+
+
+  /**
+   * @function cancelVestibule - cancel button clicked in Vestibule
+   */
+  function cancelVestibule() {
+    if (isHost) {
+      roomDeleteAsHost();
+    } else {
+      cancelRoomJoin();
+    } 
+  }
+
+
   function waitingRoom() {
     if (isWaiting) {
       return (
@@ -164,7 +204,7 @@ function Vestibule() {
   
           <div className="room-actions">
             <Link to="/">
-              <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
+              <button className="room-form-btn button-secondary" onClick={cancelVestibule}>Cancel</button>
             </Link>
             <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
           </div>
@@ -179,7 +219,7 @@ function Vestibule() {
   
           <div className="room-actions">
             <Link to="/">
-              <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
+              <button className="room-form-btn button-secondary" onClick={cancelVestibule}>Cancel</button>
             </Link>
             <button className="room-form-btn button-primary" onClick={enterRoom}>Enter</button>
           </div>

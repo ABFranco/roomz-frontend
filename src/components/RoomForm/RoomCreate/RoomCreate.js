@@ -49,8 +49,8 @@ function RoomCreate() {
         dispatch(clearChatHistory());
         dispatch(setRoomUserName(data['userName']));
 
-        // TODO: instead of joining room immedietly, go into vestibule
-        history.push(`/room/${store.getState().room.roomId}`);
+        history.push(`/vestibule/${store.getState().room.roomId}`);
+        // history.push(`/room/${store.getState().room.roomId}`);
   
       } catch (err) {
         console.log(':RoomForm.roomCreateSubmit: err=%o', err);
