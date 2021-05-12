@@ -6,11 +6,22 @@
 .vestibule-waiting, .vestibule-ready {
   max-width: 20vw;
   max-height: 20vh;
+  margin: auto;
 
   display: flex;
   flex-direction: column;
 }
 
 .vestibule-header {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.vestibule-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.avatar-placeholder {
+  margin: 20px auto;
 }

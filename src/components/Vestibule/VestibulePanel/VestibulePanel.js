@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import './VestibulePanel.css';
+import Avatar from '@material-ui/core/Avatar';
 
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
 
@@ -220,11 +221,20 @@ function VestibulePanel() {
     }
   }
 
+  /**
+   * @function getRoomUserNameChar - get first char of Room UserName
+   */
+   function getRoomUserNameChar() {
+    return store.getState().room.roomUserName.substring(0, 1);
+  }
+
 
   function waitingRoom() {
     if (isWaiting) {
       return (
         <div className="vestibule-waiting">
+          <Avatar className="avatar-placeholder">{getRoomUserNameChar()}</Avatar>
+
           <div className="vestibule-header">
             <h1>Joining Room</h1>
           </div>
@@ -243,6 +253,8 @@ function VestibulePanel() {
     } else {
       return (
         <div className="vestibule-ready">
+          <Avatar className="avatar-placeholder">{getRoomUserNameChar()}</Avatar>
+
           <div className="vestibule-header">
             <h1>{ vestibuleStatus }</h1>
           </div>
