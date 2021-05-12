@@ -1,0 +1,16 @@
+.vestibule-panel {
+  flex-grow: 1;
+  margin: auto 5vw;
+}
+
+.vestibule-waiting, .vestibule-ready {
+  max-width: 20vw;
+  max-height: 20vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.vestibule-header {
+  margin-bottom: 20px;
+}
