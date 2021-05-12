@@ -4,8 +4,6 @@
 }
 
 .vestibule-waiting, .vestibule-ready {
-  max-width: 20vw;
-  max-height: 20vh;
   margin: auto;
 
   display: flex;
