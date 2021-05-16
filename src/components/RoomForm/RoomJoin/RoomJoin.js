@@ -13,66 +13,12 @@ import store from '../../../store';
 
 function RoomJoin() {
   const dispatch = useDispatch();
-  const inVestibule = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
-
+  
   const history = useHistory();
 
   const joinRoomId = useRef();
   const joinRoomPassword = useRef();
   const joinRoomName = useRef();
-
-  useEffect(() => {
-    // upon initial load, determine if the user is supposed to be in vestibule based on cache
-    if (inVestibule) {
-      roomJoinSubmit();
-    }
-  }, []);
-
-  
-  /**
-   * @function receiveJoinRoomResponse - response after requesting to join a Room
-   * @param {Object} response 
-   */
-  function receiveJoinRoomResponse(response) {
-    let roomId = response.getRoomId();
-    let status = response.getStatus();
-
-    if (status === 'accept') {
-      dispatch(clearVestibuleData());
-      
-      // cleanup chatHistory json
-      let chatHistory = response.getChatHistoryList();
-
-      let chatHistoryData = [];
-      for (var i = 0; i < chatHistory.length; i++) {
-        chatHistoryData.push({
-          userId: chatHistory[i].getUserId(),
-          name: chatHistory[i].getUserName(),
-          message: chatHistory[i].getMessage(),
-          timestamp: chatHistory[i].getTimestamp(),
-        });
-      }
-      dispatch(setChatHistory(chatHistoryData));
-
-      // enter the room
-      let payload = {
-        roomId: roomId,
-        token: response.getToken(),
-        isStrict: false, // TODO: does this matter?
-      }
-      dispatch(setJoinedRoom(payload));
-      history.push(`/room/${roomId}`);
-
-    } else if (status === 'wait') {
-      console.log(':RoomJoin.receiveJoinRoomResponse: Detected wait room');
-    } else if (status === 'reject') {
-      console.warn(':RoomJoin.receiveJoinRoomResponse: Failed to join room.');
-      dispatch(setErrorMessage('Failed to join room.'));
-    } else {
-      console.warn(':RoomJoin.receiveJoinRoomResponse: Unknown error.');
-      dispatch(setErrorMessage('Unknown error.'));
-    }
-  }
 
 
   /**
@@ -82,15 +28,9 @@ function RoomJoin() {
     let roomId, roomPassword, userName;
 
     try {
-      if (inVestibule) {
-        roomId = store.getState().vestibule.roomId;
-        roomPassword = store.getState().vestibule.roomPassword;
-        userName = store.getState().vestibule.userName;
-      } else {
-        roomId = joinRoomId.current.value;
-        roomPassword = joinRoomPassword.current.value;
-        userName = joinRoomName.current.value;
-      }
+      roomId = joinRoomId.current.value;
+      roomPassword = joinRoomPassword.current.value;
+      userName = joinRoomName.current.value;
         
       if (roomId === '') {
         throw new Error('Enter a Room ID');
@@ -115,18 +55,15 @@ function RoomJoin() {
     // reset room data, add userName to state
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
+    dispatch(clearVestibuleData());
     dispatch(setRoomUserName(userName));
 
-    console.log(':RoomJoin.roomJoinSubmit: Attempting to join room with data=%o', data);
-    
     try {
-      // TODO: relocate joinRoom into vestibuleSlice
+      // TODO: relocate joinRoom into vestibuleSlice?
       const joinRoomResponseStream = await joinRoom(data);
 
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
-        // TODO: instead of joining room immedietly, go into vestibule
-
         // update vestibule state
         let vestibulePayload = {
           roomId: roomId,
@@ -134,8 +71,8 @@ function RoomJoin() {
           userName: userName,
         };
         dispatch(setVestibuleJoin(vestibulePayload));
-
-        receiveJoinRoomResponse(response);
+        history.push(`/vestibule/${roomId}`);
+        // receiveJoinRoomResponse(response);
       });
 
       joinRoomResponseStream.on('error', (err) => {
@@ -204,7 +141,7 @@ function RoomJoin() {
 
   function keyboardCreateJoin(event) {
     // handle keyboard input
-    if (event.key === 'Enter' && !inVestibule) {
+    if (event.key === 'Enter') {
       roomJoinSubmit();
     }
   }
@@ -240,43 +177,16 @@ function RoomJoin() {
     );
   }
 
-  function waitingRoom() {
-    return (
-      <div className="room-joining-strict">
-        <div className="room-header">
-          <h1>Joining Room</h1>
-        </div>
-
-        <p className="room-id-label"><b>Room ID: </b>{store.getState().room.roomId}</p>
-        <h2>Pending host acceptance...</h2>
-
-        <div className="room-actions">
-          <Link to="/">
-            <button className="room-form-btn button-secondary" onClick={cancelRoomJoin}>Cancel</button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
   function view() {
-    if (inVestibule) {
-      return (
-        <div className="room-container">
-          {waitingRoom()}
+    return (
+      <div className="room-container" onKeyPress={keyboardCreateJoin}>
+        <div className="room-header">
+          <h1>Join a Room</h1>
         </div>
-      );
-    }  else {
-      return (
-        <div className="room-container" onKeyPress={keyboardCreateJoin}>
-          <div className="room-header">
-            <h1>Join a Room</h1>
-          </div>
-          {roomForm()}
-          {roomFormActions()}
-        </div>
-      );
-    }
+        {roomForm()}
+        {roomFormActions()}
+      </div>
+    );
   }
 
   return view();

@@ -74,6 +74,7 @@ function Chatroom() {
       if ('error' in response) {
         throw response['error'];
       }
+      console.log(':Chatroom.handleSendChatMessage: response=%o', response);
 
     } catch (err) {
       console.log(':Chatroom.handleSendChatMessage: Failed to send chat message. err=%o', err);

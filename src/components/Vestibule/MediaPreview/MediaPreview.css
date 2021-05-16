@@ -1,0 +1,12 @@
+.media-preview {
+  flex-grow: 1;
+  margin: auto 5vw;
+}
+
+.media-preview-placeholder {
+  width: 33vw;
+  height: 22vw;
+  background-color: var(--gray);
+  margin: auto;
+}
+
