@@ -1,0 +1,25 @@
+.vestibule-panel {
+  flex-grow: 1;
+  margin: auto 5vw;
+}
+
+.vestibule-waiting, .vestibule-ready {
+  margin: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.vestibule-header {
+  margin-bottom: 40px;
+}
+
+.vestibule-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.avatar-placeholder {
+  margin: 20px auto;
+}

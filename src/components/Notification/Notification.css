@@ -1,0 +1,10 @@
+.error-notification .MuiSnackbarContent-root {
+  padding: 12px 20px;
+  background-color: var(--blue-dark);
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.error-notification .MuiSnackbarContent-message {
+  color: var(--white-light);
+}
