@@ -1,0 +1,9 @@
+.room-canvas {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.chatroom-container {
+  width: 800px;
+}
