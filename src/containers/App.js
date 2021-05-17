@@ -19,36 +19,33 @@ function App() {
   return (
     <div className="App">
       <div className="landing-container">
-        <div className="home-page">
-          <br></br>
-          <Router>
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
 
-              <Route path="/account">
-                <AccountForm />
-              </Route>
+            <Route path="/account">
+              <AccountForm />
+            </Route>
 
-              <Route path="/room/create">
-                <RoomForm />
-              </Route>
-              <Route path="/room/join">
-                <RoomForm />
-              </Route>
+            <Route path="/room/create">
+              <RoomForm />
+            </Route>
+            <Route path="/room/join">
+              <RoomForm />
+            </Route>
 
-              <Route path="/vestibule/:roomId">
-                <Vestibule />
-              </Route>
+            <Route path="/vestibule/:roomId">
+              <Vestibule />
+            </Route>
 
-              <Route path="/room/:roomId">
-                <Room />
-              </Route>
-              
-            </Switch>
-          </Router>
-        </div>
+            <Route path="/room/:roomId">
+              <Room />
+            </Route>
+            
+          </Switch>
+        </Router>
         <Notification />
       </div>
     </div>

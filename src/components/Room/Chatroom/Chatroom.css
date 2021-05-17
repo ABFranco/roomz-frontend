@@ -1,8 +1,9 @@
 .chatroom-container {
     background-color: var(--white-lighter);
     margin: 40px;
-    min-width: 800px;
-    max-width: 2000px;
+    /* min-width: 800px;
+    max-width: 2000px; */
+    width: 20vw;
     border-radius: 4px;
     display: inline;
 }

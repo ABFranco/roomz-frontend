@@ -12,15 +12,17 @@
 }
 
 .room-desc {
-  width: 35vw;
+  width: 10vw;
+  margin: auto 40px;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
 }
 
 .room-bottom-panel-actions {
   width: 40vw;
+  margin: auto;
 
   display: flex;
   flex-direction: row;

@@ -171,7 +171,6 @@ function RoomBottomPanel() {
   return (
     <div className="room-bottom-panel">
       <div className="room-desc">
-        <h1>Roomz</h1>
         <p><b>Room ID: </b>{store.getState().room.roomId}</p>
         <p><b>Your name: </b>{store.getState().room.roomUserName}</p>
       </div>
