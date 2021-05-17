@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import thumbsUp from '../../../assets/thumbs_up.png';
 import thumbsDown from '../../../assets/thumbs_down.png';
+import './JoinRequests.css';
 
 import { handleJoinRequest } from '../../../api/RoomzApiServiceClient.js';
 
