@@ -10,8 +10,22 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 const updateJoinRequests = createAsyncThunk(
   'joinRequests/updateJoinRequests',
   async(data) => {
-    await apiClient.getJoinRequests(data);
-    return {};
+    const response = await apiClient.getJoinRequests(data);
+
+    let joinRequests = [];
+    let incomingJoinRequests = response.getJoinRequestsList();
+
+    for (var i = 0; i < incomingJoinRequests.length; i++) {
+      joinRequests.push({
+        userId: incomingJoinRequests[i].getUserId(),
+        name: incomingJoinRequests[i].getUserName(),
+      });
+    }
+
+    const payload = {
+      pending: joinRequests,
+    };
+    return payload;
   }
 );
 
@@ -45,7 +59,17 @@ const joinRequestsSlice = createSlice({
       state.pending = [];
     },
   },
-  extraReducers: {}
+  extraReducers: {
+    /**
+     * @reduxAction 'joinRequests/updateJoinRequests/fulfilled' - update `pending` to retrieved join requests
+     * @param {Object} state - Initial state
+     * @param {Object} action.payload
+     * @param {Array} action.payload.pending
+     */
+    [updateJoinRequests.fulfilled]: (state, action) => {
+      state.pending = action.payload.pending;
+    },
+  }
 });
 
 /**

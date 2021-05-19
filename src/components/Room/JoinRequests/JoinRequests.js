@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import thumbsUp from '../../../assets/thumbs_up.png';
 import thumbsDown from '../../../assets/thumbs_down.png';
 import './JoinRequests.css';
 
 import { handleJoinRequest } from '../../../api/RoomzApiServiceClient.js';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
+import { updateJoinRequests } from '../../../reducers/JoinRequestsSlice';
 import store from '../../../store';
 
 function JoinRequests() {
   const dispatch = useDispatch();
+  const pendingJoinRequests = useSelector(state => state.joinRequests.pending);
 
-  const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
 
   /**
    * @function respondToJoinRequest - handler for host accepting/rejecting join request as host
@@ -32,7 +33,7 @@ function JoinRequests() {
         throw response['error'];
       }
 
-      // updateJoinRequests(); // TODO refresh join requests from the JoinRequests component
+      dispatch(updateJoinRequests(data));
 
     } catch (err) {
       console.log(':respondToJoinRequest: err=%o', err);
@@ -50,7 +51,7 @@ function JoinRequests() {
       <div className="room-requests-view">
         <p className="requests-title">Join Room Requests:</p>
 
-        {joinRequests.map((joinEntry, index) => (
+        {pendingJoinRequests.map((joinEntry, index) => (
           <div key={("request-%s", index)} className="pending-request-object">
             <div className="pending-select-options-container">
               <img id={("press-yes-%s", joinEntry.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(joinEntry, true)} alt="yes"/>
