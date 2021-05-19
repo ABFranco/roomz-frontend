@@ -3,9 +3,8 @@
 }
 
 .room-container {
-    padding: 40px;
-    width: 80vw;
-    max-width: 400px;
+    height: 100vh;
+    width: 100vw;
 }
 
 .room-form {
@@ -93,61 +92,6 @@ input {
 
 .room-view .room-actions {
     margin-top: 20px;
-}
-
-.room-requests-view {
-    background: transparent;
-    padding: 10px;
-}
-
-.requests-container {
-    background: transparent;
-    display: flex;
-    padding-top: 20%;
-}
-
-.pending-requests-title {
-    text-align: left;
-    font-weight: bold;
-    font-size: 14px;
-    color: black;
-    padding: 10px 10px;
-    width: 100%;
-    display: flex;
-}
-
-.pending-request-object {
-    margin: 5px 0px 0px 0px;
-    font-size: 10px;
-    text-align: left;
-    display: flex;
-    max-height: 20px;
-    padding-bottom: 25px;
-}
-
-.pending-request-object-name {
-    font-weight: bold;
-    display: block;
-    padding: 20% 0;
-    font-size: 12px;
-
-}
-
-.pending-img {
-    background: transparent;
-    height: 20px;
-    width: 20px;
-}
-
-.pending-select-options-container {
-    max-width: 20%;
-    text-align: center;
-    display: block;
-    padding: 10% 10px 0 0;
-}
-
-.pending-select-option {
-    margin: 4px 5px 0 0;
 }
 
 #passwordConfirmMsg {

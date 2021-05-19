@@ -1,0 +1,7 @@
+.room-canvas {
+  width: 100%;
+  height: calc(100% - 109px);
+
+  display: flex;
+  flex-direction: row;
+}

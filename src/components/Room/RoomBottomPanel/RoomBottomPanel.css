@@ -1,0 +1,35 @@
+.room-bottom-panel {
+  width: 100vw;
+  height: 100px;
+  position: fixed;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: row;
+
+  border-top: 1px solid var(--gray);
+  padding-top: 8px;
+}
+
+.room-desc {
+  width: 10vw;
+  margin: auto 40px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.room-bottom-panel-actions {
+  width: 40vw;
+  margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+}
+
+.room-bottom-panel-actions button {
+  height: 50px;
+}

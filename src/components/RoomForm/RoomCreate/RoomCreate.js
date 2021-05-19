@@ -127,7 +127,7 @@ function RoomCreate() {
       );
     } else {
       return (
-        <div className="room-container" onKeyPress={keyboardCreateJoin}>
+        <div className="room-form-container" onKeyPress={keyboardCreateJoin}>
           <div className="room-header">
             <h1>Create a Room</h1>
           </div>
