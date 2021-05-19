@@ -4,7 +4,7 @@ import * as apiClient from '../api/RoomzApiServiceClient.js';
 
 
 /**
- * @function updateJoinRequests - thunk to call api for chatMessage
+ * @function updateJoinRequests - thunk to call api for getJoinRequests
  * 
  */
 const updateJoinRequests = createAsyncThunk(
@@ -15,7 +15,7 @@ const updateJoinRequests = createAsyncThunk(
     let joinRequests = [];
     let incomingJoinRequests = response.getJoinRequestsList();
 
-    for (var i = 0; i < incomingJoinRequests.length; i++) {
+    for (let i = 0; i < incomingJoinRequests.length; i++) {
       joinRequests.push({
         userId: incomingJoinRequests[i].getUserId(),
         name: incomingJoinRequests[i].getUserName(),
