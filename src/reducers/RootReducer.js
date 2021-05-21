@@ -4,6 +4,7 @@ import roomSlice from './RoomSlice';
 import chatroomSlice from './ChatroomSlice';
 import vestibuleSlice from './VestibuleSlice';
 import notificationSlice from './NotificationSlice';
+import joinRequestsSlice from './JoinRequestsSlice';
 
 
 /**
@@ -17,4 +18,5 @@ export const rootReducer = combineReducers({
   chatroom: chatroomSlice.reducer,
   vestibule: vestibuleSlice.reducer,
   notification: notificationSlice.reducer,
+  joinRequests: joinRequestsSlice.reducer,
 });

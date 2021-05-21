@@ -1,23 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import '../Room.css';
 import './RoomBottomPanel.css';
-
-import { getJoinRequests } from '../../../api/RoomzApiServiceClient.js';
 
 import { useDispatch } from 'react-redux';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import { roomDelete, roomLeave } from '../../../reducers/RoomSlice';
+import { updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
 
 import store from '../../../store';
 
 function RoomBottomPanel() {
   const dispatch = useDispatch();
   const history = useHistory();
-
-  // TODO: move joinRequests to store
-  const [joinRequests, setJoinRequests] = useState([]);  // list of names of users requesting to join room
 
   /**
    * @function roomLeaveAsNonHost - non-host leaves the room
@@ -65,6 +61,7 @@ function RoomBottomPanel() {
       }
 
       dispatch(clearChatHistory());
+      dispatch(clearJoinRequests());
       history.push('/');
 
     } catch (err) {
@@ -78,33 +75,16 @@ function RoomBottomPanel() {
   }
 
   /**
-   * @function updateJoinRequests - retrieve the current join requests that are pending
+   * @function refreshJoinRequests - retrieve the current join requests that are pending
    */
-   async function updateJoinRequests() {
-    // retrieve current join requests
+   async function refreshJoinRequests() {
     let data = {
       roomId: store.getState().room.roomId,
       userId: store.getState().user.userId,
     };
 
     try {
-      const response = await getJoinRequests(data);
-      if ('error' in response) {
-        throw response['error'];
-      }
-
-      // received current join requests, update state
-      let joinRequests = [];
-      let incomingJoinRequests = response.getJoinRequestsList();
-
-      for (var i = 0; i < incomingJoinRequests.length; i++) {
-        joinRequests.push({
-          userId: incomingJoinRequests[i].getUserId(),
-          name: incomingJoinRequests[i].getUserName(),
-        });
-      }
-
-      setJoinRequests(joinRequests);
+      dispatch(updateJoinRequests(data));
 
     } catch (err) {
       console.log(':updateJoinRequests: err=%o', err);
@@ -125,7 +105,7 @@ function RoomBottomPanel() {
       document.getElementById('requestsView').classList.remove('hidden');
 
       // retreive current join requests
-      updateJoinRequests();
+      refreshJoinRequests();
     } else {
       document.getElementById('requestsView').classList.add('hidden');
     }
