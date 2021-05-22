@@ -13,9 +13,10 @@ function MediaPreview() {
     setupLocalMedia();
   }, [])
 
-  // setupLocalMedia requests access to the user's microphone and webcam and
-  // properly sets up the egress media stream.
-  // NOTE: This will likely be called on load within the vestibule component.
+  /**
+   * @function setupLocalMedia - requests access to the user's microphone and
+   * webcam and properly sets the egress media stream.
+   */
   function setupLocalMedia() {
     if (stream != null) {
       return
@@ -37,10 +38,16 @@ function MediaPreview() {
       });
   }
 
+  /**
+   * @function toggleAudio - toggles mute on user's audio.
+   */
   function toggleAudio() {
     setMuted(!muted)
   }
   
+  /**
+   * @function toggleAudio - toggles mute on user's video.
+   */
   function toggleVideo() {
     if (stream === null) {
       setupLocalMedia()
