@@ -1,7 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+
 import '../Room.css';
 import './RoomBottomPanel.css';
+import IconButton from '@material-ui/core/IconButton';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 
 import { useDispatch } from 'react-redux';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
@@ -122,9 +125,12 @@ function RoomBottomPanel() {
       if (store.getState().room.isStrict) {
         return (
           <div className="room-bottom-panel-actions">
+            <IconButton aria-label="join requests" onClick={requestsViewClick}>
+              <GroupAddIcon />
+            </IconButton>
             <button className="room-form-btn button-secondary" onClick={roomDeleteAsHost}>Close Room</button>
             <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
-            <button id="joinRequestsBtn" className="room-form-btn button-primary" onClick={requestsViewClick}>Join Requests</button>
+            
           </div>
         );
       } else {
