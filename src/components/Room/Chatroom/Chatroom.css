@@ -10,6 +10,10 @@
     border-left: 1px solid var(--gray);
 }
 
+.chatroom-hide {
+  display: none;
+}
+
 .chatroom-header {
     padding: 8px;
     display: flex;

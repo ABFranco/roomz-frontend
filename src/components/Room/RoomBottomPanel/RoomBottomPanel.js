@@ -5,9 +5,10 @@ import '../Room.css';
 import './RoomBottomPanel.css';
 import IconButton from '@material-ui/core/IconButton';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import ChatIcon from '@material-ui/icons/Chat';
 
 import { useDispatch } from 'react-redux';
-import { clearChatHistory } from '../../../reducers/ChatroomSlice';
+import { clearChatHistory, toggleChatroom } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import { roomDelete, roomLeave } from '../../../reducers/RoomSlice';
 import { updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
@@ -115,6 +116,14 @@ function RoomBottomPanel() {
   }
 
 
+  /** 
+   * @function toggleChatroomClick - open/close chatroom
+   */ 
+  function toggleChatroomClick() {
+    dispatch(toggleChatroom());
+  }
+
+
   function roomShare() {
     // TODO
     return;
@@ -163,6 +172,11 @@ function RoomBottomPanel() {
 
       <div className="room-actions">
         {panelActions()}
+        <div className="room-actions-right">
+          <IconButton aria-label="chatroom toggle" onClick={toggleChatroomClick}>
+            <ChatIcon />
+          </IconButton>
+        </div>
       </div>
     </div>
   )

@@ -15,6 +15,15 @@ function Chatroom() {
   const chatHistory = useSelector(state => (state.chatroom.chatHistory));
 
   const message = useRef();
+
+  // classNames toggles chatroom container's visibility
+  const chatroomClassNames = useSelector(state => {
+    if (state.chatroom.isVisible) {
+      return 'chatroom-container';
+    } else {
+      return 'chatroom-container chatroom-hide';
+    }
+  });
   
 
   useEffect(() => {
@@ -114,7 +123,7 @@ function Chatroom() {
 
 
   return (
-    <div className="chatroom-container">
+    <div className={chatroomClassNames}>
       <div className="chatroom-header">
         <h2>chat</h2>
       </div>

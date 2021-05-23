@@ -30,6 +30,11 @@
 
 }
 
+.room-actions-right {
+  width: 10vw;
+  margin: auto;
+}
+
 .room-bottom-panel-actions button {
   height: 50px;
 }
