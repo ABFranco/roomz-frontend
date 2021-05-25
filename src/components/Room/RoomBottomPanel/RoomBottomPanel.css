@@ -17,7 +17,7 @@
 
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .room-bottom-panel-actions {
@@ -26,8 +26,12 @@
 
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
 
+}
+
+.room-actions button {
+  margin: 8px;
 }
 
 .room-actions-right {
@@ -37,4 +41,11 @@
 
 .room-bottom-panel-actions button {
   height: 50px;
+}
+
+.room-strict-actions {
+  margin: auto 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }

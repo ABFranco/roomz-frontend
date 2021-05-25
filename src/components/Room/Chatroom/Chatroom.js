@@ -119,7 +119,7 @@ function Chatroom() {
     if (event.key === 'Enter') {
       handleSendChatMessage();
     }
-}
+  }
 
 
   return (

@@ -6,6 +6,13 @@ import './RoomBottomPanel.css';
 import IconButton from '@material-ui/core/IconButton';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import ChatIcon from '@material-ui/icons/Chat';
+import CallEndIcon from '@material-ui/icons/CallEnd';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import ShareIcon from '@material-ui/icons/Share';
+
 
 import { useDispatch } from 'react-redux';
 import { clearChatHistory, toggleChatroom } from '../../../reducers/ChatroomSlice';
@@ -129,38 +136,48 @@ function RoomBottomPanel() {
     return;
   }
 
+  function strictActions() {
+    if (store.getState().room.userIsHost && store.getState().room.isStrict) {
+      return (
+        <div className="room-strict-actions">
+          <IconButton aria-label="join requests" onClick={requestsViewClick}>
+            <GroupAddIcon />
+          </IconButton>
+          </div>
+      );
+    }
+  }
+
   function panelActions() {
     if (store.getState().room.userIsHost) {
-      if (store.getState().room.isStrict) {
-        return (
-          <div className="room-bottom-panel-actions">
-            <IconButton aria-label="join requests" onClick={requestsViewClick}>
-              <GroupAddIcon />
-            </IconButton>
-            <button className="room-form-btn button-secondary" onClick={roomDeleteAsHost}>Close Room</button>
-            <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
-            
-          </div>
-        );
-      } else {
-        return (
-          <div className="room-bottom-panel-actions">
-            <button className="room-form-btn button-secondary" onClick={roomDeleteAsHost}>Close Room</button>
-            <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
-          </div>
-        );
-      }
-        
+      return (
+        <div className="room-bottom-panel-actions">
+          <IconButton aria-label="toggle mic">
+            <MicIcon />
+          </IconButton>
+          <IconButton aria-label="toggle video">
+            <VideocamIcon />
+          </IconButton>
+          <IconButton aria-label="close room" onClick={roomDeleteAsHost}>
+            <CallEndIcon />
+          </IconButton>
+        </div>
+      );
     } else {
       return (
         <div className="room-bottom-panel-actions">
-          <button className="room-form-btn button-secondary" onClick={roomLeaveAsNonHost}>Leave Room</button>
-          <button className="room-form-btn button-primary" onClick={roomShare}>Share</button>
+          <IconButton aria-label="toggle mic">
+              <MicIcon />
+            </IconButton>
+            <IconButton aria-label="toggle video">
+              <VideocamIcon />
+            </IconButton>
+          <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>
+            <CallEndIcon />
+          </IconButton>
         </div>
       );
-        
     }
-
   }
 
   return (
@@ -169,17 +186,20 @@ function RoomBottomPanel() {
         <p><b>Room ID: </b>{store.getState().room.roomId}</p>
         <p><b>Your name: </b>{store.getState().room.roomUserName}</p>
       </div>
-
       <div className="room-actions">
+        {strictActions()}
         {panelActions()}
         <div className="room-actions-right">
+          <IconButton aria-label="share" onClick={roomShare}>
+            <ShareIcon />
+          </IconButton>
           <IconButton aria-label="chatroom toggle" onClick={toggleChatroomClick}>
             <ChatIcon />
           </IconButton>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default RoomBottomPanel;
