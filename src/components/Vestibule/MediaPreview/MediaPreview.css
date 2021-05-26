@@ -4,9 +4,13 @@
 }
 
 .media-preview-placeholder {
-  width: 33vw;
-  height: 22vw;
+  width: 40vw;
+  height: 30vw;
+  border-radius: 25px;
   background-color: var(--gray);
   margin: auto;
 }
 
+.media-btns {
+  display: flex;
+}

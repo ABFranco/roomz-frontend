@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
-function Video() {
-  // TODO: this is a placeholder for each "video" component. To be used for Vestibule media preview and Room's Video grid
+import './Video.css';
+
+function Video(props) {
+  const mediaRef = useRef();
+
+  useEffect(() => {
+    console.log('Setting stream data on Video component for peerId=%o', props.peerId)
+    mediaRef.current.srcObject = props.stream;
+  }, [props.stream])
 
   return (
-    <div></div>
+    <div className="video" id={props.peerId}>
+      <video ref={mediaRef} id="egress-video" autoPlay muted={props.muted}/>
+    </div>
   )
 }
 
