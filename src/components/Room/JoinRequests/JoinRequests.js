@@ -1,7 +1,15 @@
 import React from 'react';
+
 import thumbsUp from '../../../assets/thumbs_up.png';
 import thumbsDown from '../../../assets/thumbs_down.png';
 import './JoinRequests.css';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import IconButton from '@material-ui/core/IconButton';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 
 import { handleJoinRequest } from '../../../api/RoomzApiServiceClient.js';
 
@@ -51,16 +59,19 @@ function JoinRequests() {
       <div className="room-requests-view">
         <p className="requests-title">Join Room Requests:</p>
 
-        {pendingJoinRequests.map((joinEntry, index) => (
-          <div key={("request-%s", index)} className="pending-request-object">
-            <div className="pending-select-options-container">
-              <img id={("press-yes-%s", joinEntry.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(joinEntry, true)} alt="yes"/>
-              <br></br>
-              <img id={("press-no-%s", joinEntry.userId)} className="pending-img" src={thumbsDown} onClick={() => respondToJoinRequest(joinEntry, false)} alt="no"/>
-            </div>
-            <p className="pending-request-object-name">{joinEntry.name}</p>
-          </div>
-        ))}
+        <List className="list-join-requests">
+          {pendingJoinRequests.map((joinEntry, index) => (
+            <ListItem key={("request-%s", index)}>
+              <ListItemText className="request-text">{joinEntry.name}</ListItemText>
+              <IconButton size="small" onClick={() => respondToJoinRequest(joinEntry, true)}>
+                <ThumbUpIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" onClick={() => respondToJoinRequest(joinEntry, false)}>
+                <ThumbDownIcon fontSize="small" />
+              </IconButton>
+            </ListItem>
+          ))}
+        </List>
       </div>
     </div>
   )

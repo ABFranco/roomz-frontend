@@ -2,6 +2,7 @@
 .room-requests-view {
   background: transparent;
   padding: 10px;
+  max-width: 250px;
 }
 
 .requests-container {
@@ -57,4 +58,9 @@
 
 .hidden {
   display: none;
+}
+
+.request-text {
+  word-wrap: break-word;
+  margin-right: 8px;
 }
