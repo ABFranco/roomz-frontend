@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 import { clearChatHistory, toggleChatroom } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import { roomDelete, roomLeave } from '../../../reducers/RoomSlice';
-import { updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
+import { setVisible, updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
 
 import store from '../../../store';
 
@@ -112,14 +112,8 @@ function RoomBottomPanel() {
    * @function requestsViewClick - open/close requests window
    */ 
    function requestsViewClick() {
-    if (document.getElementById('requestsView').classList.contains('hidden')) {
-      document.getElementById('requestsView').classList.remove('hidden');
-
-      // retreive current join requests
-      refreshJoinRequests();
-    } else {
-      document.getElementById('requestsView').classList.add('hidden');
-    }
+    refreshJoinRequests();
+    dispatch(setVisible(true));
   }
 
 

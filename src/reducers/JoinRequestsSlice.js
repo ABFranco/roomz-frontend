@@ -37,9 +37,19 @@ const updateJoinRequests = createAsyncThunk(
 const joinRequestsSlice = createSlice({
   name: 'joinRequests',
   initialState: {
+    isVisible: false,
     pending: [],
   },
   reducers: {
+
+    /**
+     * @reduxAction 'joinRequests/setVisible' - Set popup visibility true/false
+     * @param {Object} state - Initial state
+     * @param {Object} action.payload
+     */
+     setVisible: (state, action) => {
+      state.isVisible = action.payload;
+    },
 
     /**
      * @reduxAction 'joinRequests/pending' - Set current join requests that are pending
@@ -75,7 +85,7 @@ const joinRequestsSlice = createSlice({
 /**
  * Actions
  */
-export const { setJoinRequests, clearJoinRequests } = joinRequestsSlice.actions;
+export const { setVisible, setJoinRequests, clearJoinRequests } = joinRequestsSlice.actions;
 export { updateJoinRequests }
 
 export default joinRequestsSlice;
