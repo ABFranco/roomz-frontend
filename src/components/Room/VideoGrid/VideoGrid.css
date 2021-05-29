@@ -1,4 +1,5 @@
 .room-video-grid {
+  flex-grow: 1;
   display: flex;
   justify-content: center;
 }
