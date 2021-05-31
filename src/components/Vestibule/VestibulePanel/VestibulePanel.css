@@ -10,11 +10,12 @@
   flex-direction: column;
 }
 
-.vestibule-header {
-  margin-bottom: 40px;
+.vestibule-loading {
+  margin: 20px auto;
 }
 
 .vestibule-actions {
+  margin-top: 12px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

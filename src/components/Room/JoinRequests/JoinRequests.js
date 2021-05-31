@@ -106,7 +106,7 @@ function JoinRequests() {
         {dialogContent()}
 
         <DialogActions>
-          <Button onClick={handlePopupClose} color="primary">
+          <Button onClick={handlePopupClose}>
             Close
           </Button>
         </DialogActions>
