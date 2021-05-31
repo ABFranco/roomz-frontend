@@ -3,12 +3,8 @@
   width: 20vw;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 
-  border-left: 1px solid var(--gray);
-}
-
-.chatroom-hide {
-  display: none;
 }
 
 .chatroom-header {

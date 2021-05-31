@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import './Chatroom.css';
 
+import { makeStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+
 import Message from '../../../elements/Message.js';
 import { enterChatRoom } from '../../../api/RoomzApiServiceClient.js';
 
@@ -10,21 +13,21 @@ import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
 
+const useStyles = makeStyles(() => ({
+  drawerPaper: {
+    height: 'calc(100% - 110px)',
+    borderLeft: '1px solid var(--gray)',
+  }
+}));
+
 function Chatroom() {
   const dispatch = useDispatch();
   const chatHistory = useSelector(state => (state.chatroom.chatHistory));
 
   const message = useRef();
 
-  // classNames toggles chatroom container's visibility
-  const chatroomClassNames = useSelector(state => {
-    if (state.chatroom.isVisible) {
-      return 'chatroom-container';
-    } else {
-      return 'chatroom-container chatroom-hide';
-    }
-  });
-  
+  const classes = useStyles();
+  const open = useSelector(state => (state.chatroom.isVisible));
 
   useEffect(() => {
     // join chat room upon entering the view, this should only occur once
@@ -121,30 +124,39 @@ function Chatroom() {
     }
   }
 
-
   return (
-    <div className={chatroomClassNames}>
-      <div className="chatroom-header">
-        <h2>chat</h2>
-      </div>
+    <Drawer
+        variant="persistent"
+        anchor="right"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+      <div className="chatroom-container">
+        <div className="chatroom-header">
+          <h2>chat</h2>
+        </div>
 
-      <div className="chatroom-messages">
-        {chatHistory.map((m, index) => (
-          <Message 
-          key={("message-%s", index)}
-          username={m.name}
-          message={m.message}
-          timestamp={m.timestamp} />
-        ))}
-      </div>
+        <div className="chatroom-messages">
+          {chatHistory.map((m, index) => (
+            <Message 
+            key={("message-%s", index)}
+            username={m.name}
+            message={m.message}
+            timestamp={m.timestamp} />
+          ))}
+        </div>
 
-      <div className="chatroom-footer">
-        <input type="text" onKeyPress={keyboardSendChatMessage} className="form-input form-message-input" placeholder="Enter a message..." ref={message} autoFocus />
-        <button onClick={handleSendChatMessage} className="button-primary chat-submit">
-          {'>'}
-        </button>
-      </div>         
-    </div>
+        <div className="chatroom-footer">
+          <input type="text" onKeyPress={keyboardSendChatMessage} className="form-input form-message-input" placeholder="Enter a message..." ref={message} autoFocus />
+          <button onClick={handleSendChatMessage} className="button-primary chat-submit">
+            {'>'}
+          </button>
+        </div>         
+      </div>
+    </Drawer>
+    
   );
 }
 
