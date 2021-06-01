@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import './VestibulePanel.css';
 import Avatar from '@material-ui/core/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
 
@@ -236,11 +237,10 @@ function VestibulePanel() {
           <Avatar className="avatar-placeholder">{getRoomUserNameChar()}</Avatar>
 
           <div className="vestibule-header">
-            <h1>Joining Room</h1>
+            <h1>Joining Room ID: {store.getState().vestibule.roomId}</h1>
           </div>
-  
-          <p className="vestibule-id-label"><b>Room ID: </b>{store.getState().vestibule.roomId}</p>
-          <h2>{ vestibuleStatus }</h2>
+          <CircularProgress className="vestibule-loading"/>
+          <p>{ vestibuleStatus }</p>
   
           <div className="vestibule-actions">
             <Link to="/">

@@ -1,18 +1,30 @@
 import React from 'react';
-import thumbsUp from '../../../assets/thumbs_up.png';
-import thumbsDown from '../../../assets/thumbs_down.png';
 import './JoinRequests.css';
+
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
 
 import { handleJoinRequest } from '../../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
-import { updateJoinRequests } from '../../../reducers/JoinRequestsSlice';
+import { setVisible, updateJoinRequests } from '../../../reducers/JoinRequestsSlice';
 import store from '../../../store';
 
 function JoinRequests() {
   const dispatch = useDispatch();
   const pendingJoinRequests = useSelector(state => state.joinRequests.pending);
+
+  const isVisible = useSelector(state => state.joinRequests.isVisible);
 
 
   /**
@@ -46,22 +58,57 @@ function JoinRequests() {
   }
 
 
-  return (
-    <div id="requestsView" className="requests-container hidden">
-      <div className="room-requests-view">
-        <p className="requests-title">Join Room Requests:</p>
+  const handlePopupClose = () => {
+    console.log(pendingJoinRequests)
+    dispatch(setVisible(false));
+  };
 
-        {pendingJoinRequests.map((joinEntry, index) => (
-          <div key={("request-%s", index)} className="pending-request-object">
-            <div className="pending-select-options-container">
-              <img id={("press-yes-%s", joinEntry.userId)} className="pending-img" src={thumbsUp} onClick={() => respondToJoinRequest(joinEntry, true)} alt="yes"/>
-              <br></br>
-              <img id={("press-no-%s", joinEntry.userId)} className="pending-img" src={thumbsDown} onClick={() => respondToJoinRequest(joinEntry, false)} alt="no"/>
-            </div>
-            <p className="pending-request-object-name">{joinEntry.name}</p>
-          </div>
+  
+  function dialogContent() {
+    if (pendingJoinRequests.length > 0) {
+      return (
+        <DialogContent>
+          {pendingJoinRequests.map((joinEntry, index) => (
+          <ListItem key={("request-%s", index)}>
+            <ListItemText className="request-text">{joinEntry.name}</ListItemText>
+            <IconButton size="small" onClick={() => respondToJoinRequest(joinEntry, true)}>
+              <ThumbUpIcon fontSize="small" />
+            </IconButton>
+            <IconButton size="small" onClick={() => respondToJoinRequest(joinEntry, false)}>
+              <ThumbDownIcon fontSize="small" />
+            </IconButton>
+          </ListItem>
         ))}
-      </div>
+        </DialogContent>
+        
+      );
+    } else {
+      return (
+        <p className="request-placeholder">None</p>
+      );
+    }
+  }
+
+
+  return (
+    <div className="requests-container">
+      <Dialog
+        open={isVisible}
+        onClose={handlePopupClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+        maxWidth="lg"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{"Room Join Requests"}</DialogTitle>
+
+        {dialogContent()}
+
+        <DialogActions>
+          <Button onClick={handlePopupClose}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
