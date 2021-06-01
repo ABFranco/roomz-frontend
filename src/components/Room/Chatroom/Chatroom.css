@@ -1,6 +1,6 @@
 .chatroom-container {
   background-color: var(--white-lighter);
-  width: 20vw;
+  width: 300px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
