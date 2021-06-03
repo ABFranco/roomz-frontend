@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './Home.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../store';
 import { clearSignInData } from '../../reducers/UserSlice';
+import { clearRoomData } from '../../reducers/RoomSlice';
+import { clearVestibuleData } from '../../reducers/VestibuleSlice';
+import { clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 function Home() {
@@ -13,7 +16,14 @@ function Home() {
 
   const history = useHistory();
 
-  
+  useEffect(() => {
+    // upon initial load, clear everything
+    dispatch(clearRoomData());
+    dispatch(clearChatHistory());
+    dispatch(clearVestibuleData());
+  }, []);
+
+
   /**
    * Handle click event for "Create Room" button
    */

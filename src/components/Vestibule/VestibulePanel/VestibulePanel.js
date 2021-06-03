@@ -35,7 +35,7 @@ function VestibulePanel() {
 
 
   /**
-   * @function reattemptRoomJoinSubmit - reattmpet to join the room again
+   * @function reattemptRoomJoinSubmit - reattempt to join the room again
    */
   async function reattemptRoomJoinSubmit() {
 

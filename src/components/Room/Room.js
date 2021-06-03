@@ -7,21 +7,17 @@ import RoomCanvas from './RoomCanvas';
 import RoomBottomPanel from './RoomBottomPanel';
 import RoomForm from '../RoomForm';
 
-import { awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
+import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { clearRoomData } from '../../reducers/RoomSlice';
-import { clearChatHistory } from '../../reducers/ChatroomSlice';
+import { setJoinedRoom, setRoomUserName, clearRoomData } from '../../reducers/RoomSlice';
+import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
+import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 import store from '../../store';
 
-// testing
-import { joinRoom } from '../../api/RoomzApiServiceClient.js';
-
-import { setRoomUserName } from '../../reducers/RoomSlice';
-import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
 
 function Room() {
   const dispatch = useDispatch();
@@ -118,17 +114,18 @@ function Room() {
       // TODO: relocate joinRoom into vestibuleSlice?
       const joinRoomResponseStream = await joinRoom(data);
 
+      // update vestibule state
+      let vestibulePayload = {
+        roomId: roomId,
+        roomPassword: roomPassword,
+        userName: userName,
+      };
+      dispatch(setVestibuleJoin(vestibulePayload));
+      history.push(`/room/${roomId}`);
+
       // stream listeners
       joinRoomResponseStream.on('data', (response) => {
-        // update vestibule state
-        let vestibulePayload = {
-          roomId: roomId,
-          roomPassword: roomPassword,
-          userName: userName,
-        };
-        dispatch(setVestibuleJoin(vestibulePayload));
-        history.push(`/room/${roomId}`);
-        // receiveJoinRoomResponse(response);
+        receiveJoinRoomResponse(response);
       });
 
       joinRoomResponseStream.on('error', (err) => {
@@ -151,6 +148,58 @@ function Room() {
         errorMessage = err['message'];
       }
       dispatch(setErrorMessage(errorMessage));
+    }
+  }
+
+  /**
+   * @function receiveJoinRoomResponse - response after requesting to join a Room
+   * @param {Object} response 
+   */
+   function receiveJoinRoomResponse(response) {
+    let roomId = response.getRoomId();
+    let status = response.getStatus();
+
+    if (status === 'accept') {
+      let vestibulePayload = {
+        roomId: roomId,
+        roomPassword: null,
+        userName: null,
+      };
+      dispatch(setVestibuleJoin(vestibulePayload));
+
+      // cleanup chatHistory json
+      let chatHistory = response.getChatHistoryList();
+
+      let chatHistoryData = [];
+      for (let i = 0; i < chatHistory.length; i++) {
+        chatHistoryData.push({
+          userId: chatHistory[i].getUserId(),
+          name: chatHistory[i].getUserName(),
+          message: chatHistory[i].getMessage(),
+          timestamp: chatHistory[i].getTimestamp(),
+        });
+      }
+      dispatch(setChatHistory(chatHistoryData));
+
+      // update state to allow entering room
+      let payload = {
+        roomId: roomId,
+        token: response.getToken(),
+        isStrict: false, // TODO: does this matter?
+      }
+      dispatch(setJoinedRoom(payload));
+      // setVestibuleStatus('Enter Room ID: ' + roomId);
+
+    } else if (status === 'wait') {
+      console.log(':Vestibule.receiveJoinRoomResponse: Detected wait room');
+      
+
+    } else if (status === 'reject') {
+      console.warn(':Vestibule.receiveJoinRoomResponse: Failed to join room.');
+      dispatch(setErrorMessage('Failed to join room.'));
+    } else {
+      console.warn(':Vestibule.receiveJoinRoomResponse: Unknown error.');
+      dispatch(setErrorMessage('Unknown error.'));
     }
   }
 
