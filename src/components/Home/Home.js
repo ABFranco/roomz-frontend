@@ -17,7 +17,7 @@ function Home() {
   const history = useHistory();
 
   useEffect(() => {
-    // upon initial load, clear everything
+    // upon entering home, clear everything
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
     dispatch(clearVestibuleData());
