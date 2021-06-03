@@ -72,8 +72,13 @@ function VestibulePanel() {
     let status = response.getStatus();
 
     if (status === 'accept') {
-      dispatch(clearVestibuleData());
-      
+      let vestibulePayload = {
+        roomId: roomId,
+        roomPassword: null,
+        userName: null,
+      };
+      dispatch(setVestibuleJoin(vestibulePayload));
+
       // cleanup chatHistory json
       let chatHistory = response.getChatHistoryList();
 
@@ -114,10 +119,9 @@ function VestibulePanel() {
    */
   async function enterRoom() {
     let token = store.getState().room.token;
-
+    
     if (token !== null) {
-      let roomId = store.getState().room.roomId;
-      history.push(`/room/${roomId}`);
+      dispatch(clearVestibuleData());
     } else {
       dispatch(setErrorMessage('You do not yet have access to join the room.'));
     }

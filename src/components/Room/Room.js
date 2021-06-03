@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './Room.css';
 
+import Vestibule from '../Vestibule';
 import RoomCanvas from './RoomCanvas';
 import RoomBottomPanel from './RoomBottomPanel';
 
 import { awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
+
 import { clearRoomData } from '../../reducers/RoomSlice';
 import { clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
@@ -17,6 +19,7 @@ import store from '../../store';
 function Room() {
   const dispatch = useDispatch();
   const userInRoom = useSelector(state => (state.room.userInRoom !== null));
+  const inVestibule = useSelector(state => (state.vestibule.roomId !== null));
   const history = useHistory();
 
   useEffect(() => {
@@ -67,7 +70,12 @@ function Room() {
   }
 
   function view() {
-    if (userInRoom) {
+    if (inVestibule) {
+      return (
+        <Vestibule />
+      );
+      
+    } else if (userInRoom) {
       return (
         <div className="room-container">
           <RoomCanvas />

@@ -71,7 +71,7 @@ function RoomJoin() {
           userName: userName,
         };
         dispatch(setVestibuleJoin(vestibulePayload));
-        history.push(`/vestibule/${roomId}`);
+        history.push(`/room/${roomId}`);
         // receiveJoinRoomResponse(response);
       });
 

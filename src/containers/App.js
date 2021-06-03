@@ -35,11 +35,6 @@ function App() {
             <Route path="/room/join">
               <RoomForm />
             </Route>
-
-            <Route path="/vestibule/:roomId">
-              <Vestibule />
-            </Route>
-
             <Route path="/room/:roomId">
               <Room />
             </Route>

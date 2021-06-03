@@ -4,6 +4,7 @@ import '../RoomForm.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { roomCreate, setRoomUserName, clearRoomData } from '../../../reducers/RoomSlice';
+import { setVestibuleJoin } from '../../../reducers/VestibuleSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
@@ -49,7 +50,11 @@ function RoomCreate() {
         dispatch(clearChatHistory());
         dispatch(setRoomUserName(data['userName']));
 
-        history.push(`/vestibule/${store.getState().room.roomId}`);
+        let roomId = store.getState().room.roomId
+        // set data to enter vestibule
+        dispatch(setVestibuleJoin({roomId: roomId}));
+
+        history.push(`/room/${roomId}`);
   
       } catch (err) {
         console.log(':RoomForm.roomCreateSubmit: err=%o', err);
