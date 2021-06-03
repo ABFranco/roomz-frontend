@@ -26,7 +26,8 @@ function VestibulePanel() {
   useEffect(() => {
     // upon initial load, determine if the user is still waiting for host response based on cache
     if (isWaiting) {
-      reattemptRoomJoinSubmit();
+      // reattemptRoomJoinSubmit();
+      console.log('isWaiting=%s', isWaiting);
     } else {
       setVestibuleStatus('Enter Room ID: ' + store.getState().room.roomId);
     }

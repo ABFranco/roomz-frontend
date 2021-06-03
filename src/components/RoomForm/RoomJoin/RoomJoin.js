@@ -11,7 +11,7 @@ import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/Vestibul
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
-function RoomJoin() {
+function RoomJoin({roomJoinSubmit}) {
   const dispatch = useDispatch();
   
   const history = useHistory();
@@ -24,7 +24,12 @@ function RoomJoin() {
   /**
    * @function roomJoinSubmit - submit form to join a room
    */
-  async function roomJoinSubmit() {
+  
+  async function hanleRoomJoinSubmit() {
+    // temp testing
+    roomJoinSubmit(joinRoomId.current.value, joinRoomPassword.current.value, joinRoomName.current.value);
+  }
+  /*
     let roomId, roomPassword, userName;
 
     try {
@@ -97,6 +102,7 @@ function RoomJoin() {
       dispatch(setErrorMessage(errorMessage));
     }
   }
+  */
 
 
   /**
@@ -172,7 +178,7 @@ function RoomJoin() {
         <Link to="/">
         <button className="room-form-btn button-secondary" onClick={leaveRoomJoinForm}>Cancel</button>
         </Link>
-        <button className="room-form-btn button-primary" onClick={roomJoinSubmit}>Join</button>
+        <button className="room-form-btn button-primary" onClick={hanleRoomJoinSubmit}>Join</button>
       </div>
     );
   }

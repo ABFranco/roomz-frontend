@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, Switch, Route } from 'react-router-dom';
 import './Room.css';
 
 import Vestibule from '../Vestibule';
 import RoomCanvas from './RoomCanvas';
 import RoomBottomPanel from './RoomBottomPanel';
+import RoomForm from '../RoomForm';
 
 import { awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 
@@ -16,9 +17,15 @@ import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 import store from '../../store';
 
+// testing
+import { joinRoom } from '../../api/RoomzApiServiceClient.js';
+
+import { setRoomUserName } from '../../reducers/RoomSlice';
+import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
+
 function Room() {
   const dispatch = useDispatch();
-  const userInRoom = useSelector(state => (state.room.userInRoom !== null));
+  const userInRoom = useSelector(state => (state.room.userInRoom !== false));
   const inVestibule = useSelector(state => (state.vestibule.roomId !== null));
   const history = useHistory();
 
@@ -69,6 +76,97 @@ function Room() {
     }
   }
 
+
+  /**
+   * @function roomJoinSubmit - submit form to join a room
+   */
+   async function roomJoinSubmit(joinRoomId, joinRoomPassword, joinRoomName) {
+    let roomId, roomPassword, userName;
+
+    try {
+      roomId = joinRoomId;
+      roomPassword = joinRoomPassword;
+      userName = joinRoomName;
+        
+      if (roomId === '') {
+        throw new Error('Enter a Room ID');
+      } else if (roomPassword === '') {
+        throw new Error('Enter a Room Password');
+      } else if (userName === '') {
+        throw new Error('Enter a personal Name');
+      }
+    } catch (err) {
+      dispatch(setErrorMessage(err.message));
+      return;
+    }
+
+    let data = {
+      roomId: roomId,
+      roomPassword: roomPassword,
+      userName: userName,
+      userId: store.getState().user.userId,
+      isGuest: store.getState().user.userId == null,
+    };
+
+    // reset room data, add userName to state
+    dispatch(clearRoomData());
+    dispatch(clearChatHistory());
+    dispatch(clearVestibuleData());
+    dispatch(setRoomUserName(userName));
+
+    try {
+      // TODO: relocate joinRoom into vestibuleSlice?
+      const joinRoomResponseStream = await joinRoom(data);
+
+      // stream listeners
+      joinRoomResponseStream.on('data', (response) => {
+        // update vestibule state
+        let vestibulePayload = {
+          roomId: roomId,
+          roomPassword: roomPassword,
+          userName: userName,
+        };
+        dispatch(setVestibuleJoin(vestibulePayload));
+        history.push(`/room/${roomId}`);
+        // receiveJoinRoomResponse(response);
+      });
+
+      joinRoomResponseStream.on('error', (err) => {
+        console.log(':RoomForm.roomJoinSubmit: Stream error: %o', err);
+        let errorMessage = 'An unexpected error has occurred when joining a Room.';
+        if (err && 'message' in err) {
+          errorMessage = err['message'];
+        }
+        dispatch(setErrorMessage(errorMessage));
+      });
+
+      joinRoomResponseStream.on('end', () => {
+        console.log(':RoomForm.roomJoinSubmit: Stream ended.');
+      });
+
+    } catch (err) {
+      console.log(':RoomJoin.roomJoinSubmit: err=%o', err);
+      let errorMessage = 'An unexpected error has occurred when joining a Room.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      dispatch(setErrorMessage(errorMessage));
+    }
+  }
+
+  function invalidRoom() {
+    return (
+      <div className="room-container">
+        <div className="invalid-room">
+          <h2>Invalid Room Id</h2>
+        </div>
+        <Link to="/">
+          <button className="room-form-btn button-secondary" onClick={roomLeaveInvalid}>Return Home</button>
+        </Link>
+      </div>
+    );
+  }
+
   function view() {
     if (inVestibule) {
       return (
@@ -84,14 +182,17 @@ function Room() {
       );
     } else {
       return (
-        <div className="room-container">
-          <div className="invalid-room">
-            <h2>Invalid Room Id</h2>
-          </div>
-          <Link to="/">
-            <button className="room-form-btn button-secondary" onClick={roomLeaveInvalid}>Return Home</button>
-          </Link>
-        </div>
+        <Switch>
+          <Route path="/room/create">
+              <RoomForm />
+            </Route>
+            <Route path="/room/join">
+              <RoomForm roomJoinSubmit={roomJoinSubmit}/>
+            </Route>
+            <Route path="/room/:roomId">
+              {invalidRoom}
+            </Route>
+        </Switch>
       );
     }
   }

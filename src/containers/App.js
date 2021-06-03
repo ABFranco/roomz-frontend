@@ -29,13 +29,7 @@ function App() {
               <AccountForm />
             </Route>
 
-            <Route path="/room/create">
-              <RoomForm />
-            </Route>
-            <Route path="/room/join">
-              <RoomForm />
-            </Route>
-            <Route path="/room/:roomId">
+            <Route path="/room">
               <Room />
             </Route>
             
