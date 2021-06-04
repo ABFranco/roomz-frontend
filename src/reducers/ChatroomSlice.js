@@ -25,6 +25,7 @@ const chatroomSlice = createSlice({
   initialState: {
     chatHistory: [],
     isVisible: false,
+    inChatroom: false,
   },
   reducers: {
 
@@ -34,6 +35,16 @@ const chatroomSlice = createSlice({
      */
      toggleChatroom: (state) => {
       state.isVisible = !state.isVisible;
+    },
+
+    /**
+     * @reduxAction 'chatroom/setInChatroom' - Set inChatroom boolean
+     * @param {Object} state - Initial state
+     * @param {boolean} action.payload
+     */
+     setInChatroom: (state, action) => {
+      state.inChatroom = action.payload;
+      state.isVisible = false;
     },
 
 
@@ -64,6 +75,7 @@ const chatroomSlice = createSlice({
      */
     clearChatHistory: (state) => {
       state.chatHistory = [];
+      state.inChatroom = false;
     },
   },
   extraReducers: {}
@@ -72,7 +84,7 @@ const chatroomSlice = createSlice({
 /**
  * Actions
  */
-export const { toggleChatroom, setChatHistory, appendChatMessage, clearChatHistory } = chatroomSlice.actions;
+export const { toggleChatroom, setInChatroom, setChatHistory, appendChatMessage, clearChatHistory } = chatroomSlice.actions;
 export { sendChatMessage }
 
 export default chatroomSlice;

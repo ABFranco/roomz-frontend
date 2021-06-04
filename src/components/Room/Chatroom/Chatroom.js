@@ -8,7 +8,7 @@ import Message from '../../../elements/Message.js';
 import { enterChatRoom } from '../../../api/RoomzApiServiceClient.js';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { sendChatMessage, appendChatMessage } from '../../../reducers/ChatroomSlice';
+import { sendChatMessage, appendChatMessage, setInChatroom } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
@@ -31,7 +31,14 @@ function Chatroom() {
 
   useEffect(() => {
     // join chat room upon entering the view, this should only occur once
-    joinChatRoomStream();
+    if (store.getState().chatroom.inChatroom) {
+      // user is already inChatroom upon a page refresh => leave it
+      dispatch(setInChatroom(false));
+    } else {
+      // prevents race-condition where a page refresh joins chatroom before the vestibule redirect
+      joinChatRoomStream();
+    }
+    
   },[]);
 
 
@@ -49,7 +56,8 @@ function Chatroom() {
     try {
       const chatStream = await enterChatRoom(data);
 
-      chatStream.on('data', (data) => {
+      dispatch(setInChatroom(true));
+      chatStream.on('data', (data) => {  
         receiveChatMessage(data);
       });
 
