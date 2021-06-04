@@ -62,7 +62,7 @@ function Room() {
   async function joinRoomClosureStream() {
     let data = {
       roomId: store.getState().room.roomId,
-      userId: store.getState().room.userId,
+      userId: store.getState().user.userId,
       token: store.getState().room.token,
     };
     console.log(':Room.joinRoomClosureStream: Attempting to join closure stream with data=%o', data);
