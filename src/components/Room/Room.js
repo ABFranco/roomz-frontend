@@ -21,14 +21,19 @@ import store from '../../store';
 
 function Room() {
   const dispatch = useDispatch();
-  const userInRoom = useSelector(state => (state.room.userInRoom !== false));
-  const inVestibule = useSelector(state => (state.vestibule.roomId !== null));
+  const userInRoomView = useSelector(state => (state.room.userInRoom !== false));
+  const userInVestibule = useSelector(state => (state.vestibule.roomId !== null));
   const history = useHistory();
 
   useEffect(() => {
     // this should only occur once when a non-host
     if (!store.getState().room.userIsHost) {
       joinRoomClosureStream();
+    }
+
+    // upon refresh, user should always be in the vestibule
+    if (userInRoomView) {
+      dispatch(setVestibuleJoin({roomId: store.getState().room.roomId}));
     }
   },[]);
 
@@ -188,20 +193,20 @@ function Room() {
         isStrict: false, // TODO: does this matter?
       }
       dispatch(setJoinedRoom(payload));
-      // setVestibuleStatus('Enter Room ID: ' + roomId);
 
     } else if (status === 'wait') {
-      console.log(':Vestibule.receiveJoinRoomResponse: Detected wait room');
+      console.log(':Room.receiveJoinRoomResponse: Detected wait room');
       
 
     } else if (status === 'reject') {
-      console.warn(':Vestibule.receiveJoinRoomResponse: Failed to join room.');
+      console.warn(':Room.receiveJoinRoomResponse: Failed to join room.');
       dispatch(setErrorMessage('Failed to join room.'));
     } else {
-      console.warn(':Vestibule.receiveJoinRoomResponse: Unknown error.');
+      console.warn(':Room.receiveJoinRoomResponse: Unknown error.');
       dispatch(setErrorMessage('Unknown error.'));
     }
   }
+
 
   function invalidRoom() {
     return (
@@ -217,12 +222,14 @@ function Room() {
   }
 
   function view() {
-    if (inVestibule) {
+    if (userInVestibule) {
+      // user is in the Vestibule
       return (
         <Vestibule />
       );
       
-    } else if (userInRoom) {
+    } else if (userInRoomView) {
+      // user is in the Room view
       return (
         <div className="room-container">
           <RoomCanvas />
@@ -230,6 +237,7 @@ function Room() {
         </div>
       );
     } else {
+      // user is in a Room form
       return (
         <Switch>
           <Route path="/room/create">
