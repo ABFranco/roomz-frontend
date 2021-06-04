@@ -21,29 +21,37 @@ import store from '../../store';
 
 function Room() {
   const dispatch = useDispatch();
-  const userInRoomView = useSelector(state => (state.room.userInRoom !== false));
+  const userInRoom = useSelector(state => (state.room.userInRoom !== false));
   const userInVestibule = useSelector(state => (state.vestibule.roomId !== null));
   const history = useHistory();
 
+  // initial checks upon loading the page 
   useEffect(() => {
-    // this should only occur once when a non-host
-    if (!store.getState().room.userIsHost) {
-      joinRoomClosureStream();
-    }
 
     // upon refresh, user should always be in the vestibule
-    if (userInRoomView) {
+    if (userInRoom) {
       dispatch(setVestibuleJoin({roomId: store.getState().room.roomId}));
     }
+
+    // upon refresh when joining a non-strict room, re-join if not yet accepted
+    if (userInVestibule && store.getState().room.token === null) {
+      roomJoinSubmit(store.getState().vestibule.roomId, store.getState().vestibule.roomPassword, store.getState().vestibule.userName);
+    }
   },[]);
+
+
+  // upon entering the room as a non-host, join closure stream
+  useEffect(() => {
+    if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
+      joinRoomClosureStream();
+    }
+  },[userInRoom]);
 
 
   /**
    * @function roomLeaveInvalid - room participant is in an invalid room url and exits
    */
   function roomLeaveInvalid() {
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
     history.push('/');
   }
 
@@ -63,8 +71,6 @@ function Room() {
       const closureStream = await awaitRoomClosure(data);
       
       closureStream.on('data', (data) => {
-        dispatch(clearRoomData());
-        dispatch(clearChatHistory());
         history.push('/');
       });
 
@@ -81,14 +87,8 @@ function Room() {
   /**
    * @function roomJoinSubmit - submit form to join a room
    */
-   async function roomJoinSubmit(joinRoomId, joinRoomPassword, joinRoomName) {
-    let roomId, roomPassword, userName;
-
+   async function roomJoinSubmit(roomId, roomPassword, userName) {
     try {
-      roomId = joinRoomId;
-      roomPassword = joinRoomPassword;
-      userName = joinRoomName;
-        
       if (roomId === '') {
         throw new Error('Enter a Room ID');
       } else if (roomPassword === '') {
@@ -228,7 +228,7 @@ function Room() {
         <Vestibule />
       );
       
-    } else if (userInRoomView) {
+    } else if (userInRoom) {
       // user is in the Room view
       return (
         <div className="room-container">
