@@ -33,7 +33,6 @@ function MediaPreview(props) {
     navigator.getUserMedia({'audio': true, 'video': true},
       function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.')
-        // props.setLocalMediaStream(localMediaStream)
         setStream(localMediaStream)
         // Add local video stream to Grid.
         let addVideoData = {
