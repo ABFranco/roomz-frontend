@@ -1,13 +1,10 @@
 import React from 'react';
-import {
-  Switch,
-  Route
-} from 'react-router-dom'; 
+import { Switch, Route } from 'react-router-dom'; 
 
 import RoomCreate from './RoomCreate';
 import RoomJoin from './RoomJoin';
 
-function RoomForm() {
+function RoomForm({roomJoinSubmit}) {
   return (
     <Switch>
       <Route path="/room/create">
@@ -15,7 +12,7 @@ function RoomForm() {
       </Route>
 
       <Route path="/room/join">
-        <RoomJoin />
+        <RoomJoin roomJoinSubmit={roomJoinSubmit}/>
       </Route>
     </Switch>
   );

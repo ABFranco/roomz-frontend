@@ -5,12 +5,10 @@ import './VestibulePanel.css';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { setJoinedRoom, clearRoomData, roomJoinCancel, roomDelete, roomLeave } from '../../../reducers/RoomSlice';
-import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/VestibuleSlice';
+import { clearRoomData, roomJoinCancel, roomDelete, roomLeave } from '../../../reducers/RoomSlice';
+import { clearChatHistory } from '../../../reducers/ChatroomSlice';
+import { clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
@@ -21,92 +19,15 @@ function VestibulePanel() {
 
   const history = useHistory();
 
-  const [vestibuleStatus, setVestibuleStatus] = useState('Pending host acceptance...');
+  const [vestibuleStatus, setVestibuleStatus] = useState('');
 
   useEffect(() => {
-    // upon initial load, determine if the user is still waiting for host response based on cache
     if (isWaiting) {
-      reattemptRoomJoinSubmit();
+      setVestibuleStatus('Pending host acceptance...');
     } else {
       setVestibuleStatus('Enter Room ID: ' + store.getState().room.roomId);
     }
-  }, []);
-
-
-  /**
-   * @function reattemptRoomJoinSubmit - reattmpet to join the room again
-   */
-  async function reattemptRoomJoinSubmit() {
-
-    let data = {
-      roomId: store.getState().vestibule.roomId,
-      roomPassword: store.getState().vestibule.roomPassword,
-      userName: store.getState().vestibule.userName,
-      userId: store.getState().user.userId,
-      isGuest: store.getState().user.userId == null,
-    };
-
-    try {
-      const joinRoomResponseStream = await joinRoom(data);
-
-      joinRoomResponseStream.on('data', (response) => {
-        receiveJoinRoomResponse(response);
-      });
-
-    } catch (err) {
-      let errorMessage = 'An unexpected error has occurred when joining a Room.';
-      if (err && 'message' in err) {
-        errorMessage = err['message'];
-      }
-      dispatch(setErrorMessage(errorMessage));
-    }
-  }
-
-  
-  /**
-   * @function receiveJoinRoomResponse - response after requesting to join a Room
-   * @param {Object} response 
-   */
-  function receiveJoinRoomResponse(response) {
-    let roomId = response.getRoomId();
-    let status = response.getStatus();
-
-    if (status === 'accept') {
-      dispatch(clearVestibuleData());
-      
-      // cleanup chatHistory json
-      let chatHistory = response.getChatHistoryList();
-
-      let chatHistoryData = [];
-      for (let i = 0; i < chatHistory.length; i++) {
-        chatHistoryData.push({
-          userId: chatHistory[i].getUserId(),
-          name: chatHistory[i].getUserName(),
-          message: chatHistory[i].getMessage(),
-          timestamp: chatHistory[i].getTimestamp(),
-        });
-      }
-      dispatch(setChatHistory(chatHistoryData));
-
-      // update state to allow entering room
-      let payload = {
-        roomId: roomId,
-        token: response.getToken(),
-        isStrict: false, // TODO: does this matter?
-      }
-      dispatch(setJoinedRoom(payload));
-      setVestibuleStatus('Enter Room ID: ' + roomId);
-
-    } else if (status === 'wait') {
-      console.log(':Vestibule.receiveJoinRoomResponse: Detected wait room');
-    } else if (status === 'reject') {
-      console.warn(':Vestibule.receiveJoinRoomResponse: Failed to join room.');
-      dispatch(setErrorMessage('Failed to join room.'));
-    } else {
-      console.warn(':Vestibule.receiveJoinRoomResponse: Unknown error.');
-      dispatch(setErrorMessage('Unknown error.'));
-    }
-  }
+  }, [isWaiting]);
   
 
   /**
@@ -114,10 +35,9 @@ function VestibulePanel() {
    */
   async function enterRoom() {
     let token = store.getState().room.token;
-
+    
     if (token !== null) {
-      let roomId = store.getState().room.roomId;
-      history.push(`/room/${roomId}`);
+      dispatch(clearVestibuleData());
     } else {
       dispatch(setErrorMessage('You do not yet have access to join the room.'));
     }

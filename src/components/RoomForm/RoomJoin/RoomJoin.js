@@ -1,17 +1,16 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../RoomForm.css';
 
-import { joinRoom } from '../../../api/RoomzApiServiceClient.js';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { setRoomUserName, setJoinedRoom, clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
-import { setChatHistory, clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { setVestibuleJoin, clearVestibuleData } from '../../../reducers/VestibuleSlice';
+import { useDispatch } from 'react-redux';
+import { clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
+import { clearChatHistory } from '../../../reducers/ChatroomSlice';
+import { clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
-function RoomJoin() {
+function RoomJoin({roomJoinSubmit}) {
   const dispatch = useDispatch();
   
   const history = useHistory();
@@ -22,81 +21,13 @@ function RoomJoin() {
 
 
   /**
-   * @function roomJoinSubmit - submit form to join a room
+   * @function handleRoomJoinSubmit - call parent function to join room
    */
-  async function roomJoinSubmit() {
-    let roomId, roomPassword, userName;
-
-    try {
-      roomId = joinRoomId.current.value;
-      roomPassword = joinRoomPassword.current.value;
-      userName = joinRoomName.current.value;
-        
-      if (roomId === '') {
-        throw new Error('Enter a Room ID');
-      } else if (roomPassword === '') {
-        throw new Error('Enter a Room Password');
-      } else if (userName === '') {
-        throw new Error('Enter a personal Name');
-      }
-    } catch (err) {
-      dispatch(setErrorMessage(err.message));
-      return;
-    }
-
-    let data = {
-      roomId: roomId,
-      roomPassword: roomPassword,
-      userName: userName,
-      userId: store.getState().user.userId,
-      isGuest: store.getState().user.userId == null,
-    };
-
-    // reset room data, add userName to state
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
-    dispatch(setRoomUserName(userName));
-
-    try {
-      // TODO: relocate joinRoom into vestibuleSlice?
-      const joinRoomResponseStream = await joinRoom(data);
-
-      // stream listeners
-      joinRoomResponseStream.on('data', (response) => {
-        // update vestibule state
-        let vestibulePayload = {
-          roomId: roomId,
-          roomPassword: roomPassword,
-          userName: userName,
-        };
-        dispatch(setVestibuleJoin(vestibulePayload));
-        history.push(`/vestibule/${roomId}`);
-        // receiveJoinRoomResponse(response);
-      });
-
-      joinRoomResponseStream.on('error', (err) => {
-        console.log(':RoomForm.roomJoinSubmit: Stream error: %o', err);
-        let errorMessage = 'An unexpected error has occurred when joining a Room.';
-        if (err && 'message' in err) {
-          errorMessage = err['message'];
-        }
-        dispatch(setErrorMessage(errorMessage));
-      });
-
-      joinRoomResponseStream.on('end', () => {
-        console.log(':RoomForm.roomJoinSubmit: Stream ended.');
-      });
-
-    } catch (err) {
-      console.log(':RoomJoin.roomJoinSubmit: err=%o', err);
-      let errorMessage = 'An unexpected error has occurred when joining a Room.';
-      if (err && 'message' in err) {
-        errorMessage = err['message'];
-      }
-      dispatch(setErrorMessage(errorMessage));
-    }
+  
+  async function handleRoomJoinSubmit() {
+    roomJoinSubmit(joinRoomId.current.value, joinRoomPassword.current.value, joinRoomName.current.value);
   }
+
 
 
   /**
@@ -172,7 +103,7 @@ function RoomJoin() {
         <Link to="/">
         <button className="room-form-btn button-secondary" onClick={leaveRoomJoinForm}>Cancel</button>
         </Link>
-        <button className="room-form-btn button-primary" onClick={roomJoinSubmit}>Join</button>
+        <button className="room-form-btn button-primary" onClick={handleRoomJoinSubmit}>Join</button>
       </div>
     );
   }
