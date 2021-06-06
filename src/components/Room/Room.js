@@ -29,10 +29,9 @@ function Room() {
 
   // These are public domain STUN servers offered for free from Google.
   // Ty Google :)
-  let ICE_SERVERS = [
+  const ICE_SERVERS = [
     {urls:"stun:stun.l.google.com:19302"}
   ];
-  // TODO: Move peerId to redux room store.
   let myPeerId = "";
   let roomyPcs = {};
 
