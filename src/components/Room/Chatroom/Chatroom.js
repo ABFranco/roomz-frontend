@@ -32,10 +32,10 @@ function Chatroom() {
   useEffect(() => {
     // join chat room upon entering the view, this should only occur once
     if (store.getState().chatroom.inChatroom) {
-      // user is already inChatroom upon a page refresh => leave it
+      // user needs to be sent to vestibule upon refresh => exit the chatroom
       dispatch(setInChatroom(false));
     } else {
-      // prevents race-condition where a page refresh joins chatroom before the vestibule redirect
+      // user officially joins room view => join chatroom
       joinChatRoomStream();
     }
     

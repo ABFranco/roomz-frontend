@@ -30,10 +30,11 @@ function Room() {
 
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
+      // update `userInVestibule` to true
       dispatch(setVestibuleJoin({roomId: store.getState().room.roomId}));
     }
 
-    // upon refresh when joining a non-strict room, re-join if not yet accepted
+    // upon refresh in vestibule and still joining a strict room, re-join if not yet accepted
     if (userInVestibule && store.getState().room.token === null) {
       roomJoinSubmit(store.getState().vestibule.roomId, store.getState().vestibule.roomPassword, store.getState().vestibule.userName);
     }
@@ -116,7 +117,6 @@ function Room() {
     dispatch(setRoomUserName(userName));
 
     try {
-      // TODO: relocate joinRoom into vestibuleSlice?
       const joinRoomResponseStream = await joinRoom(data);
 
       // update vestibule state
