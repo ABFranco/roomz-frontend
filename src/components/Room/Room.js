@@ -196,8 +196,6 @@ function Room() {
 
     } else if (status === 'wait') {
       console.log(':Room.receiveJoinRoomResponse: Detected wait room');
-      
-
     } else if (status === 'reject') {
       console.warn(':Room.receiveJoinRoomResponse: Failed to join room.');
       dispatch(setErrorMessage('Failed to join room.'));

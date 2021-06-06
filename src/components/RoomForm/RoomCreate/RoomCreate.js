@@ -51,7 +51,6 @@ function RoomCreate() {
         dispatch(setRoomUserName(data['userName']));
 
         let roomId = store.getState().room.roomId
-        // set data to enter vestibule
         dispatch(setVestibuleJoin({roomId: roomId}));
 
         history.push(`/room/${roomId}`);
