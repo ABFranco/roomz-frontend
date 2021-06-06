@@ -6,12 +6,13 @@ import VideoGrid from '../VideoGrid';
 import Chatroom from '../Chatroom';
 import JoinRequests from '../JoinRequests';
 
-function RoomCanvas() {
+function RoomCanvas(props) {
 
   return (
     <div className="room-canvas">
       <JoinRequests />
-      <VideoGrid />
+      <VideoGrid
+        roomMediaStreams={props.roomMediaStreams}/>
       <Chatroom />
     </div>
   )

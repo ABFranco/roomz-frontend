@@ -4,7 +4,9 @@ import Avatar from '@material-ui/core/Avatar';
 
 import './MediaPreview.css';
 
-function MediaPreview() {
+import store from '../../../store';
+
+function MediaPreview(props) {
   const [stream, setStream] = useState(null);
   const [peerId, setPeerId] = useState("");
   const [muted, setMuted] = useState(false);
@@ -19,6 +21,7 @@ function MediaPreview() {
    */
   function setupLocalMedia() {
     if (stream != null) {
+      console.log('Local stream already established!')
       return
     }
     console.log('Asking for local audio/video inputs')
@@ -28,9 +31,19 @@ function MediaPreview() {
       navigator.msGetUserMedia);
     
     navigator.getUserMedia({'audio': true, 'video': true},
-      function(localStream) {
+      function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.')
-        setStream(localStream);
+        // props.setLocalMediaStream(localMediaStream)
+        setStream(localMediaStream)
+        // Add local video stream to Grid.
+        let addVideoData = {
+          'action': 'AddStream',
+          'stream': localMediaStream,
+          // NOTE: We are not keeping peerId inside redux for now.
+          'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
+          'muted': false,
+        }
+        props.dispatchMediaStreams(addVideoData)
       },
       function() {
         console.log('Access denied for audio/video')

@@ -5,14 +5,14 @@ import './VideoGrid.css';
 function VideoGrid(props) {
   return (
     <div className="room-video-grid">
-      {/* {props.videos.map((v, index) => (
+      {props.roomMediaStreams.map((v, index) => (
         <Video
           key={index}
           stream={v.stream}
           peerId={v.peerId}
           muted={v.muted}
           />
-      ))} */}
+      ))}
     </div>
   )
 }
