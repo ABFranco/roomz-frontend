@@ -25,6 +25,13 @@ function Home() {
     }
   }
 
+  function accountDetails() {
+    if (signedIn) {
+      history.push('/account/details');
+    } else {
+      dispatch(setErrorMessage('Must be signed in!'));
+    }
+  }
 
   /**
    * Handle click event for "Sign Out" button
@@ -57,7 +64,7 @@ function Home() {
     if (signedIn) {
       return (
         <div className="home-actions-account">
-          <button className="button-secondary">Account Details</button>
+          <button className="button-secondary" onClick={accountDetails}>Account Details</button>
           <button className="button-secondary" onClick={accountLogout}>Sign Out</button>
         </div>
       )   
