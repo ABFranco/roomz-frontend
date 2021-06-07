@@ -30,9 +30,9 @@ function Room() {
   // These are public domain STUN servers offered for free from Google.
   // Ty Google :)
   const ICE_SERVERS = [
-    {urls:"stun:stun.l.google.com:19302"}
+    {urls:'stun:stun.l.google.com:19302'}
   ];
-  let myPeerId = "";
+  let myPeerId = '';
   let roomyPcs = {};
 
   // initial checks upon loading the page 
@@ -58,7 +58,11 @@ function Room() {
     if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
       joinRoomClosureStream();
     }
+    if (userInRoom && store.getState().room.token !== null) {
+      joinMediaRoom()
+    }
   },[userInRoom]);
+
 
   /**
    * @function toggleAudio - toggles mute on user's audio.
@@ -70,6 +74,7 @@ function Room() {
     dispatchMediaStreams(toggleAudioData)
   }
 
+
   /**
    * @function toggleVideo - toggles mute on user's video.
    */
@@ -77,8 +82,9 @@ function Room() {
     let toggleVideoData = {
       'action': 'ToggleVideoStream',
     }
-    dispatchMediaStreams(toggleVideoData)
+    dispatchMediaStreams(toggleVideoData);
   }
+
 
   /**
    * @function toggleMediaTracks - enables or disables audio or video tracks on a media stream.
@@ -87,26 +93,27 @@ function Room() {
    */
   function toggleMediaTracks(stream, isAudio) {
     if (stream === null) {
-      console.log('Invalid video stream, cannot toggle media.')
-      return
+      console.log('Invalid video stream, cannot toggle media.');
+      return;
     }
     let localMediaTracks = stream.getVideoTracks();
-    let mediaType = 'video'
+    let mediaType = 'video';
     if (isAudio) {
-      mediaType = 'audio'
+      mediaType = 'audio';
       localMediaTracks = stream.getAudioTracks();
     }
     if (localMediaTracks.length > 0) {
       // Disable or re-enable tracks on local stream.
-      console.log('Toggling %o tracks from local stream', mediaType)
-      for (var i = 0; i < localMediaTracks.length; i++) {
-        console.log('Setting %o track enabled to=%o', mediaType, !localMediaTracks[i].enabled)
-        localMediaTracks[i].enabled = !localMediaTracks[i].enabled
+      console.log('Toggling %o tracks from local stream', mediaType);
+      for (let i = 0; i < localMediaTracks.length; i++) {
+        console.log('Setting %o track enabled to=%o', mediaType, !localMediaTracks[i].enabled);
+        localMediaTracks[i].enabled = !localMediaTracks[i].enabled;
       }
     } else {
-      console.log('No registered %i tracks on stream!', mediaType)
+      console.log('No registered %i tracks on stream!', mediaType);
     }
   }
+
 
   /**
    * @function toggleAudio - Add Video Stream appends a peer's video stream data to the array of
@@ -115,22 +122,22 @@ function Room() {
    * @param {Object} actionObject - A payload object used to determine which actions are performed to media streams.
    */
   function editMediaStream(prevRoomMediaStreams, actionObject) {
-    console.log('editMediaStream, data=%o', actionObject)
+    console.log('editMediaStream, data=%o', actionObject);
     let newRoomMediaStreams = null;
     switch(actionObject.action) {
       case 'AddStream':
-        console.log('Adding new media stream to grid')
+        console.log('Adding new media stream to grid');
         newRoomMediaStreams = [...prevRoomMediaStreams, actionObject];
         return newRoomMediaStreams;
 
       case 'RemoveStream':
-        console.log('Removing media stream from grid')
+        console.log('Removing media stream from grid');
         newRoomMediaStreams = [...prevRoomMediaStreams];
-        for (var i = 0; i < newRoomMediaStreams.length; i++) {
+        for (let i = 0; i < newRoomMediaStreams.length; i++) {
           if (newRoomMediaStreams[i].peerId === actionObject.removePeerId) {
-            console.log('Removed media stream for peerId=%o', actionObject.removePeerId)
+            console.log('Removed media stream for peerId=%o', actionObject.removePeerId);
             newRoomMediaStreams.splice(i, 1);
-            break
+            break;
           }
         }
         return newRoomMediaStreams;
@@ -142,7 +149,7 @@ function Room() {
           // Toggle mute on local video div.
           newRoomMediaStreams[0].muted = !newRoomMediaStreams[0].muted;
           // Also toggle audio tracks on outgoing local stream.
-          toggleMediaTracks(newRoomMediaStreams[0].stream, true)
+          toggleMediaTracks(newRoomMediaStreams[0].stream, true);
         }
         return newRoomMediaStreams;
 
@@ -151,15 +158,16 @@ function Room() {
         newRoomMediaStreams = [...prevRoomMediaStreams];
         if (newRoomMediaStreams.length > 0) {
           // Toggle video tracks on local stream.
-          toggleMediaTracks(newRoomMediaStreams[0].stream, false)
+          toggleMediaTracks(newRoomMediaStreams[0].stream, false);
         }
-        console.log('newRoomMediaStreams=%o', newRoomMediaStreams)
+        console.log('newRoomMediaStreams=%o', newRoomMediaStreams);
         return newRoomMediaStreams;
 
       default:
         console.log('Incorrect action for editMediaStream');
     }
   }
+
 
   /**
    * @function newPeerConnection - Creates a new Peer Connection.
@@ -170,7 +178,7 @@ function Room() {
       {"iceServers": ICE_SERVERS},
       // NOTE: This is needed for chrome/firefox/edge support.
       {"optional": [{"DtlsSrtpKeyAgreement": true}]}
-    )
+    );
   }
 
   /**
@@ -185,34 +193,35 @@ function Room() {
       'user_id': userId,
       'room_id': roomId,
     }
+    console.log('joining media room');
     rssClient.joinMediaRoom(data, () => {
       // Once in the room, we must await any new joining RoomUser. Once this
       // happens, we must start the webrtc offer/answer process and relay of
       // ICE candidates so data can flow from one to the other P2P.
       rssClient.awaitAddPeer((data) => {
-        console.log('Received request to AddPeer=%o', data)
-        let peerId = data["peer_id"]
+        console.log('Received request to AddPeer=%o', data);
+        let peerId = data["peer_id"];
         // An 'AddPeer' request has a boolean 'is_offerer' field, this
         // indicates whether a person is the initial offerer to start the
         // offer/answer process. Any new joining member is the initiator.
-        let isOfferer = data["is_offerer"]
+        let isOfferer = data["is_offerer"];
         if (peerId in roomyPcs) {
-          console.log('Already connected to peer=%o', peerId)
-          return
+          console.log('Already connected to peer=%o', peerId);
+          return;
         }
 
         // Create a fresh peer connection we will use to create offers/answers
         // relay ICE candidates on, and respond to new media events. Store
         // these away to grab the "socket" if you will to a peer's peer
         // connection.
-        let pc = newPeerConnection()
+        let pc = newPeerConnection();
         roomyPcs[peerId] = pc;
 
         // ICE Candidate events represent network connection candidates used to
         // form a connection between 2 peers.
         pc.onicecandidate = function(event) {
-          console.log('Received possible ICE candidate for peerId=%o', peerId)
-          console.log(event)
+          console.log('Received possible ICE candidate for peerId=%o', peerId);
+          console.log(event);
           if (event.candidate) {
             let iceCandidateData = {
               'from_peer_id': myPeerId,
@@ -224,20 +233,20 @@ function Room() {
               }
             }
             rssClient.relayICECandidate(iceCandidateData, () => {
-              console.log('Sent ICE Candidate to peerId=%o', peerId)
+              console.log('Sent ICE Candidate to peerId=%o', peerId);
             })
           }
         }
 
         pc.onaddtrack = function (event) {
-          console.log('New onaddtrack for peerId=%o', peerId)
-          console.log(event)
+          console.log('New onaddtrack for peerId=%o', peerId);
+          console.log(event);
         }
 
         // Await incoming media stream events on the peer connection.
         pc.onaddstream = function(event) {
-          console.log('Incoming stream for peerId=%o', peerId)
-          console.log(event)
+          console.log('Incoming stream for peerId=%o', peerId);
+          console.log(event);
           // TODO: muta audio/video.
           let addVideoData = {
             'action': 'AddStream',
@@ -253,7 +262,7 @@ function Room() {
         if (roomMediaStreams.length > 0) {
           // NOTE: It is currently guaranteed that the first mediaStream is the
           // local media stream.
-          console.log('Attaching local media stream onto peerId=%o\'s peer connection')
+          console.log('Attaching local media stream onto peerId=%o\'s peer connection');
           pc.addStream(roomMediaStreams[0].stream);
         }
 
@@ -264,7 +273,7 @@ function Room() {
           console.log('Creating offer to peerId=%o', peerId);
           pc.createOffer(
             function(localDescription) {
-              console.log('Local sdp: ', localDescription)
+              console.log('Local sdp: ', localDescription);
               pc.setLocalDescription(localDescription,
                 function() {
                   let sdpData = {
@@ -272,13 +281,13 @@ function Room() {
                     'to_peer_id': peerId,
                     'sdp': localDescription,
                   }
-                  rssClient.relaySDP(sdpData, () => {})
+                  rssClient.relaySDP(sdpData, () => {});
                 },
-                function() { alert("setLocalDescription failed!")}
+                function() { alert("setLocalDescription failed!") }
               )
             },
             function(e) {
-              console.log('Error sending offer=%o', e)
+              console.log('Error sending offer=%o', e);
             }
           )
         }
@@ -289,19 +298,19 @@ function Room() {
       // new RoomUser's peer connection, and then setting the remote/local
       // descriptions to complete the media acceptance agreement.
       rssClient.awaitIncomingSDP((data) => {
-        console.log('Received incoming sdp=%o', data)
-        let peerId = data["peer_id"]
+        console.log('Received incoming sdp=%o', data);
+        let peerId = data["peer_id"];
         let pc = roomyPcs[peerId];
         let remoteSDP = data["sdp"];
         let desc = new RTCSessionDescription(remoteSDP);
         let stuff = pc.setRemoteDescription(desc,
           function() {
-            console.log('Set remote description for peerId=%o', peerId)
+            console.log('Set remote description for peerId=%o', peerId);
             if (remoteSDP.type === "offer") {
-              console.log('Received an offer from peerId=%', peerId)
+              console.log('Received an offer from peerId=%', peerId);
               pc.createAnswer(
                 function(localDescription) {
-                  console.log('Answer description for peerId=%o is =%o', peerId, localDescription)
+                  console.log('Answer description for peerId=%o is =%o', peerId, localDescription);
                   pc.setLocalDescription(localDescription,
                     function() {
                       let sdpData = {
@@ -312,18 +321,18 @@ function Room() {
                       rssClient.relaySDP(sdpData, () => {})
                     },
                     function(e) {
-                      console.log('Error setting local description for peerId=%o, error=%o', peerId, e)
+                      console.log('Error setting local description for peerId=%o, error=%o', peerId, e);
                     }
                   )
                 },
                 function(e) {
-                  console.log('error creating answer=%o', e)
+                  console.log('error creating answer=%o', e);
                 }
               )
             }
           },
           function(e) {
-            console.log('setRemoteDescription error=%o', e)
+            console.log('setRemoteDescription error=%o', e);
           }
         )
         console.log('description object: ', desc);
@@ -333,25 +342,25 @@ function Room() {
       // canidate events. The ICE candidate must be added to the peer's peer
       // connection.
       rssClient.awaitIncomingICECandidate((data) => {
-        let peerId = data["peer_id"]
-        let pc = roomyPcs[peerId]
-        let iceCandidate = data["ice_candidate"]
-        console.log('Set ICE candidate for peerId=%o', peerId)
-        console.log(iceCandidate)
-        pc.addIceCandidate(new RTCIceCandidate(iceCandidate))
+        let peerId = data["peer_id"];
+        let pc = roomyPcs[peerId];
+        let iceCandidate = data["ice_candidate"];
+        console.log('Set ICE candidate for peerId=%o', peerId);
+        console.log(iceCandidate);
+        pc.addIceCandidate(new RTCIceCandidate(iceCandidate));
       })
 
       // The RFE Client must handle peers leaving the room, and delete the
       // resources accordingly.
       rssClient.awaitRemovePeer((data) => {
-        let peerId = data["peer_id"]
-        console.log('Removing peerId=%o from the media room', peerId)
+        let peerId = data["peer_id"];
+        console.log('Removing peerId=%o from the media room', peerId);
         if (peerId in roomyPcs) {
           let removeStreamData = {
             'action': 'RemoveStream',
             'removePeerId': peerId,
           }
-          dispatchMediaStreams(removeStreamData)
+          dispatchMediaStreams(removeStreamData);
           roomyPcs[peerId].close();
         }
         delete roomyPcs[peerId];
@@ -359,6 +368,10 @@ function Room() {
     }) // End: joinMediaRoom.
   }
 
+
+  /**
+   * @function leaveMediaRoom - Emits the 'LeaveMediaRoom' event to the RSS.
+   */
   function leaveMediaRoom() {
     let roomId = store.getState().room.roomId;
     let userId = store.getState().user.userId;
@@ -367,7 +380,7 @@ function Room() {
       'peer_id': myPeerId,
     }
     rssClient.leaveMediaRoom(data, () => {
-      console.log("peerId=%o has requested to leave the room", myPeerId)
+      console.log("peerId=%o has requested to leave the room", myPeerId);
     })
   }
 
@@ -567,7 +580,8 @@ function Room() {
               <RoomForm />
             </Route>
             <Route path="/room/join">
-              <RoomForm roomJoinSubmit={roomJoinSubmit}/>
+              <RoomForm
+                roomJoinSubmit={roomJoinSubmit}/>
             </Route>
             <Route path="/room/:roomId">
               {invalidRoom}

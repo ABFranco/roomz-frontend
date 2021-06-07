@@ -21,8 +21,8 @@ function MediaPreview(props) {
    */
   function setupLocalMedia() {
     if (stream != null) {
-      console.log('Local stream already established!')
-      return
+      console.log('Local stream already established!');
+      return;
     }
     console.log('Asking for local audio/video inputs')
     navigator.getUserMedia = (navigator.getUserMedia ||
@@ -32,8 +32,8 @@ function MediaPreview(props) {
     
     navigator.getUserMedia({'audio': true, 'video': true},
       function(localMediaStream) {
-        console.log('Granted access to audio/video, setting stream.')
-        setStream(localMediaStream)
+        console.log('Granted access to audio/video, setting stream.');
+        setStream(localMediaStream);
         // Add local video stream to Grid.
         let addVideoData = {
           'action': 'AddStream',
@@ -42,11 +42,11 @@ function MediaPreview(props) {
           'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
           'muted': false,
         }
-        props.dispatchMediaStreams(addVideoData)
+        props.dispatchMediaStreams(addVideoData);
       },
       function() {
-        console.log('Access denied for audio/video')
-        alert('Have fun being lame on zoom')
+        console.log('Access denied for audio/video');
+        alert('Have fun being lame on zoom');
       });
   }
 
@@ -54,7 +54,7 @@ function MediaPreview(props) {
    * @function toggleAudio - toggles mute on user's audio.
    */
   function toggleAudio() {
-    setMuted(!muted)
+    setMuted(!muted);
   }
   
   /**
@@ -62,7 +62,7 @@ function MediaPreview(props) {
    */
   function toggleVideo() {
     if (stream === null) {
-      setupLocalMedia()
+      setupLocalMedia();
     } else {
       setStream(null);
     }

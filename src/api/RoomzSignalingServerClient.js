@@ -10,11 +10,11 @@ const rssClientSocket = io("http://localhost:5000", {
 
 async function askToConnect() {
   try {
-    await rssClientSocket.connect()
-    return true
+    await rssClientSocket.connect();
+    return true;
   } catch (e) {
-    console.error("Failed to create socket connection: %s", e)
-    return false
+    console.error("Failed to create socket connection: %s", e);
+    return false;
   }
 }
 
@@ -38,52 +38,52 @@ rssClientSocket.on('reconnect_failed', () => {
 })
 
 function joinMediaRoom(data, cb) {
-  console.log(':rss.joinMediaRoom: Sending request to join media room, data=%o', data)
+  console.log(':rss.joinMediaRoom: Sending request to join media room, data=%o', data);
   rssClientSocket.emit(events.JOIN_MEDIA_ROOM, data);
-  cb()
+  cb();
 }
 
 function relayICECandidate(data, cb) {
-  console.log(':rss.relayICECandidate: Sending request to relay ICE candidate, data=%o', data)
+  console.log(':rss.relayICECandidate: Sending request to relay ICE candidate, data=%o', data);
   rssClientSocket.emit(events.RELAY_ICE_CANDIDATE, data);
-  cb()
+  cb();
 }
 
 function relaySDP(data, cb) {
-  console.log(':rss.relaySDP: Sending request to relay SDP, data=%o', data)
+  console.log(':rss.relaySDP: Sending request to relay SDP, data=%o', data);
   rssClientSocket.emit(events.RELAY_SDP, data);
 }
 
 function leaveMediaRoom(data, cb) {
-  console.log(':rss.leaveMediaRoom: Sending request to leave media room, data=%o', data)
+  console.log(':rss.leaveMediaRoom: Sending request to leave media room, data=%o', data);
   rssClientSocket.emit(events.LEAVE_MEDIA_ROOM, data);
 }
 
 function awaitAddPeer(cb) {
-  console.log(':rss.awaitAddPeer:')
+  console.log(':rss.awaitAddPeer:');
   rssClientSocket.on(events.ADD_PEER, function(data) {
-    cb(data)
+    cb(data);
   })
 }
 
 function awaitIncomingICECandidate(cb) {
-  console.log(':rss.awaitIncomingICECandidate:')
+  console.log(':rss.awaitIncomingICECandidate:');
   rssClientSocket.on(events.INCOMING_ICE_CANDIDATE, function(data) {
-    cb(data)
+    cb(data);
   })
 }
 
 function awaitIncomingSDP(cb) {
-  console.log(':rss.awaitIncomingSDP:')
+  console.log(':rss.awaitIncomingSDP:');
   rssClientSocket.on(events.INCOMING_SDP, function(data) {
-    cb(data)
+    cb(data);
   })
 }
 
 function awaitRemovePeer(cb) {
-  console.log(':rss.awaitRemovePeer:')
+  console.log(':rss.awaitRemovePeer:');
   rssClientSocket.on(events.REMOVE_PEER, function(data) {
-    cb(data)
+    cb(data);
   })
 }
 
