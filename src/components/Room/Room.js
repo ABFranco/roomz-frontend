@@ -49,7 +49,7 @@ function Room() {
       roomJoinSubmit(store.getState().vestibule.roomId, store.getState().vestibule.roomPassword, store.getState().vestibule.userName);
     }
 
-    rssClient.askToConnect()
+    rssClient.askToConnect();
   },[]);
 
 
@@ -59,7 +59,7 @@ function Room() {
       joinRoomClosureStream();
     }
     if (userInRoom && store.getState().room.token !== null) {
-      joinMediaRoom()
+      joinMediaRoom();
     }
   },[userInRoom]);
 
@@ -71,7 +71,7 @@ function Room() {
     let toggleAudioData = {
       'action': 'ToggleAudioStream',
     }
-    dispatchMediaStreams(toggleAudioData)
+    dispatchMediaStreams(toggleAudioData);
   }
 
 
