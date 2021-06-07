@@ -5,11 +5,12 @@ import './Vestibule.css';
 import VestibulePanel from './VestibulePanel';
 import MediaPreview from './MediaPreview';
 
-function Vestibule() {
+function Vestibule(props) {
 
   return (
     <div className="vestibule-container">
-      <MediaPreview />
+      <MediaPreview
+        dispatchMediaStreams={props.dispatchMediaStreams}/>
       <VestibulePanel />
     </div>
   );
