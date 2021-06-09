@@ -1,4 +1,4 @@
-.account-details-container {
+.email-container {
     padding: 40px;
     width: 80vw;
     max-width: 400px;
@@ -12,9 +12,9 @@
     margin: 20px 0px;
 }
 
-.account-details-actions {
+.email-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     width: 100%;
 }
@@ -24,7 +24,7 @@
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    width: 100%;
+    width: 400px;
     text-align: left;
 }
 

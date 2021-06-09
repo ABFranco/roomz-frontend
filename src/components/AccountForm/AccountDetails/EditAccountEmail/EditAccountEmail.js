@@ -1,5 +1,6 @@
 import React, {  useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import './EditAccountEmail.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setErrorMessage } from '../../../../reducers/NotificationSlice';
@@ -13,6 +14,7 @@ function EditAccountEmail() {
 
   const oldEmailInput = useRef();
   const newEmailInput = useRef();
+  const confirmNewEmailInput = useRef();
 
   async function editEmailSubmit() {
 
@@ -32,6 +34,10 @@ function EditAccountEmail() {
         <div className="email-form-input">
           <label htmlFor="newEmail">New Email</label>
           <input id="newEmail" ref={newEmailInput} type="email" />
+        </div>
+        <div className="email-form-input">
+          <label htmlFor="confirmNewEmail">Confirm New Email</label>
+          <input id="confirmNewEmail" ref={confirmNewEmailInput} type="email" />
         </div>
       </form> 
     );

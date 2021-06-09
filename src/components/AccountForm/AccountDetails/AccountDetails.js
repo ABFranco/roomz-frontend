@@ -4,7 +4,7 @@ import './AccountDetails.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../../store';
-//import { clearSignInData } from '../../../reducers/UserSlice';
+import { clearSignInData } from '../../../reducers/UserSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 
 
@@ -18,11 +18,14 @@ function AccountDetails() {
   /**
    * Text if user is Signed-In
    */
-  function helloUser() {
+  function userDetails() {
     return (
       <div className="account-details-user">
-        <p className="account-details-msg"><b>Signed-In as: </b>
-        {store.getState().user.firstName}
+        <p className="account-details-msg">
+        <b>{store.getState().user.firstName} {store.getState().user.lastName}</b>
+        </p>
+        <p className="account-details-msg"><b>Email: </b>
+        {store.getState().user.email}
         </p>
       </div>
     );
@@ -67,6 +70,7 @@ function AccountDetails() {
           <div className="account-details-header">
             <h1>Account Details</h1>
           </div>
+          {userDetails()}
           {determineAccountDetailsActions()}
         </div>
       );

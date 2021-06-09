@@ -1,5 +1,6 @@
 import React, {  useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import './EditAccountPassword.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setErrorMessage } from '../../../../reducers/NotificationSlice';
@@ -13,6 +14,7 @@ function EditAccountPassword() {
     const emailInput = useRef();
     const oldPasswordInput = useRef();
     const newPasswordInput = useRef();
+    const confirmNewPasswordInput = useRef();
   
     async function editPasswordSubmit() {
   
@@ -30,12 +32,16 @@ function EditAccountPassword() {
             <input id="Email" ref={emailInput} type="email" />
           </div>
           <div className="password-form-input">
-            <label htmlFor="oldPassword">Confirm Old Password</label>
+            <label htmlFor="oldPassword">Old Password</label>
             <input id="oldPassword" type="password" ref={oldPasswordInput}/>
           </div>
           <div className="password-form-input">
             <label htmlFor="newPassword">New Password</label>
             <input id="newPassword" type="password" ref={newPasswordInput}/>
+          </div>
+          <div className="password-form-input">
+            <label htmlFor="confirmNewPassword">Confirm New Password</label>
+            <input id="newPassword" type="password" ref={confirmNewPasswordInput}/>
           </div>
         </form> 
       );
