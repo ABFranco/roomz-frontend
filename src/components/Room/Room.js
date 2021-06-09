@@ -87,6 +87,9 @@ function Room() {
 
   /**
    * @function roomJoinSubmit - submit form to join a room
+   * @param {number} roomId 
+   * @param {string} roomPassword 
+   * @param {string} userName 
    */
    async function roomJoinSubmit(roomId, roomPassword, userName) {
     try {
@@ -111,9 +114,6 @@ function Room() {
     };
 
     // reset room data, add userName to state
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
     dispatch(setRoomUserName(userName));
 
     try {

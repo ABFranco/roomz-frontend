@@ -183,15 +183,15 @@ function RoomBottomPanel() {
       <div className="room-actions">
         {strictActions()}
         {panelActions()}
-        <div className="room-actions-right">
-          <IconButton aria-label="share" onClick={roomShare}>
-            <ShareIcon />
-          </IconButton>
-          <IconButton aria-label="chatroom toggle" onClick={toggleChatroomClick}>
-            <ChatIcon />
-          </IconButton>
-        </div>
       </div>
+      <div className="room-actions-right">
+        <IconButton aria-label="share" onClick={roomShare}>
+          <ShareIcon />
+        </IconButton>
+        <IconButton aria-label="chatroom toggle" onClick={toggleChatroomClick}>
+          <ChatIcon />
+        </IconButton>
+        </div>
     </div>
   );
 }

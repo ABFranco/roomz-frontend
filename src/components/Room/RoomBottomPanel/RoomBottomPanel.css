@@ -12,7 +12,6 @@
 }
 
 .room-desc {
-  width: 10vw;
   margin: auto 40px;
 
   display: flex;
@@ -21,7 +20,7 @@
 }
 
 .room-bottom-panel-actions {
-  width: 40vw;
+  width: 40%;
   margin: auto;
 
   flex-grow: 1;
@@ -36,8 +35,8 @@
 }
 
 .room-actions-right {
-  width: 10vw;
-  margin: auto;
+  width: 10%;
+  margin: auto 20px;
 
   display: flex;
   flex-direction: row;
