@@ -11,9 +11,8 @@ import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 import * as rssClient from '../../api/RoomzSignalingServerClient.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setJoinedRoom, setRoomUserName, clearRoomData } from '../../reducers/RoomSlice';
+import { setInVestibule, setToken, setRoomUserName, setJoinRequestAccepted, setVestibuleJoin, clearRoomData } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
-import { setVestibuleJoin, clearVestibuleData } from '../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
 import store from '../../store';
@@ -21,8 +20,8 @@ import store from '../../store';
 
 function Room() {
   const dispatch = useDispatch();
-  const userInRoom = useSelector(state => (state.room.userInRoom !== false));
-  const userInVestibule = useSelector(state => (state.vestibule.roomId !== null));
+  const userInRoom = useSelector(state => state.room.userInRoom);
+  const userInVestibule = useSelector(state => state.room.userInVestibule);
   const [localMediaStream, setLocalMediaStream] = useState(null);
   const [roomMediaStreams, dispatchMediaStreams] = useReducer(editMediaStream, []);
   const history = useHistory();
@@ -40,25 +39,28 @@ function Room() {
 
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
-      // update `userInVestibule` to true
-      dispatch(setVestibuleJoin({roomId: store.getState().room.roomId}));
+      dispatch(setInVestibule(true))
     }
 
-    // upon refresh in vestibule and still joining a strict room, re-join if not yet accepted
+    // upon refresh, if in vestibule and still attempting to join a strict room, re-join if not yet accepted
     if (userInVestibule && store.getState().room.token === null) {
-      roomJoinSubmit(store.getState().vestibule.roomId, store.getState().vestibule.roomPassword, store.getState().vestibule.userName);
+      roomJoinSubmit(store.getState().room.roomId, store.getState().room.roomPassword, store.getState().room.roomUserName);
     }
 
     rssClient.askToConnect();
+    console.log('inVestibule=%o', userInVestibule)
   },[]);
 
 
   // upon entering the room as a non-host, join closure stream
   useEffect(() => {
+    // re-establish room closure stream upon refresh if non-host and in the room
     if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
       joinRoomClosureStream();
     }
+    // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
+      // Konner: I believe I need to pass this down to the VestibulePanel upon clicking 'Enter Room'.
       joinMediaRoom();
     }
   },[userInRoom]);
@@ -193,7 +195,7 @@ function Room() {
       'user_id': userId,
       'room_id': roomId,
     }
-    console.log('joining media room');
+    console.log('joining media room, myPeerId=%o', myPeerId);
     rssClient.joinMediaRoom(data, () => {
       // Once in the room, we must await any new joining RoomUser. Once this
       // happens, we must start the webrtc offer/answer process and relay of
@@ -408,11 +410,13 @@ function Room() {
       const closureStream = await awaitRoomClosure(data);
       
       closureStream.on('data', (data) => {
+        console.log(':Room.joinRoomClosureStream: Receive data, returning home.')
         history.push('/');
       });
 
       closureStream.on('end', () => {
         console.log(':Room.joinRoomClosureStream: Stream ended.');
+        history.push('/');
       });
 
     } catch (err) {
@@ -428,9 +432,11 @@ function Room() {
     try {
       if (roomId === '') {
         throw new Error('Enter a Room ID');
-      } else if (roomPassword === '') {
+      }
+      if (roomPassword === '') {
         throw new Error('Enter a Room Password');
-      } else if (userName === '') {
+      }
+      if (userName === '') {
         throw new Error('Enter a personal Name');
       }
     } catch (err) {
@@ -438,34 +444,20 @@ function Room() {
       return;
     }
 
-    let data = {
+    let joinRoomRequest = {
       roomId: roomId,
       roomPassword: roomPassword,
       userName: userName,
       userId: store.getState().user.userId,
       isGuest: store.getState().user.userId == null,
     };
-
-    // reset room data, add userName to state
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
-    dispatch(setRoomUserName(userName));
-
+  
     try {
-      const joinRoomResponseStream = await joinRoom(data);
-
-      // update vestibule state
-      let vestibulePayload = {
-        roomId: roomId,
-        roomPassword: roomPassword,
-        userName: userName,
-      };
-      dispatch(setVestibuleJoin(vestibulePayload));
-      history.push(`/room/${roomId}`);
+      console.log('room.roomJoinSubmit: Sending room join request=%o', joinRoomRequest);
+      const joinRoomResponseStream = await joinRoom(joinRoomRequest);
 
       // stream listeners
-      joinRoomResponseStream.on('data', (response) => {
+      joinRoomResponseStream.on('data', (joinRoomRequest, response) => {
         receiveJoinRoomResponse(response);
       });
 
@@ -496,42 +488,46 @@ function Room() {
    * @function receiveJoinRoomResponse - response after requesting to join a Room
    * @param {Object} response 
    */
-   function receiveJoinRoomResponse(response) {
+   function receiveJoinRoomResponse(joinRoomRequest, response) {
     let roomId = response.getRoomId();
     let status = response.getStatus();
 
-    if (status === 'accept') {
+    if (status === 'accept' || status == 'wait') {
+      // join the vestibule on any "positive" response from the RAS
       let vestibulePayload = {
         roomId: roomId,
-        roomPassword: null,
-        userName: null,
+        isStrict: status == 'wait',
+        roomPassword: joinRoomRequest['roomPassword'],
+        roomUserName: joinRoomRequest['userName'],
       };
       dispatch(setVestibuleJoin(vestibulePayload));
+      
+      // WARNING BAD DESIGN BELOW
+      // Konner: The chat history is received before the user officially enters the room, this seems
+      // for abfranco@.
 
       // cleanup chatHistory json
-      let chatHistory = response.getChatHistoryList();
+      if (status == 'accept') {
+        // let token = response.getToken();
+        let chatHistory = response.getChatHistoryList();
 
-      let chatHistoryData = [];
-      for (let i = 0; i < chatHistory.length; i++) {
-        chatHistoryData.push({
-          userId: chatHistory[i].getUserId(),
-          name: chatHistory[i].getUserName(),
-          message: chatHistory[i].getMessage(),
-          timestamp: chatHistory[i].getTimestamp(),
-        });
+        let chatHistoryData = [];
+        for (let i = 0; i < chatHistory.length; i++) {
+          chatHistoryData.push({
+            userId: chatHistory[i].getUserId(),
+            name: chatHistory[i].getUserName(),
+            message: chatHistory[i].getMessage(),
+            timestamp: chatHistory[i].getTimestamp(),
+          });
+        }
+        //dispatch(setToken(token));
+        dispatch(setJoinRequestAccepted(true))
+        dispatch(setChatHistory(chatHistoryData));
       }
-      dispatch(setChatHistory(chatHistoryData));
-
-      // update state to allow entering room
-      let payload = {
-        roomId: roomId,
-        token: response.getToken(),
-        isStrict: false, // TODO: does this matter?
+      if (status == 'wait') {
+        console.log(':Room.receiveJoinRoomResponse: Detected wait room');
       }
-      dispatch(setJoinedRoom(payload));
-
-    } else if (status === 'wait') {
-      console.log(':Room.receiveJoinRoomResponse: Detected wait room');
+      history.push(`/room/${roomId}`);
     } else if (status === 'reject') {
       console.warn(':Room.receiveJoinRoomResponse: Failed to join room.');
       dispatch(setErrorMessage('Failed to join room.'));

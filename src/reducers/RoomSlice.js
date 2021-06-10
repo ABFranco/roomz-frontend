@@ -12,10 +12,13 @@ const roomCreate = createAsyncThunk(
   async(data) => {
     const response = await apiClient.createRoom(data);
     
+    // Konner: Bad API, unnecessary roomId and isStrict. Remove?
     const payload = {
       roomId: response.getRoomId(), 
       token: response.getToken(), 
       isStrict: response.getIsStrict(),
+      roomUserName: data['userName'],
+      roomPassword: data['password'],
     };
     return payload;
   }
@@ -70,9 +73,22 @@ const roomSlice = createSlice({
     isStrict: false, 
     userIsHost: false,
     userInRoom: false,
-    roomUserName: null
+    userInVestibule: false,
+    roomUserName: null,
+    roomPassword: null,
+    roomJoinRequestAccepted: false,
   },
   reducers: {
+    /**
+     * @reduxAction 'room/setInVestibule' - Set if user is in the vestibule or not
+     * @param {Object} state - Initial state
+     * @param {string} action.payload
+     */
+    setInVestibule: (state, action) => {
+      state.userInRoom = false;
+      state.userInVestibule = action.payload;
+    },
+    
     /**
      * @reduxAction 'room/setRoomUserName' - Set user's username for a specific room
      * @param {Object} state - Initial state
@@ -83,19 +99,52 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setJoinedRoom - Set room as joined as non-host
+     * @reduxAction 'room/setRoomJoinRequestAccepted' - Set user's username for a specific room
+     * @param {Object} state - Initial state
+     * @param {string} action.payload
+     */
+    setRoomJoinRequestAccepted: (state, action) => {
+      state.roomJoinRequestAccepted = action.payload;
+    },
+
+    /**
+     * @reduxAction 'room/setToken' - Set a user's token for a room
+     * @param {Object} state - Initial state
+     * @param {string} action.payload
+     */
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
+
+
+    /**
+     * @reduxAction 'room/setEnteredRoom - State when user enters a room
+     * @param {Object} state - Initial state
+     */
+    setEnteredRoom: (state) => {
+      state.userInRoom = true;
+      state.userInVestibule = false;
+      state.roomJoinRequestAccepted = true;
+    },
+
+    /**
+     * @reduxAction 'room/setVestibuleJoin' - State when user first enters the vestibule
      * @param {Object} state - Initial state
      * @param {Object} action.payload
      * @param {number} action.payload.roomId
-     * @param {string} action.payload.token
-     * @param {boolean} action.payload.isStrict
+     * @param {string} action.payload.roomPassword
+     * @param {string} action.payload.userName
      */
-    setJoinedRoom: (state, action) => {
+    setVestibuleJoin: (state, action) => {
       state.roomId = action.payload.roomId;
       state.token = action.payload.token;
-      state.isStrict = action.payload.isStrict;;
-      state.userIsHost = false;
-      state.userInRoom = true;
+      state.isStrict = action.payload.isStrict;
+      state.userIsHost = action.payload.userIsHost;
+      state.userInRoom = false;
+      state.userInVestibule = true;
+      state.roomPassword = action.payload.roomPassword;
+      state.roomUserName = action.payload.user;
+      state.roomJoinRequestAccepted = false;
     },
 
     /**
@@ -108,7 +157,10 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
+      state.userInVestibule = false;
       state.roomUserName = null;
+      state.roomPassword = null;
+      state.roomJoinRequestAccepted = false;
     },
 
     
@@ -128,7 +180,11 @@ const roomSlice = createSlice({
       state.token = action.payload.token;
       state.isStrict = action.payload.isStrict;
       state.userIsHost = true;
-      state.userInRoom = true;
+      state.userInRoom = false;
+      state.userInVestibule = true;
+      state.roomUserName = action.payload.roomUserName;
+      state.roomPassword = action.payload.roomPassword;
+      state.roomJoinRequestAccepted = true;
     },
     [roomCreate.pending]: () => {},
     [roomCreate.rejected]: (action) => {},
@@ -143,7 +199,10 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
+      state.userInVestibule = false;
       state.roomUserName = null;
+      state.roomPassword = null;
+      state.roomJoinRequestAccepted = false;
     },
 
     /**
@@ -156,7 +215,10 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
+      state.userInVestibule = false;
       state.roomUserName = null;
+      state.roomPassword = null;
+      state.roomJoinRequestAccepted = false;
     },
 
     /**
@@ -169,7 +231,10 @@ const roomSlice = createSlice({
       state.isStrict = false;
       state.userIsHost = false;
       state.userInRoom = false;
+      state.userInVestibule = false;
       state.roomUserName = null;
+      state.roomPassword = null;
+      state.roomJoinRequestAccepted = false;
     },
 
   }
@@ -178,7 +243,7 @@ const roomSlice = createSlice({
 /**
  * Actions
  */
-export const { setRoomUserName, setJoinedRoom, clearRoomData } = roomSlice.actions;
+export const { setRoomUserName, setToken, setInVestibule, setVestibuleJoin, setEnteredRoom, setJoinRequestAccepted, clearRoomData } = roomSlice.actions;
 export { roomCreate, roomDelete, roomLeave, roomJoinCancel }
 
 export default roomSlice;

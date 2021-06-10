@@ -4,7 +4,6 @@ import '../RoomForm.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { roomCreate, setRoomUserName, clearRoomData } from '../../../reducers/RoomSlice';
-import { setVestibuleJoin } from '../../../reducers/VestibuleSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
@@ -30,10 +29,10 @@ function RoomCreate() {
       dispatch(setErrorMessage('Both passwords must match!'));
     } else {
       let userId = store.getState().user.userId;
-      let userName = createRoomName.current.value;
+      let roomUserName = createRoomName.current.value;
       let data = { 
         userId: userId,
-        userName: userName,
+        userName: roomUserName,
         password: passwordInput.current.value,
         isStrict: !(isStrictInput.current.checked),
       };
@@ -41,18 +40,14 @@ function RoomCreate() {
       console.log(':RoomCreate.roomCreateSubmit: Attempting to create room with data=%o', data);
 
       try {
+        // create room using form data. Upon fulfillment, state is updated to redirect to vestibule.
         const response = await dispatch(roomCreate(data));
         if ('error' in response) {
           throw response['error'];
         }
 
-        // clear chatroom data, add userName to state
-        dispatch(clearChatHistory());
-        dispatch(setRoomUserName(data['userName']));
-
+        // join the vestibule and update state
         let roomId = store.getState().room.roomId
-        dispatch(setVestibuleJoin({roomId: roomId}));
-
         history.push(`/room/${roomId}`);
   
       } catch (err) {
