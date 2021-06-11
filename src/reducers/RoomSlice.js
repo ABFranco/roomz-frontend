@@ -99,7 +99,7 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setIsStrict' - Set user's username for a specific room
+     * @reduxAction 'room/setIsStrict' - Set if the room is strict or not
      * @param {Object} state - Initial state
      * @param {string} action.payload
      */
@@ -108,7 +108,7 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setRoomJoinRequestAccepted' - Set user's username for a specific room
+     * @reduxAction 'room/setRoomJoinRequestAccepted' - Set whether user is allowed to enter the room
      * @param {Object} state - Initial state
      * @param {string} action.payload
      */
@@ -137,12 +137,12 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setVestibuleJoin' - State when user first enters the vestibule
+     * @reduxAction 'room/setVestibuleJoin' - State when user first enters the vestibule via join room request
      * @param {Object} state - Initial state
      * @param {Object} action.payload
      * @param {number} action.payload.roomId
      * @param {string} action.payload.roomPassword
-     * @param {string} action.payload.userName
+     * @param {string} action.payload.roomUserName
      */
     setVestibuleJoin: (state, action) => {
       state.roomId = action.payload.roomId;
@@ -180,6 +180,8 @@ const roomSlice = createSlice({
      * @param {number} action.payload.roomId
      * @param {string} action.payload.token
      * @param {boolean} action.payload.isStrict
+     * @param {string} action.payload.roomUserName
+     * @param {string} action.payload.roomPassword
      */
     [roomCreate.fulfilled]: (state, action) => {
       state.roomId = action.payload.roomId;

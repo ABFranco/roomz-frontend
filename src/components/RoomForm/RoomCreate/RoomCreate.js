@@ -46,7 +46,7 @@ function RoomCreate() {
           throw response['error'];
         }
 
-        // join the vestibule and update state
+        // redirect to room page
         let roomId = store.getState().room.roomId
         history.push(`/room/${roomId}`);
   

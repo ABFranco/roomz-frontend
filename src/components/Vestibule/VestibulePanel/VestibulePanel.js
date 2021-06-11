@@ -39,9 +39,6 @@ function VestibulePanel() {
     } else {
       // user has officially entered the room.
       dispatch(setEnteredRoom())
-
-      // Konner: This should trigger a joinMediaRoom call. I need to pass management to
-      // the Room component.
     }
   }
 
@@ -87,7 +84,6 @@ function VestibulePanel() {
         throw response['error'];
       }
 
-      // Konner: just return home.
       history.push('/');
 
     } catch (err) {
@@ -115,7 +111,6 @@ function VestibulePanel() {
         throw response['error'];
       }
 
-      // Konner: returning home will clear room state.
       history.push('/');
 
     } catch (err) {

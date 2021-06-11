@@ -11,7 +11,7 @@ import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 import * as rssClient from '../../api/RoomzSignalingServerClient.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setIsStrict, setInVestibule, setToken, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin, clearRoomData } from '../../reducers/RoomSlice';
+import { clearRoomData, setIsStrict, setToken, setInVestibule, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
@@ -39,7 +39,7 @@ function Room() {
 
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
-      dispatch(setInVestibule(true))
+      dispatch(setInVestibule(true));
     }
 
     // upon refresh, if in vestibule and still attempting to join a strict room, re-join if not yet accepted
@@ -409,7 +409,7 @@ function Room() {
       const closureStream = await awaitRoomClosure(data);
       
       closureStream.on('data', (data) => {
-        console.log(':Room.joinRoomClosureStream: Receive data, returning home.')
+        console.log(':Room.joinRoomClosureStream: Receive data, returning home.');
         history.push('/');
       });
 
@@ -492,7 +492,7 @@ function Room() {
     let status = response.getStatus();
 
     if (status === 'accept' || status == 'wait') {
-      let wait = status == 'wait'
+      let wait = status == 'wait';
       if (wait) {
         dispatch(setIsStrict(true));
       }
