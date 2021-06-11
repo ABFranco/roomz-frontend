@@ -8,7 +8,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearRoomData, roomJoinCancel, roomDelete, roomLeave, setEnteredRoom } from '../../../reducers/RoomSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
