@@ -11,7 +11,7 @@ import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 import * as rssClient from '../../api/RoomzSignalingServerClient.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setInVestibule, setToken, setRoomUserName, setJoinRequestAccepted, setVestibuleJoin, clearRoomData } from '../../reducers/RoomSlice';
+import { setIsStrict, setInVestibule, setToken, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin, clearRoomData } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
@@ -61,7 +61,7 @@ function Room() {
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
       // Konner: I believe I need to pass this down to the VestibulePanel upon clicking 'Enter Room'.
-      joinMediaRoom();
+      // joinMediaRoom();
     }
   },[userInRoom]);
 
@@ -430,13 +430,13 @@ function Room() {
    */
    async function roomJoinSubmit(roomId, roomPassword, userName) {
     try {
-      if (roomId === '') {
+      if (roomId === '' || roomId == null) {
         throw new Error('Enter a Room ID');
       }
-      if (roomPassword === '') {
+      if (roomPassword === '' || roomPassword == null) {
         throw new Error('Enter a Room Password');
       }
-      if (userName === '') {
+      if (userName === '' || userName == null) {
         throw new Error('Enter a personal Name');
       }
     } catch (err) {
@@ -457,8 +457,8 @@ function Room() {
       const joinRoomResponseStream = await joinRoom(joinRoomRequest);
 
       // stream listeners
-      joinRoomResponseStream.on('data', (joinRoomRequest, response) => {
-        receiveJoinRoomResponse(response);
+      joinRoomResponseStream.on('data', (response) => {
+        receiveJoinRoomResponse(joinRoomRequest, response);
       });
 
       joinRoomResponseStream.on('error', (err) => {
@@ -493,25 +493,25 @@ function Room() {
     let status = response.getStatus();
 
     if (status === 'accept' || status == 'wait') {
+      let wait = status == 'wait'
+      if (wait) {
+        dispatch(setIsStrict(true));
+      }
       // join the vestibule on any "positive" response from the RAS
       let vestibulePayload = {
         roomId: roomId,
-        isStrict: status == 'wait',
         roomPassword: joinRoomRequest['roomPassword'],
         roomUserName: joinRoomRequest['userName'],
       };
       dispatch(setVestibuleJoin(vestibulePayload));
-      
-      // WARNING BAD DESIGN BELOW
-      // Konner: The chat history is received before the user officially enters the room, this seems
-      // for abfranco@.
 
-      // cleanup chatHistory json
-      if (status == 'accept') {
-        // let token = response.getToken();
+      // Upon acceptance, capture and set additional state
+      if (!wait) {
+        console.log('r.receiveJoinRoomResponse: Accepted into roomId=%o', roomId);
+        let token = response.getToken();
         let chatHistory = response.getChatHistoryList();
-
         let chatHistoryData = [];
+
         for (let i = 0; i < chatHistory.length; i++) {
           chatHistoryData.push({
             userId: chatHistory[i].getUserId(),
@@ -520,12 +520,13 @@ function Room() {
             timestamp: chatHistory[i].getTimestamp(),
           });
         }
-        //dispatch(setToken(token));
-        dispatch(setJoinRequestAccepted(true))
+        dispatch(setToken(token));
+        dispatch(setRoomJoinRequestAccepted(true))
         dispatch(setChatHistory(chatHistoryData));
+        console.log('r.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
       }
       if (status == 'wait') {
-        console.log(':Room.receiveJoinRoomResponse: Detected wait room');
+        console.log(':Room.receiveJoinRoomResponse: Told to wait to enter for room=%o', roomId);
       }
       history.push(`/room/${roomId}`);
     } else if (status === 'reject') {

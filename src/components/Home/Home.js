@@ -20,7 +20,6 @@ function Home() {
     // upon entering home, clear everything
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
   }, []);
 
 

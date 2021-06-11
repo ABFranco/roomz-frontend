@@ -25,6 +25,7 @@ function RoomJoin({roomJoinSubmit}) {
    */
   
   async function handleRoomJoinSubmit() {
+    console.log('join room id=%o', joinRoomId.current.value)
     roomJoinSubmit(joinRoomId.current.value, joinRoomPassword.current.value, joinRoomName.current.value);
   }
 
