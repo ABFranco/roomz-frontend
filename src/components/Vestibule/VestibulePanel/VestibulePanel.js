@@ -38,7 +38,7 @@ function VestibulePanel() {
       dispatch(setErrorMessage('You do not yet have access to join the room.'));
     } else {
       // user has officially entered the room.
-      dispatch(setEnteredRoom())
+      dispatch(setEnteredRoom());
     }
   }
 

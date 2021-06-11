@@ -43,7 +43,7 @@ function RoomJoin({roomJoinSubmit}) {
         throw response['error'];
       }
 
-      history.push('/')
+      history.push('/');
 
     } catch (err) {
       console.log(':RoomJoin.cancelRoomJoin: err=%o', err);
@@ -60,7 +60,7 @@ function RoomJoin({roomJoinSubmit}) {
    * @function leaveRoomJoinForm - leave the join room form
    */
   function leaveRoomJoinForm() {
-    history.push('/')
+    history.push('/');
   }
 
 

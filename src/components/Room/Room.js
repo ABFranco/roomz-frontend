@@ -520,7 +520,7 @@ function Room() {
           });
         }
         dispatch(setToken(token));
-        dispatch(setRoomJoinRequestAccepted(true))
+        dispatch(setRoomJoinRequestAccepted(true));
         dispatch(setChatHistory(chatHistoryData));
         console.log('r.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
       }
