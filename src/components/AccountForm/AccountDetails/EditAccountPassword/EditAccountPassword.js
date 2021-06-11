@@ -15,15 +15,44 @@ function EditAccountPassword() {
     const oldPasswordInput = useRef();
     const newPasswordInput = useRef();
     const confirmNewPasswordInput = useRef();
-  
+
+
+    /**
+   * @function editPasswordSubmit - Submit the Edit Password form
+   */
     async function editPasswordSubmit() {
+      /*if (newPasswordInput.current.value !== confirmNewPasswordInput.current.value) {
+        dispatch(setErrorMessage('Passwords do not match!'));
+      }
   
+      let data = {
+        email = emailInput.current.value,
+        oldPassword = oldPasswordInput.current.value,
+        newPassword = newPasswordInput.current.value,
+      }
+  
+      try {
+        const response = await dispatch(editPassword(data));
+        if ('error' in response) {
+          throw response['error'];
+        }
+  
+        history.push('/account/details');
+      } catch (err) {
+        console.log(':editPasswordSubmit: er=%o', err);
+        let errorMessage = 'An unexpected error has occurred when editing an password.';
+        if (err && 'message' in err) {
+          errorMessage = err['message'];
+        }
+        dispatch(setErrorMessage(errorMessage));
+      }
+      */
     }
-  
+    
     function leaveEditPasswordForm() {
-  
+      history.push('/account/details');
     }
-  
+
     function passwordForm() {
       return (
         <form className="password-form">

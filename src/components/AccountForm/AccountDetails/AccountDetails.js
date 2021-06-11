@@ -70,8 +70,11 @@ function AccountDetails() {
           <div className="account-details-header">
             <h1>Account Details</h1>
           </div>
+
+          <div className="account-details-user-header">
           {userDetails()}
           {determineAccountDetailsActions()}
+          </div>
         </div>
       );
     }

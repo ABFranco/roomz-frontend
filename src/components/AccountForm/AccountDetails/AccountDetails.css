@@ -4,30 +4,17 @@
     max-width: 400px;
 }
 
-.email-form {
+.account-details-user-header {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
-    margin: 20px 0px;
+    margin-top: 20px;
 }
+
 
 .account-details-actions {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
 }
-
-.email-form-input {
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    align-items: stretch;
-    width: 100%;
-    text-align: left;
-}
-
 
 label {
     margin: 4px 0px;

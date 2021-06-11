@@ -26,7 +26,6 @@ const accountLogin = createAsyncThunk(
 
 /**
  * @function accountCreate - thunk to call api for createAccount
- * 
  */
 const accountCreate = createAsyncThunk(
   'user/accountCreate',
@@ -40,6 +39,28 @@ const accountCreate = createAsyncThunk(
   }
 );
 
+/* 
+const editEmail = createAsyncThunk(
+  'user/emailEdit',
+  async(data) => {
+    const response = await apiClient.editEmail(data);
+
+    const payload = {};
+    return payload;
+  }
+);
+
+
+const editPassword = createAsyncThunk(
+  'user/passwordEdit',
+  async(data) => {
+    const response = await apiClient.editPassword(data);
+
+    const payload = {};
+    return payload;
+  }
+);
+*/
 
 /**
  * Slice for main user data

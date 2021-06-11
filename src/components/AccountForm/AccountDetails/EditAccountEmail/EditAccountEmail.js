@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import './EditAccountEmail.css';
 
 import { useDispatch, useSelector } from 'react-redux';
+//import { emailEdit } from '../../../../reducers/UserSlice';
 import { setErrorMessage } from '../../../../reducers/NotificationSlice';
 
 
@@ -16,14 +17,43 @@ function EditAccountEmail() {
   const newEmailInput = useRef();
   const confirmNewEmailInput = useRef();
 
-  async function editEmailSubmit() {
 
+  /**
+   * @function emailEditSubmit - Submit the Edit Email form
+   */
+  
+  async function emailEditSubmit() {
+    /*if (newEmailInput.current.value !== confirmNewEmailInput.current.value) {
+      dispatch(setErrorMessage('Emails do not match!'));
+    }
+
+    let data = {
+      oldEmail = oldEmailInput.current.value,
+      newEmail = newEmailInput.current.value,
+    }
+
+    try {
+      const response = await dispatch(emailEdit(data));
+      if ('error' in response) {
+        throw response['error'];
+      }
+
+      history.push('/account/details');
+    } catch (err) {
+      console.log(':emailEditSubmit: er=%o', err);
+      let errorMessage = 'An unexpected error has occurred when editing an email.';
+      if (err && 'message' in err) {
+        errorMessage = err['message'];
+      }
+      dispatch(setErrorMessage(errorMessage));
+    }
+    */
   }
 
   function leaveEditEmailForm() {
-
+    history.push('/account/details');
   }
-
+  
   function emailForm() {
     return (
       <form className="email-form">
