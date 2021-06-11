@@ -48,7 +48,6 @@ function Room() {
     }
 
     rssClient.askToConnect();
-    console.log('inVestibule=%o', userInVestibule)
   },[]);
 
 
@@ -60,7 +59,7 @@ function Room() {
     }
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
-      // Konner: I believe I need to pass this down to the VestibulePanel upon clicking 'Enter Room'.
+      // TODO: test media room functionality.
       // joinMediaRoom();
     }
   },[userInRoom]);
