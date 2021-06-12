@@ -128,6 +128,10 @@ function Room() {
     switch(actionObject.action) {
       case 'AddStream':
         console.log('Adding new media stream to grid');
+        if (prevRoomMediaStreams.length == 0) {
+          // mute local media stream to prevent echo
+          actionObject.muted = true;
+        }
         newRoomMediaStreams = [...prevRoomMediaStreams, actionObject];
         return newRoomMediaStreams;
 
@@ -148,7 +152,7 @@ function Room() {
         newRoomMediaStreams = [...prevRoomMediaStreams];
         if (newRoomMediaStreams.length > 0) {
           // Toggle mute on local video div.
-          newRoomMediaStreams[0].muted = !newRoomMediaStreams[0].muted;
+          // newRoomMediaStreams[0].muted = !newRoomMediaStreams[0].muted;
           // Also toggle audio tracks on outgoing local stream.
           toggleMediaTracks(newRoomMediaStreams[0].stream, true);
         }
