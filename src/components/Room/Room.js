@@ -523,8 +523,7 @@ function Room() {
         dispatch(setRoomJoinRequestAccepted(true));
         dispatch(setChatHistory(chatHistoryData));
         console.log('r.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
-      }
-      if (status == 'wait') {
+      } else {
         console.log(':Room.receiveJoinRoomResponse: Told to wait to enter for room=%o', roomId);
       }
       history.push(`/room/${roomId}`);

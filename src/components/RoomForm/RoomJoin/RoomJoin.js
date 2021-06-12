@@ -67,7 +67,7 @@ function RoomJoin({roomJoinSubmit}) {
   function keyboardCreateJoin(event) {
     // handle keyboard input
     if (event.key === 'Enter') {
-      roomJoinSubmit();
+      roomJoinSubmit(joinRoomId.current.value, joinRoomPassword.current.value, joinRoomName.current.value);
     }
   }
 
