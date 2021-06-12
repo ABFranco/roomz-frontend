@@ -22,7 +22,7 @@ import { setVisible, updateJoinRequests, clearJoinRequests } from '../../../redu
 
 import store from '../../../store';
 
-function RoomBottomPanel() {
+function RoomBottomPanel(props) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -38,12 +38,14 @@ function RoomBottomPanel() {
     console.log(':Room.roomLeave: Leaving room with data=%o', data);
 
     try {
+      props.leaveMediaRoom();
+      console.log('Successfully left RSS roomId=%o', data["roomId"]);
+
       const response = await dispatch(roomLeave(data));
       if ('error' in response) {
         throw response['error'];
       }
-
-      dispatch(clearChatHistory());
+      console.log('Successfully left RAS roomId=%o', data["roomId"]);
       history.push('/');
 
     } catch (err) {
@@ -66,12 +68,15 @@ function RoomBottomPanel() {
     };
 
     try {
+      props.leaveMediaRoom();
+      console.log('Successfully left RSS roomId=%o', data["roomId"]);
+
       const response = await dispatch(roomDelete(data));
       if ('error' in response) {
         throw response['error'];
       }
+      console.log('Successfully deleted RAS roomId=%o', data["roomId"]);
 
-      dispatch(clearChatHistory());
       dispatch(clearJoinRequests());
       history.push('/');
 

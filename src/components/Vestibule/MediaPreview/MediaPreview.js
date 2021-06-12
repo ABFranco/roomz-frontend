@@ -12,7 +12,7 @@ function MediaPreview(props) {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    // setupLocalMedia();
+    setupLocalMedia();
   }, [])
 
   /**

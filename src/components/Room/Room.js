@@ -60,7 +60,7 @@ function Room() {
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
       // TODO: test media room functionality.
-      // joinMediaRoom();
+      joinMediaRoom();
     }
   },[userInRoom]);
 
@@ -565,7 +565,8 @@ function Room() {
         <div className="room-container">
           <RoomCanvas
             roomMediaStreams={roomMediaStreams}/>
-          <RoomBottomPanel />
+          <RoomBottomPanel
+            leaveMediaRoom={leaveMediaRoom}/>
         </div>
       );
     } else {
