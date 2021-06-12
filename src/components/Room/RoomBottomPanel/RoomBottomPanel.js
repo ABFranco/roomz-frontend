@@ -129,6 +129,32 @@ function RoomBottomPanel(props) {
     dispatch(toggleChatroom());
   }
 
+  /**
+   * @function toggleAudio - toggle local user's audio
+   */
+  function toggleAudio() {
+    console.log('Toggling local audio stream in roomId=%o', store.getState().room.roomId)
+    // let toggleAudioData = {
+    //   'action': 'ToggleAudioStream',
+    // }
+    // props.dispatchMediaStreams(toggleAudioData);
+    // console.log('toggled')
+    // return;
+    props.toggleAudio();
+  }
+
+  /**
+   * @function toggleVideo - toggle local user's video
+   */
+  function toggleVideo() {
+    console.log('Toggling local video stream in roomId=%o', store.getState().room.roomId)
+    // let toggleVideoData = {
+    //   'action': 'ToggleVideoStream',
+    // }
+    // props.dispatchMediaStreams(toggleVideoData);
+    props.toggleVideo();
+  }
+
 
   function roomShare() {
     // TODO
@@ -151,10 +177,10 @@ function RoomBottomPanel(props) {
     if (store.getState().room.userIsHost) {
       return (
         <div className="room-bottom-panel-actions">
-          <IconButton aria-label="toggle mic">
+          <IconButton aria-label="toggle mic" onClick={toggleAudio}>
             <MicIcon />
           </IconButton>
-          <IconButton aria-label="toggle video">
+          <IconButton aria-label="toggle video" onClick={toggleVideo}>
             <VideocamIcon />
           </IconButton>
           <IconButton aria-label="close room" onClick={roomDeleteAsHost}>
@@ -165,10 +191,10 @@ function RoomBottomPanel(props) {
     } else {
       return (
         <div className="room-bottom-panel-actions">
-          <IconButton aria-label="toggle mic">
+          <IconButton aria-label="toggle mic" onClick={toggleAudio}>
               <MicIcon />
             </IconButton>
-            <IconButton aria-label="toggle video">
+            <IconButton aria-label="toggle video" onClick={toggleVideo}>
               <VideocamIcon />
             </IconButton>
           <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>

@@ -69,6 +69,7 @@ function Room() {
    * @function toggleAudio - toggles mute on user's audio.
    */
   function toggleAudio() {
+    console.log('weird')
     let toggleAudioData = {
       'action': 'ToggleAudioStream',
     }
@@ -569,6 +570,8 @@ function Room() {
           <RoomCanvas
             roomMediaStreams={roomMediaStreams}/>
           <RoomBottomPanel
+            toggleAudio={toggleAudio}
+            toggleVideo={toggleVideo}
             leaveMediaRoom={leaveMediaRoom}/>
         </div>
       );

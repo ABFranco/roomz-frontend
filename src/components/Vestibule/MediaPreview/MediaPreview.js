@@ -58,9 +58,16 @@ function MediaPreview(props) {
   }
   
   /**
-   * @function toggleAudio - toggles mute on user's video.
+   * @function toggleVideo - toggles mute on user's video.
    */
   function toggleVideo() {
+    // toggle video stream so it persists when entering the room
+    let toggleVideoData = {
+      'action': 'ToggleVideoStream',
+    }
+    props.dispatchMediaStreams(toggleVideoData);
+
+    // toggle local stream view
     if (stream === null) {
       setupLocalMedia();
     } else {
