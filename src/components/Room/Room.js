@@ -53,6 +53,8 @@ function Room() {
 
   // upon entering the room as a non-host, join closure stream
   useEffect(() => {
+    // TODO: Check edge-case where host closes room while non-host is in vestibule
+
     // re-establish room closure stream upon refresh if non-host and in the room
     if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
       joinRoomClosureStream();
@@ -511,7 +513,7 @@ function Room() {
 
       // Upon acceptance, capture and set additional state
       if (!wait) {
-        console.log('r.receiveJoinRoomResponse: Accepted into roomId=%o', roomId);
+        console.log(':Room.receiveJoinRoomResponse: Accepted into roomId=%o', roomId);
         let token = response.getToken();
         let chatHistory = response.getChatHistoryList();
         let chatHistoryData = [];
@@ -527,7 +529,7 @@ function Room() {
         dispatch(setToken(token));
         dispatch(setRoomJoinRequestAccepted(true));
         dispatch(setChatHistory(chatHistoryData));
-        console.log('r.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
+        console.log(':Room.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
       } else {
         console.log(':Room.receiveJoinRoomResponse: Told to wait to enter for room=%o', roomId);
       }
