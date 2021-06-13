@@ -6,7 +6,6 @@ import '../RoomForm.css';
 import { useDispatch } from 'react-redux';
 import { clearRoomData, roomJoinCancel  } from '../../../reducers/RoomSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
@@ -29,7 +28,6 @@ function RoomJoin({roomJoinSubmit}) {
   }
 
 
-
   /**
    * @function cancelRoomJoin - cancel join request when waiting for host acceptance
    */
@@ -39,16 +37,13 @@ function RoomJoin({roomJoinSubmit}) {
       userId: store.getState().user.userId,
     };
 
-    // set state to leave room
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
-
     try {
       const response = await dispatch(roomJoinCancel(data));
       if ('error' in response) {
         throw response['error'];
       }
+
+      history.push('/');
 
     } catch (err) {
       console.log(':RoomJoin.cancelRoomJoin: err=%o', err);
@@ -65,8 +60,7 @@ function RoomJoin({roomJoinSubmit}) {
    * @function leaveRoomJoinForm - leave the join room form
    */
   function leaveRoomJoinForm() {
-    dispatch(clearRoomData());
-    dispatch(clearVestibuleData());
+    history.push('/');
   }
 
 
@@ -100,9 +94,7 @@ function RoomJoin({roomJoinSubmit}) {
   function roomFormActions() {
     return (
       <div className="room-actions">
-        <Link to="/">
         <button className="room-form-btn button-secondary" onClick={leaveRoomJoinForm}>Cancel</button>
-        </Link>
         <button className="room-form-btn button-primary" onClick={handleRoomJoinSubmit}>Join</button>
       </div>
     );

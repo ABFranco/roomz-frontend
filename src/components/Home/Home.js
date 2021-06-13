@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import store from '../../store';
 import { clearSignInData } from '../../reducers/UserSlice';
 import { clearRoomData } from '../../reducers/RoomSlice';
-import { clearVestibuleData } from '../../reducers/VestibuleSlice';
 import { clearChatHistory } from '../../reducers/ChatroomSlice';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
 
@@ -20,7 +19,6 @@ function Home() {
     // upon entering home, clear everything
     dispatch(clearRoomData());
     dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
   }, []);
 
 

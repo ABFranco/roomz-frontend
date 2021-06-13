@@ -6,15 +6,14 @@ import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { clearRoomData, roomJoinCancel, roomDelete, roomLeave } from '../../../reducers/RoomSlice';
+import { clearRoomData, roomJoinCancel, roomDelete, roomLeave, setEnteredRoom } from '../../../reducers/RoomSlice';
 import { clearChatHistory } from '../../../reducers/ChatroomSlice';
-import { clearVestibuleData } from '../../../reducers/VestibuleSlice';
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import store from '../../../store';
 
 function VestibulePanel() {
   const dispatch = useDispatch();
-  const isWaiting = useSelector(state => (state.vestibule.roomId && state.vestibule.roomPassword && state.vestibule.userName));
+  const isWaiting = useSelector(state => (!state.room.userIsHost && !state.room.roomJoinRequestAccepted));
   const isHost = useSelector(state => state.room.userIsHost);
 
   const history = useHistory();
@@ -35,11 +34,11 @@ function VestibulePanel() {
    */
   async function enterRoom() {
     let token = store.getState().room.token;
-    
-    if (token !== null) {
-      dispatch(clearVestibuleData());
-    } else {
+    if (token == null) {
       dispatch(setErrorMessage('You do not yet have access to join the room.'));
+    } else {
+      // user has officially entered the room.
+      dispatch(setEnteredRoom());
     }
   }
 
@@ -53,16 +52,13 @@ function VestibulePanel() {
       userId: store.getState().user.userId,
     };
 
-    // set state to leave room
-    dispatch(clearRoomData());
-    dispatch(clearChatHistory());
-    dispatch(clearVestibuleData());
-
     try {
       const response = await dispatch(roomJoinCancel(data));
       if ('error' in response) {
         throw response['error'];
       }
+
+      history.push('/');
 
     } catch (err) {
       let errorMessage = 'An unexpected error has occurred when cancelling Room join.';
@@ -88,7 +84,6 @@ function VestibulePanel() {
         throw response['error'];
       }
 
-      dispatch(clearChatHistory());
       history.push('/');
 
     } catch (err) {
@@ -116,7 +111,6 @@ function VestibulePanel() {
         throw response['error'];
       }
 
-      dispatch(clearChatHistory());
       history.push('/');
 
     } catch (err) {
@@ -146,7 +140,7 @@ function VestibulePanel() {
    * @function getRoomUserNameChar - get first char of Room UserName
    */
    function getRoomUserNameChar() {
-    return store.getState().room.roomUserName.substring(0, 1);
+    return store.getState().room.roomUserName !== null ? store.getState().room.roomUserName.substring(0, 1) : "?";
   }
 
 
@@ -157,7 +151,7 @@ function VestibulePanel() {
           <Avatar className="avatar-placeholder">{getRoomUserNameChar()}</Avatar>
 
           <div className="vestibule-header">
-            <h1>Joining Room ID: {store.getState().vestibule.roomId}</h1>
+            <h1>Joining Room ID: {store.getState().room.roomId}</h1>
           </div>
           <CircularProgress className="vestibule-loading"/>
           <p>{ vestibuleStatus }</p>
