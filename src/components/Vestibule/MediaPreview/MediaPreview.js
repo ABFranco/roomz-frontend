@@ -12,14 +12,14 @@ function MediaPreview(props) {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    setupLocalMedia();
+    setupLocalMedia(true);
   }, [])
 
   /**
    * @function setupLocalMedia - requests access to the user's microphone and
    * webcam and properly sets the egress media stream.
    */
-  function setupLocalMedia() {
+  function setupLocalMedia(addStreamToRoom) {
     if (stream != null) {
       console.log('Local stream already established!');
       return;
@@ -34,15 +34,19 @@ function MediaPreview(props) {
       function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.');
         setStream(localMediaStream);
-        // Add local video stream to Grid.
-        let addVideoData = {
-          'action': 'AddStream',
-          'stream': localMediaStream,
-          // NOTE: We are not keeping peerId inside redux for now.
-          'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
-          'muted': false,
+
+        if (addStreamToRoom) {
+          // Add local video stream to Grid.
+          let addVideoData = {
+            'action': 'AddStream',
+            'stream': localMediaStream,
+            // NOTE: We are not keeping peerId inside redux for now.
+            'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
+            // mute local audio by default to prevent echo
+            'muted': true,
+          }
+          props.dispatchMediaStreams(addVideoData);
         }
-        props.dispatchMediaStreams(addVideoData);
       },
       function() {
         console.log('Access denied for audio/video');
@@ -69,7 +73,8 @@ function MediaPreview(props) {
 
     // toggle local stream view
     if (stream === null) {
-      setupLocalMedia();
+      // do not add a new stream to room, assume that's been populated
+      setupLocalMedia(false);
     } else {
       setStream(null);
     }
