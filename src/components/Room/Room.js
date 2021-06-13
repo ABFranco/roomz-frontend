@@ -69,29 +69,6 @@ function Room() {
 
 
   /**
-   * @function toggleAudio - toggles mute on user's audio.
-   */
-  function toggleAudio() {
-    console.log('weird')
-    let toggleAudioData = {
-      'action': 'ToggleAudioStream',
-    }
-    dispatchMediaStreams(toggleAudioData);
-  }
-
-
-  /**
-   * @function toggleVideo - toggles mute on user's video.
-   */
-  function toggleVideo() {
-    let toggleVideoData = {
-      'action': 'ToggleVideoStream',
-    }
-    dispatchMediaStreams(toggleVideoData);
-  }
-
-
-  /**
    * @function newPeerConnection - Creates a new Peer Connection.
    * @returns {PeerConnection} - A peer connection.
    */
@@ -486,8 +463,7 @@ function Room() {
           <RoomCanvas
             roomMediaStreams={roomMediaStreams}/>
           <RoomBottomPanel
-            toggleAudio={toggleAudio}
-            toggleVideo={toggleVideo}
+            dispatchMediaStreams={dispatchMediaStreams}
             leaveMediaRoom={leaveMediaRoom}/>
         </div>
       );

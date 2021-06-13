@@ -1,8 +1,7 @@
-// We must define our reducer in this file to prevent double-execution.
-
+// Miscellaneous media reducers.
 
 /**
-  * @function toggleMediaTracks - enables or disables audio or video tracks on a media stream.
+  * @function toggleMediaTracks - Enables or disables audio or video tracks on a media stream.
   * @param {HTMLMediaElement} stream - A media stream.
   * @param {bool} isAudio - If the media stream is of audio type.
   */
@@ -30,8 +29,7 @@ function toggleMediaTracks(stream, isAudio) {
 }
 
 /**
-  * @function toggleAudio - Add Video Stream appends a peer's video stream data to the array of
-  * video streams passed via props to the Grid component.
+  * @function editMediaStream - Core reducer for adding/removing media streams to a room or toggling mute on streams.
   * @param {HTMLMediaElement[]} prevRoomMediaStreams - An array of room media streams.
   * @param {Object} actionObject - A payload object used to determine which actions are performed to media streams.
   */

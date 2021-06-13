@@ -9,7 +9,6 @@ import store from '../../../store';
 function MediaPreview(props) {
   const [stream, setStream] = useState(null);
   const [peerId, setPeerId] = useState("");
-  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     setupLocalMedia(true);
@@ -58,7 +57,11 @@ function MediaPreview(props) {
    * @function toggleAudio - toggles mute on user's audio.
    */
   function toggleAudio() {
-    setMuted(!muted);
+    // mute audio tracks on room stream
+    let toggleAudioData = {
+      'action': 'ToggleAudioStream',
+    }
+    props.dispatchMediaStreams(toggleAudioData);
   }
   
   /**

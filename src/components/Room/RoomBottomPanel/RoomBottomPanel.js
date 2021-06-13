@@ -134,13 +134,10 @@ function RoomBottomPanel(props) {
    */
   function toggleAudio() {
     console.log('Toggling local audio stream in roomId=%o', store.getState().room.roomId)
-    // let toggleAudioData = {
-    //   'action': 'ToggleAudioStream',
-    // }
-    // props.dispatchMediaStreams(toggleAudioData);
-    // console.log('toggled')
-    // return;
-    props.toggleAudio();
+    let toggleAudioData = {
+      'action': 'ToggleAudioStream',
+    }
+    props.dispatchMediaStreams(toggleAudioData);
   }
 
   /**
@@ -148,11 +145,10 @@ function RoomBottomPanel(props) {
    */
   function toggleVideo() {
     console.log('Toggling local video stream in roomId=%o', store.getState().room.roomId)
-    // let toggleVideoData = {
-    //   'action': 'ToggleVideoStream',
-    // }
-    // props.dispatchMediaStreams(toggleVideoData);
-    props.toggleVideo();
+    let toggleVideoData = {
+      'action': 'ToggleVideoStream',
+    }
+    props.dispatchMediaStreams(toggleVideoData);
   }
 
 
