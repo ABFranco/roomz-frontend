@@ -58,9 +58,7 @@ function editMediaStream(prevRoomMediaStreams, actionObject) {
       console.log('Toggling mute auto on local stream');
       newRoomMediaStreams = [...prevRoomMediaStreams];
       if (newRoomMediaStreams.length > 0) {
-        // Toggle mute on local video div.
-        // newRoomMediaStreams[0].muted = !newRoomMediaStreams[0].muted;
-        // Also toggle audio tracks on outgoing local stream.
+        // Toggle audio tracks on outgoing local stream.
         toggleMediaTracks(newRoomMediaStreams[0].stream, true);
       }
       return newRoomMediaStreams;
@@ -69,7 +67,7 @@ function editMediaStream(prevRoomMediaStreams, actionObject) {
       console.log('Toggling mute video on local stream');
       newRoomMediaStreams = [...prevRoomMediaStreams];
       if (newRoomMediaStreams.length > 0) {
-        // Toggle video tracks on local stream.
+        // Toggle video tracks on outgoing local stream.
         toggleMediaTracks(newRoomMediaStreams[0].stream, false);
       }
       console.log('newRoomMediaStreams=%o', newRoomMediaStreams);
