@@ -22,7 +22,7 @@ import { setVisible, updateJoinRequests, clearJoinRequests } from '../../../redu
 
 import store from '../../../store';
 
-function RoomBottomPanel() {
+function RoomBottomPanel(props) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -38,12 +38,14 @@ function RoomBottomPanel() {
     console.log(':Room.roomLeave: Leaving room with data=%o', data);
 
     try {
+      props.leaveMediaRoom();
+      console.log('Successfully left RSS roomId=%o', data["roomId"]);
+
       const response = await dispatch(roomLeave(data));
       if ('error' in response) {
         throw response['error'];
       }
-
-      dispatch(clearChatHistory());
+      console.log('Successfully left RAS roomId=%o', data["roomId"]);
       history.push('/');
 
     } catch (err) {
@@ -66,12 +68,15 @@ function RoomBottomPanel() {
     };
 
     try {
+      props.leaveMediaRoom();
+      console.log('Successfully left RSS roomId=%o', data["roomId"]);
+
       const response = await dispatch(roomDelete(data));
       if ('error' in response) {
         throw response['error'];
       }
+      console.log('Successfully deleted RAS roomId=%o', data["roomId"]);
 
-      dispatch(clearChatHistory());
       dispatch(clearJoinRequests());
       history.push('/');
 
@@ -124,6 +129,28 @@ function RoomBottomPanel() {
     dispatch(toggleChatroom());
   }
 
+  /**
+   * @function toggleAudio - toggle local user's audio
+   */
+  function toggleAudio() {
+    console.log('Toggling local audio stream in roomId=%o', store.getState().room.roomId)
+    let toggleAudioData = {
+      'action': 'ToggleAudioStream',
+    }
+    props.dispatchMediaStreams(toggleAudioData);
+  }
+
+  /**
+   * @function toggleVideo - toggle local user's video
+   */
+  function toggleVideo() {
+    console.log('Toggling local video stream in roomId=%o', store.getState().room.roomId)
+    let toggleVideoData = {
+      'action': 'ToggleVideoStream',
+    }
+    props.dispatchMediaStreams(toggleVideoData);
+  }
+
 
   function roomShare() {
     // TODO
@@ -146,10 +173,10 @@ function RoomBottomPanel() {
     if (store.getState().room.userIsHost) {
       return (
         <div className="room-bottom-panel-actions">
-          <IconButton aria-label="toggle mic">
+          <IconButton aria-label="toggle mic" onClick={toggleAudio}>
             <MicIcon />
           </IconButton>
-          <IconButton aria-label="toggle video">
+          <IconButton aria-label="toggle video" onClick={toggleVideo}>
             <VideocamIcon />
           </IconButton>
           <IconButton aria-label="close room" onClick={roomDeleteAsHost}>
@@ -160,10 +187,10 @@ function RoomBottomPanel() {
     } else {
       return (
         <div className="room-bottom-panel-actions">
-          <IconButton aria-label="toggle mic">
+          <IconButton aria-label="toggle mic" onClick={toggleAudio}>
               <MicIcon />
             </IconButton>
-            <IconButton aria-label="toggle video">
+            <IconButton aria-label="toggle video" onClick={toggleVideo}>
               <VideocamIcon />
             </IconButton>
           <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>

@@ -6,7 +6,6 @@ function Video(props) {
   const mediaRef = useRef();
 
   useEffect(() => {
-    console.log('Setting stream data on Video component for peerId=%o', props.peerId)
     mediaRef.current.srcObject = props.stream;
   }, [props.stream])
 

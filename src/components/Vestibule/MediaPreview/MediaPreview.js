@@ -9,17 +9,16 @@ import store from '../../../store';
 function MediaPreview(props) {
   const [stream, setStream] = useState(null);
   const [peerId, setPeerId] = useState("");
-  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    // setupLocalMedia();
+    setupLocalMedia(true);
   }, [])
 
   /**
    * @function setupLocalMedia - requests access to the user's microphone and
    * webcam and properly sets the egress media stream.
    */
-  function setupLocalMedia() {
+  function setupLocalMedia(addStreamToRoom) {
     if (stream != null) {
       console.log('Local stream already established!');
       return;
@@ -34,15 +33,19 @@ function MediaPreview(props) {
       function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.');
         setStream(localMediaStream);
-        // Add local video stream to Grid.
-        let addVideoData = {
-          'action': 'AddStream',
-          'stream': localMediaStream,
-          // NOTE: We are not keeping peerId inside redux for now.
-          'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
-          'muted': false,
+
+        if (addStreamToRoom) {
+          // Add local video stream to Grid.
+          let addVideoData = {
+            'action': 'AddStream',
+            'stream': localMediaStream,
+            // NOTE: We are not keeping peerId inside redux for now.
+            'peerId': store.getState().room.roomId + "-" + store.getState().user.userId,
+            // mute local audio by default to prevent echo
+            'muted': true,
+          }
+          props.dispatchMediaStreams(addVideoData);
         }
-        props.dispatchMediaStreams(addVideoData);
       },
       function() {
         console.log('Access denied for audio/video');
@@ -54,15 +57,27 @@ function MediaPreview(props) {
    * @function toggleAudio - toggles mute on user's audio.
    */
   function toggleAudio() {
-    setMuted(!muted);
+    // mute audio tracks on room stream
+    let toggleAudioData = {
+      'action': 'ToggleAudioStream',
+    }
+    props.dispatchMediaStreams(toggleAudioData);
   }
   
   /**
-   * @function toggleAudio - toggles mute on user's video.
+   * @function toggleVideo - toggles mute on user's video.
    */
   function toggleVideo() {
+    // toggle video stream so it persists when entering the room
+    let toggleVideoData = {
+      'action': 'ToggleVideoStream',
+    }
+    props.dispatchMediaStreams(toggleVideoData);
+
+    // toggle local stream view
     if (stream === null) {
-      setupLocalMedia();
+      // do not add a new stream to room, assume that's been populated
+      setupLocalMedia(false);
     } else {
       setStream(null);
     }
