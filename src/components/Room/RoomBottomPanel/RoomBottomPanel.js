@@ -188,11 +188,11 @@ function RoomBottomPanel(props) {
       return (
         <div className="room-bottom-panel-actions">
           <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-              <MicIcon />
-            </IconButton>
-            <IconButton aria-label="toggle video" onClick={toggleVideo}>
-              <VideocamIcon />
-            </IconButton>
+            <MicIcon />
+          </IconButton>
+          <IconButton aria-label="toggle video" onClick={toggleVideo}>
+            <VideocamIcon />
+          </IconButton>
           <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>
             <CallEndIcon />
           </IconButton>

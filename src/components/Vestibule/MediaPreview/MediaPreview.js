@@ -3,6 +3,11 @@ import Video from '../../Video';
 import Avatar from '@material-ui/core/Avatar';
 
 import './MediaPreview.css';
+import IconButton from '@material-ui/core/IconButton';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
 import store from '../../../store';
 
@@ -93,8 +98,12 @@ function MediaPreview(props) {
         />
     : <div className="media-preview-placeholder"/>}
     <div className="media-btns">
-      <Avatar className="avatar-placeholder" onClick={toggleAudio}>A</Avatar>
-      <Avatar className="avatar-placeholder" onClick={toggleVideo}>V</Avatar>
+      <IconButton aria-label="toggle mic" onClick={toggleAudio}>
+        <MicIcon />
+      </IconButton>
+      <IconButton aria-label="toggle video" onClick={toggleVideo}>
+        <VideocamIcon />
+      </IconButton>
     </div>
     </div>
   );
