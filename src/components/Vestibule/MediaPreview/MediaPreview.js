@@ -87,6 +87,7 @@ function MediaPreview(props) {
       setStream(null);
     }
   }
+
   
   return (
     <div className="media-preview">
@@ -99,10 +100,10 @@ function MediaPreview(props) {
     : <div className="media-preview-placeholder"/>}
     <div className="media-btns">
       <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-        <MicIcon />
+        {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
       </IconButton>
       <IconButton aria-label="toggle video" onClick={toggleVideo}>
-        <VideocamIcon />
+        {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
       </IconButton>
     </div>
     </div>

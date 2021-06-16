@@ -174,10 +174,10 @@ function RoomBottomPanel(props) {
       return (
         <div className="room-bottom-panel-actions">
           <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-            <MicIcon />
+            {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
           </IconButton>
           <IconButton aria-label="toggle video" onClick={toggleVideo}>
-            <VideocamIcon />
+            {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
           </IconButton>
           <IconButton aria-label="close room" onClick={roomDeleteAsHost}>
             <CallEndIcon />
@@ -188,10 +188,10 @@ function RoomBottomPanel(props) {
       return (
         <div className="room-bottom-panel-actions">
           <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-            <MicIcon />
+            {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
           </IconButton>
           <IconButton aria-label="toggle video" onClick={toggleVideo}>
-            <VideocamIcon />
+            {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
           </IconButton>
           <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>
             <CallEndIcon />
