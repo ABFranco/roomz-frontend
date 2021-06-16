@@ -9,9 +9,13 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
+import { useDispatch } from 'react-redux';
+import { setAudioOn, setVideoOn } from '../../../reducers/MediaSlice';
 import store from '../../../store';
 
 function MediaPreview(props) {
+  const dispatch = useDispatch();
+
   const [stream, setStream] = useState(null);
   const [peerId, setPeerId] = useState("");
 
@@ -37,6 +41,8 @@ function MediaPreview(props) {
     navigator.getUserMedia({'audio': true, 'video': true},
       function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.');
+        dispatch(setAudioOn(true));
+        dispatch(setVideoOn(true));
         setStream(localMediaStream);
 
         if (addStreamToRoom) {
@@ -54,6 +60,8 @@ function MediaPreview(props) {
       },
       function() {
         console.log('Access denied for audio/video');
+        dispatch(setAudioOn(false));
+        dispatch(setVideoOn(false));
         alert('Have fun being lame on zoom');
       });
   }
@@ -67,6 +75,7 @@ function MediaPreview(props) {
       'action': 'ToggleAudioStream',
     }
     props.dispatchMediaStreams(toggleAudioData);
+    dispatch(setAudioOn(!store.getState().media.audioOn));
   }
   
   /**
@@ -78,6 +87,7 @@ function MediaPreview(props) {
       'action': 'ToggleVideoStream',
     }
     props.dispatchMediaStreams(toggleVideoData);
+    dispatch(setVideoOn(!store.getState().media.videoOn));
 
     // toggle local stream view
     if (stream === null) {

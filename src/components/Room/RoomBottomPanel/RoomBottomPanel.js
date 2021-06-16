@@ -19,6 +19,7 @@ import { clearChatHistory, toggleChatroom } from '../../../reducers/ChatroomSlic
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import { roomDelete, roomLeave } from '../../../reducers/RoomSlice';
 import { setVisible, updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
+import { setAudioOn, setVideoOn } from '../../../reducers/MediaSlice';
 
 import store from '../../../store';
 
@@ -138,6 +139,7 @@ function RoomBottomPanel(props) {
       'action': 'ToggleAudioStream',
     }
     props.dispatchMediaStreams(toggleAudioData);
+    dispatch(setAudioOn(!store.getState().media.audioOn));
   }
 
   /**
@@ -149,6 +151,7 @@ function RoomBottomPanel(props) {
       'action': 'ToggleVideoStream',
     }
     props.dispatchMediaStreams(toggleVideoData);
+    dispatch(setVideoOn(!store.getState().media.videoOn));
   }
 
 
