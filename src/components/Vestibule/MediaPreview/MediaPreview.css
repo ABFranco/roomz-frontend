@@ -13,4 +13,10 @@
 
 .media-btns {
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.media-btns button {
+  margin: 12px 20px;
 }

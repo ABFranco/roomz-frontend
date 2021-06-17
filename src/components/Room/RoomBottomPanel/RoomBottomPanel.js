@@ -19,6 +19,7 @@ import { clearChatHistory, toggleChatroom } from '../../../reducers/ChatroomSlic
 import { setErrorMessage } from '../../../reducers/NotificationSlice';
 import { roomDelete, roomLeave } from '../../../reducers/RoomSlice';
 import { setVisible, updateJoinRequests, clearJoinRequests } from '../../../reducers/JoinRequestsSlice';
+import { setAudioOn, setVideoOn } from '../../../reducers/MediaSlice';
 
 import store from '../../../store';
 
@@ -138,6 +139,7 @@ function RoomBottomPanel(props) {
       'action': 'ToggleAudioStream',
     }
     props.dispatchMediaStreams(toggleAudioData);
+    dispatch(setAudioOn(!store.getState().media.audioOn));
   }
 
   /**
@@ -149,6 +151,7 @@ function RoomBottomPanel(props) {
       'action': 'ToggleVideoStream',
     }
     props.dispatchMediaStreams(toggleVideoData);
+    dispatch(setVideoOn(!store.getState().media.videoOn));
   }
 
 
@@ -174,10 +177,10 @@ function RoomBottomPanel(props) {
       return (
         <div className="room-bottom-panel-actions">
           <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-            <MicIcon />
+            {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
           </IconButton>
           <IconButton aria-label="toggle video" onClick={toggleVideo}>
-            <VideocamIcon />
+            {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
           </IconButton>
           <IconButton aria-label="close room" onClick={roomDeleteAsHost}>
             <CallEndIcon />
@@ -188,11 +191,11 @@ function RoomBottomPanel(props) {
       return (
         <div className="room-bottom-panel-actions">
           <IconButton aria-label="toggle mic" onClick={toggleAudio}>
-              <MicIcon />
-            </IconButton>
-            <IconButton aria-label="toggle video" onClick={toggleVideo}>
-              <VideocamIcon />
-            </IconButton>
+            {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
+          </IconButton>
+          <IconButton aria-label="toggle video" onClick={toggleVideo}>
+            {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
+          </IconButton>
           <IconButton aria-label="leave room" onClick={roomLeaveAsNonHost}>
             <CallEndIcon />
           </IconButton>

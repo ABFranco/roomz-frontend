@@ -3,10 +3,19 @@ import Video from '../../Video';
 import Avatar from '@material-ui/core/Avatar';
 
 import './MediaPreview.css';
+import IconButton from '@material-ui/core/IconButton';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
+import { useDispatch } from 'react-redux';
+import { setAudioOn, setVideoOn } from '../../../reducers/MediaSlice';
 import store from '../../../store';
 
 function MediaPreview(props) {
+  const dispatch = useDispatch();
+
   const [stream, setStream] = useState(null);
   const [peerId, setPeerId] = useState("");
 
@@ -32,6 +41,8 @@ function MediaPreview(props) {
     navigator.getUserMedia({'audio': true, 'video': true},
       function(localMediaStream) {
         console.log('Granted access to audio/video, setting stream.');
+        dispatch(setAudioOn(true));
+        dispatch(setVideoOn(true));
         setStream(localMediaStream);
 
         if (addStreamToRoom) {
@@ -49,6 +60,8 @@ function MediaPreview(props) {
       },
       function() {
         console.log('Access denied for audio/video');
+        dispatch(setAudioOn(false));
+        dispatch(setVideoOn(false));
         alert('Have fun being lame on zoom');
       });
   }
@@ -62,6 +75,7 @@ function MediaPreview(props) {
       'action': 'ToggleAudioStream',
     }
     props.dispatchMediaStreams(toggleAudioData);
+    dispatch(setAudioOn(!store.getState().media.audioOn));
   }
   
   /**
@@ -73,6 +87,7 @@ function MediaPreview(props) {
       'action': 'ToggleVideoStream',
     }
     props.dispatchMediaStreams(toggleVideoData);
+    dispatch(setVideoOn(!store.getState().media.videoOn));
 
     // toggle local stream view
     if (stream === null) {
@@ -82,6 +97,7 @@ function MediaPreview(props) {
       setStream(null);
     }
   }
+
   
   return (
     <div className="media-preview">
@@ -93,8 +109,12 @@ function MediaPreview(props) {
         />
     : <div className="media-preview-placeholder"/>}
     <div className="media-btns">
-      <Avatar className="avatar-placeholder" onClick={toggleAudio}>A</Avatar>
-      <Avatar className="avatar-placeholder" onClick={toggleVideo}>V</Avatar>
+      <IconButton aria-label="toggle mic" onClick={toggleAudio}>
+        {store.getState().media.audioOn ? <MicIcon /> : <MicOffIcon />}
+      </IconButton>
+      <IconButton aria-label="toggle video" onClick={toggleVideo}>
+        {store.getState().media.videoOn ? <VideocamIcon /> : <VideocamOffIcon />}
+      </IconButton>
     </div>
     </div>
   );
