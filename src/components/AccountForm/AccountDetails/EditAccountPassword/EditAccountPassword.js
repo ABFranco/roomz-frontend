@@ -3,6 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import './EditAccountPassword.css';
 
 import { useDispatch, useSelector } from 'react-redux';
+import store from '../../../../store';
+import { passwordEdit } from '../../../../reducers/UserSlice';
 import { setErrorMessage } from '../../../../reducers/NotificationSlice';
 
 function EditAccountPassword() {
@@ -21,22 +23,30 @@ function EditAccountPassword() {
    * @function editPasswordSubmit - Submit the Edit Password form
    */
     async function editPasswordSubmit() {
-      /*if (newPasswordInput.current.value !== confirmNewPasswordInput.current.value) {
+      
+      // check if the user enters their current email correctly
+      if(!(store.getState().user.email == emailInput.current.value)) {
+        dispatch(setErrorMessage('Incorrect email!'));
+        return;
+      }
+      if (newPasswordInput.current.value !== confirmNewPasswordInput.current.value) {
         dispatch(setErrorMessage('Passwords do not match!'));
+        return;
       }
   
       let data = {
-        email = emailInput.current.value,
-        oldPassword = oldPasswordInput.current.value,
-        newPassword = newPasswordInput.current.value,
+        email: emailInput.current.value,
+        oldPassword: oldPasswordInput.current.value,
+        newPassword: newPasswordInput.current.value,
       }
   
       try {
-        const response = await dispatch(editPassword(data));
+        const response = await dispatch(passwordEdit(data));
         if ('error' in response) {
           throw response['error'];
         }
-  
+        
+        // password edit succesful, state updated, go to account details 
         history.push('/account/details');
       } catch (err) {
         console.log(':editPasswordSubmit: er=%o', err);
@@ -46,7 +56,7 @@ function EditAccountPassword() {
         }
         dispatch(setErrorMessage(errorMessage));
       }
-      */
+      
     }
     
     function leaveEditPasswordForm() {

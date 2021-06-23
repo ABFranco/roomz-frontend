@@ -3,7 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import './EditAccountEmail.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-//import { emailEdit } from '../../../../reducers/UserSlice';
+import store from '../../../../store';
+import { emailEdit } from '../../../../reducers/UserSlice';
 import { setErrorMessage } from '../../../../reducers/NotificationSlice';
 
 
@@ -23,14 +24,21 @@ function EditAccountEmail() {
    */
   
   async function emailEditSubmit() {
-    /*if (newEmailInput.current.value !== confirmNewEmailInput.current.value) {
+    // check if the user enters their current email correctly
+    if(store.getState().user.email !== oldEmailInput.current.value) {
+      dispatch(setErrorMessage('Incorrect email!'));
+      return;
+    }
+
+    if (newEmailInput.current.value !== confirmNewEmailInput.current.value) {
       dispatch(setErrorMessage('Emails do not match!'));
+      return;
     }
 
     let data = {
-      oldEmail = oldEmailInput.current.value,
-      newEmail = newEmailInput.current.value,
-    }
+      oldEmail: oldEmailInput.current.value,
+      newEmail: newEmailInput.current.value,
+    };
 
     try {
       const response = await dispatch(emailEdit(data));
@@ -39,6 +47,7 @@ function EditAccountEmail() {
       }
 
       history.push('/account/details');
+
     } catch (err) {
       console.log(':emailEditSubmit: er=%o', err);
       let errorMessage = 'An unexpected error has occurred when editing an email.';
@@ -47,7 +56,6 @@ function EditAccountEmail() {
       }
       dispatch(setErrorMessage(errorMessage));
     }
-    */
   }
 
   function leaveEditEmailForm() {
@@ -79,7 +87,7 @@ function EditAccountEmail() {
         <Link to="/account/details">
           <button className="email-form-btn button-secondary" onClick={leaveEditEmailForm}>Cancel</button>
         </Link>
-        <button className="email-form-btn button-primary" onClick={editEmailSubmit}>Submit</button>
+        <button className="email-form-btn button-primary" onClick={emailEditSubmit}>Submit</button>
       </div>
     );
   }

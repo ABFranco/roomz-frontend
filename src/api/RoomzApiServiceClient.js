@@ -11,7 +11,9 @@ import {
   ChatMessage,
   GetJoinRequestsRequest,
   HandleJoinRequestRequest,
-  CancelJoinRequestRequest
+  CancelJoinRequestRequest,
+  EditAccountEmailRequest,
+  EditAccountPasswordRequest
 } from './../proto/roomzapi_pb';
 
 const client = new RoomzApiServiceClient("http://localhost:8080", null, null);
@@ -245,6 +247,42 @@ function cancelJoinRequest(data) {
   });
 }
 
+function editEmail(data) {
+  var request = new EditAccountEmailRequest();
+  request.setOldEmail(data['oldEmail']);
+  request.setNewEmail(data['newEmail']);
+
+  return new Promise((resolve, reject) => {
+    client.editAccountEmail(request, {}, (error, response) => {
+      if (response) {
+        resolve(response);
+      } else if (error) {
+        reject(error);
+      } else {
+        reject(null);
+      }
+    });
+  });
+}
+
+function editPassword(data) {
+  var request = new EditAccountPasswordRequest();
+  request.setEmail(data['email']);
+  request.setOldPassword(data['oldPassword']);
+  request.setNewPassword(data['newPassword']);
+
+  return new Promise((resolve, reject) => {
+    client.editAccountPassword(request, {}, (error, response) => {
+      if (response) {
+        resolve(response);
+      } else if (error) {
+        reject(error);
+      } else {
+        reject(null);
+      }
+    });
+  });
+}
 
 export {
   createAccount,
@@ -258,5 +296,7 @@ export {
   chatMessage,
   getJoinRequests,
   handleJoinRequest,
-  cancelJoinRequest
+  cancelJoinRequest,
+  editEmail,
+  editPassword
 }
