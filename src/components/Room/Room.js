@@ -11,7 +11,6 @@ import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 import * as rssClient from '../../api/RoomzSignalingServerClient.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-// import { setUserId } from '../../reducers/UserSlice.js';
 import { clearRoomData, setIsStrict, setToken, setGuestUserId, setInVestibule, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { editMediaStream } from '../../reducers/MediaReducers.js';

@@ -100,7 +100,7 @@ const roomSlice = createSlice({
     },
 
     /**
-     * @reduxAction 'room/setGuestId' - Set guest's userId for a room
+     * @reduxAction 'room/setGuestUserId' - Set guest's userId for a room
      * @param {Object} state - Initial state
      * @param {string} action.payload
      */

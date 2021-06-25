@@ -89,7 +89,7 @@ const userSlice = createSlice({
 /**
  * Actions
  */
-export const { clearSignInData, setUserId } = userSlice.actions;
+export const { clearSignInData } = userSlice.actions;
 export { accountLogin, accountCreate }
 
 export default userSlice;
