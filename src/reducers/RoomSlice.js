@@ -68,6 +68,7 @@ const roomJoinCancel = createAsyncThunk(
 const roomSlice = createSlice({
   name: 'room',
   initialState: {
+    guestUserId: null,
     roomId: null, 
     token: null, 
     isStrict: false, 
@@ -96,6 +97,15 @@ const roomSlice = createSlice({
      */
     setRoomUserName: (state, action) => {
       state.roomUserName = action.payload;
+    },
+
+    /**
+     * @reduxAction 'room/setGuestId' - Set guest's userId for a room
+     * @param {Object} state - Initial state
+     * @param {string} action.payload
+     */
+    setGuestUserId: (state, action) => {
+      state.guestUserId = action.payload;
     },
 
     /**
@@ -158,6 +168,7 @@ const roomSlice = createSlice({
      * @param {Object} state - Initial state
      */
     clearRoomData: (state) => {
+      state.guestUserId = null;
       state.roomId = null;
       state.token = null;
       state.isStrict = false;
@@ -202,6 +213,7 @@ const roomSlice = createSlice({
      * @param {Object} state - Initial state
      */
     [roomDelete.fulfilled]: (state) => {
+      state.guestUserId = null;
       state.roomId = null;
       state.token = null;
       state.isStrict = false;
@@ -218,6 +230,7 @@ const roomSlice = createSlice({
      * @param {Object} state - Initial state
      */
     [roomLeave.fulfilled]: (state) => {
+      state.guestUserId = null;
       state.roomId = null;
       state.token = null;
       state.isStrict = false;
@@ -234,6 +247,7 @@ const roomSlice = createSlice({
      * @param {Object} state - Initial state
      */
     [roomJoinCancel.fulfilled]: (state) => {
+      state.guestUserId = null;
       state.roomId = null;
       state.token = null;
       state.isStrict = false;
@@ -251,7 +265,7 @@ const roomSlice = createSlice({
 /**
  * Actions
  */
-export const { setRoomUserName, setIsStrict, setToken, setInVestibule, setVestibuleJoin, setEnteredRoom, setRoomJoinRequestAccepted, clearRoomData } = roomSlice.actions;
+export const { setRoomUserName, setIsStrict, setToken, setInVestibule, setGuestUserId, setVestibuleJoin, setEnteredRoom, setRoomJoinRequestAccepted, clearRoomData } = roomSlice.actions;
 export { roomCreate, roomDelete, roomLeave, roomJoinCancel }
 
 export default roomSlice;

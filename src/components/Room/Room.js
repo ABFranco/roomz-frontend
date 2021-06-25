@@ -11,7 +11,8 @@ import { joinRoom, awaitRoomClosure } from '../../api/RoomzApiServiceClient.js';
 import * as rssClient from '../../api/RoomzSignalingServerClient.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { clearRoomData, setIsStrict, setToken, setInVestibule, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin } from '../../reducers/RoomSlice';
+// import { setUserId } from '../../reducers/UserSlice.js';
+import { clearRoomData, setIsStrict, setToken, setGuestUserId, setInVestibule, setRoomUserName, setRoomJoinRequestAccepted, setVestibuleJoin } from '../../reducers/RoomSlice';
 import { setChatHistory, clearChatHistory } from '../../reducers/ChatroomSlice';
 import { editMediaStream } from '../../reducers/MediaReducers.js';
 import { setErrorMessage } from '../../reducers/NotificationSlice';
@@ -86,7 +87,7 @@ function Room() {
    */
   function joinMediaRoom() {
     let roomId = store.getState().room.roomId;
-    let userId = store.getState().user.userId;
+    let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
     myPeerId = roomId + "-" + userId;
     let data = {
       'user_id': userId,
@@ -273,7 +274,7 @@ function Room() {
    */
   function leaveMediaRoom() {
     let roomId = store.getState().room.roomId;
-    let userId = store.getState().user.userId;
+    let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
     myPeerId = roomId + "-" + userId;
     let data = {
       'peer_id': myPeerId,
@@ -417,10 +418,14 @@ function Room() {
             timestamp: chatHistory[i].getTimestamp(),
           });
         }
+        // a guest is given a userId on join room acceptance
+        if (joinRoomRequest['isGuest']) {
+          dispatch(setGuestUserId(response.getUserId()))
+        }
         dispatch(setToken(token));
         dispatch(setRoomJoinRequestAccepted(true));
         dispatch(setChatHistory(chatHistoryData));
-        console.log(':Room.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId, roomId)
+        console.log(':Room.receiveJoinRoomResponse: userId=%o is ready to enter roomId=%o', store.getState().user.userId  ? store.getState().user.userId : store.getState().room.guestUserId, roomId)
       } else {
         console.log(':Room.receiveJoinRoomResponse: Told to wait to enter for room=%o', roomId);
       }
