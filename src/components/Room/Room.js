@@ -214,6 +214,11 @@ function Room() {
         console.log('Received incoming sdp=%o', data);
         let peerId = data["peer_id"];
         let pc = roomyPcs[peerId];
+        if (!pc) {
+          console.log('invalid peer connection for peerId=%o, recreating...', peerId);
+          pc = newPeerConnection();
+          roomyPcs[peerId] = pc;
+        }
         let remoteSDP = data["sdp"];
         let desc = new RTCSessionDescription(remoteSDP);
         let stuff = pc.setRemoteDescription(desc,
