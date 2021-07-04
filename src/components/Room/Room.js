@@ -37,18 +37,6 @@ function Room() {
 
   // initial checks upon loading the page 
   useEffect(() => {
-    
-
-    // if (userInRoom || userInVestibule) {
-    //   // refresh peer's session ID in case they were already in the room
-    //   let roomId = store.getState().room.roomId;
-    //   let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
-    //   let data = {
-    //     'peer_id': roomId + '-' + userId
-    //   }
-    //   rssClient.updateSessionId(data, () => { console.log('requested to update sesion id') })
-    // }
-
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
       dispatch(setInVestibule(true));
@@ -67,16 +55,12 @@ function Room() {
   // upon entering the room as a non-host, join closure stream
   useEffect(() => {
     // TODO: Check edge-case where host closes room while non-host is in vestibule
-    console.log('userInRoom=%o', userInRoom)
     // re-establish room closure stream upon refresh if non-host and in the room
     if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
       joinRoomClosureStream();
     }
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
-      console.log('joining media room')
-      /// TODO: Do we need to await connection somehow?
-      //rssClient.askToConnect();
       joinMediaRoom();
     }
   },[userInRoom]);

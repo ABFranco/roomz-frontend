@@ -23,7 +23,6 @@ const events = {
   RELAY_ICE_CANDIDATE: 'RelayICECandidate',
   RELAY_SDP: 'RelaySDP',
   LEAVE_MEDIA_ROOM: 'LeaveMediaRoom',
-  UPDATE_SESSION_ID: 'UpdateSessionId',
   ADD_PEER: 'AddPeer',
   INCOMING_ICE_CANDIDATE: 'IncomingICECandidate',
   INCOMING_SDP: "IncomingSDP",
@@ -62,12 +61,6 @@ function leaveMediaRoom(data, cb) {
   cb();
 }
 
-async function updateSessionId(data, cb) {
-  console.log(':rss.UpdateSessionId: Sending request to update session ID, data=%o', data);
-  rssClientSocket.emit(events.UPDATE_SESSION_ID, data);
-  cb();
-}
-
 function awaitAddPeer(cb) {
   console.log(':rss.awaitAddPeer:');
   rssClientSocket.on(events.ADD_PEER, function(data) {
@@ -103,7 +96,6 @@ export {
   relayICECandidate,
   relaySDP,
   leaveMediaRoom,
-  updateSessionId,
   awaitAddPeer,
   awaitIncomingICECandidate,
   awaitIncomingSDP,
