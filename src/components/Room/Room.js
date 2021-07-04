@@ -37,10 +37,10 @@ function Room() {
 
   // initial checks upon loading the page 
   useEffect(() => {
-
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
       dispatch(setInVestibule(true));
+      console.log('user refreshed, heading back to vestibule')
     }
 
     // upon refresh, if in vestibule and still attempting to join a strict room, re-join if not yet accepted
@@ -55,14 +55,12 @@ function Room() {
   // upon entering the room as a non-host, join closure stream
   useEffect(() => {
     // TODO: Check edge-case where host closes room while non-host is in vestibule
-
     // re-establish room closure stream upon refresh if non-host and in the room
     if (userInRoom && !store.getState().room.userIsHost && store.getState().room.token !== null) {
       joinRoomClosureStream();
     }
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
-      // TODO: test media room functionality.
       joinMediaRoom();
     }
   },[userInRoom]);
@@ -200,6 +198,11 @@ function Room() {
         console.log('Received incoming sdp=%o', data);
         let peerId = data["peer_id"];
         let pc = roomyPcs[peerId];
+        if (!pc) {
+          console.log('invalid peer connection for peerId=%o, recreating...', peerId);
+          pc = newPeerConnection();
+          roomyPcs[peerId] = pc;
+        }
         let remoteSDP = data["sdp"];
         let desc = new RTCSessionDescription(remoteSDP);
         let stuff = pc.setRemoteDescription(desc,

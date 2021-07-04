@@ -52,11 +52,13 @@ function relayICECandidate(data, cb) {
 function relaySDP(data, cb) {
   console.log(':rss.relaySDP: Sending request to relay SDP, data=%o', data);
   rssClientSocket.emit(events.RELAY_SDP, data);
+  cb();
 }
 
 function leaveMediaRoom(data, cb) {
   console.log(':rss.leaveMediaRoom: Sending request to leave media room, data=%o', data);
   rssClientSocket.emit(events.LEAVE_MEDIA_ROOM, data);
+  cb();
 }
 
 function awaitAddPeer(cb) {
