@@ -37,22 +37,22 @@ function Room() {
 
   // initial checks upon loading the page 
   useEffect(() => {
-    rssClient.askToConnect();
+    
 
-    if (userInRoom || userInVestibule) {
-      // refresh peer's session ID in case they were already in the room
-      let roomId = store.getState().room.roomId;
-      let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
-      let data = {
-        'peer_id': roomId + '-' + userId
-      }
-      rssClient.updateSessionId(data, () => { console.log('requested to update sesion id') })
-    }
+    // if (userInRoom || userInVestibule) {
+    //   // refresh peer's session ID in case they were already in the room
+    //   let roomId = store.getState().room.roomId;
+    //   let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
+    //   let data = {
+    //     'peer_id': roomId + '-' + userId
+    //   }
+    //   rssClient.updateSessionId(data, () => { console.log('requested to update sesion id') })
+    // }
 
     // upon refresh, user should always be in the vestibule
     if (userInRoom) {
       dispatch(setInVestibule(true));
-      console.log('heading back to vestibule')
+      console.log('user refreshed, heading back to vestibule')
     }
 
     // upon refresh, if in vestibule and still attempting to join a strict room, re-join if not yet accepted
@@ -60,7 +60,7 @@ function Room() {
       roomJoinSubmit(store.getState().room.roomId, store.getState().room.roomPassword, store.getState().room.roomUserName);
     }
 
-    //rssClient.askToConnect();
+    rssClient.askToConnect();
   },[]);
 
 
@@ -74,8 +74,9 @@ function Room() {
     }
     // re-join media room upon refresh if in the room
     if (userInRoom && store.getState().room.token !== null) {
-      // TODO: test media room functionality.
       console.log('joining media room')
+      /// TODO: Do we need to await connection somehow?
+      //rssClient.askToConnect();
       joinMediaRoom();
     }
   },[userInRoom]);
