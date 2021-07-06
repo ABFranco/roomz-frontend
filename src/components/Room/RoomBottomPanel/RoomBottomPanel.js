@@ -33,13 +33,13 @@ function RoomBottomPanel(props) {
    async function roomLeaveAsNonHost() {
     let data = {
       roomId: store.getState().room.roomId,
-      userId: store.getState().user.userId,
+      userId: store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId,
     };
 
     console.log(':Room.roomLeave: Leaving room with data=%o', data);
 
     try {
-      props.leaveMediaRoom();
+      props.leaveMediaRoom(false);
       console.log('Successfully left RSS roomId=%o', data["roomId"]);
 
       const response = await dispatch(roomLeave(data));
@@ -69,7 +69,7 @@ function RoomBottomPanel(props) {
     };
 
     try {
-      props.leaveMediaRoom();
+      props.leaveMediaRoom(true);
       console.log('Successfully left RSS roomId=%o', data["roomId"]);
 
       const response = await dispatch(roomDelete(data));
