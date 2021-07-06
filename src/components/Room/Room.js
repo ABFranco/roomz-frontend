@@ -274,12 +274,13 @@ function Room() {
   /**
    * @function leaveMediaRoom - Emits the 'LeaveMediaRoom' event to the RSS.
    */
-  function leaveMediaRoom() {
+  function leaveMediaRoom(closeRoom) {
     let roomId = store.getState().room.roomId;
     let userId = store.getState().user.userId ? store.getState().user.userId : store.getState().room.guestUserId;
     myPeerId = roomId + "-" + userId;
     let data = {
       'peer_id': myPeerId,
+      'close_room': closeRoom,
     }
     rssClient.leaveMediaRoom(data, () => {
       console.log("peerId=%o has requested to leave the room", myPeerId);
