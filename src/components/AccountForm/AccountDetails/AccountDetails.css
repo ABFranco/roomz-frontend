@@ -1,0 +1,26 @@
+.account-details-container {
+    padding: 40px;
+    width: 80vw;
+    max-width: 400px;
+}
+
+.account-details-user-header {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+
+.account-details-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 4px 0px;
+}
+
+input {
+    margin: 4px 0px 20px;
+}
+

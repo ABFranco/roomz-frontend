@@ -26,7 +26,6 @@ const accountLogin = createAsyncThunk(
 
 /**
  * @function accountCreate - thunk to call api for createAccount
- * 
  */
 const accountCreate = createAsyncThunk(
   'user/accountCreate',
@@ -36,6 +35,29 @@ const accountCreate = createAsyncThunk(
     const payload = {
       userId: response.getUserId(),
     };
+    return payload;
+  }
+);
+
+ 
+const emailEdit = createAsyncThunk(
+  'user/emailEdit',
+  async(data) => {
+    const response = await apiClient.editEmail(data);
+    console.log("data = %o", data);
+    const payload = {
+      newEmail: data['newEmail']
+    };
+    return payload;
+  }
+);
+
+
+const passwordEdit = createAsyncThunk(
+  'user/passwordEdit',
+  async(data) => {
+    const response = await apiClient.editPassword(data);
+    const payload = {};
     return payload;
   }
 );
@@ -83,6 +105,9 @@ const userSlice = createSlice({
       state.email = action.payload.email;
     },
     
+    [emailEdit.fulfilled]: (state, action) => {
+      state.email = action.payload.newEmail;
+    },
   }
 });
 
@@ -90,6 +115,6 @@ const userSlice = createSlice({
  * Actions
  */
 export const { clearSignInData } = userSlice.actions;
-export { accountLogin, accountCreate }
+export { accountLogin, accountCreate, emailEdit, passwordEdit }
 
 export default userSlice;

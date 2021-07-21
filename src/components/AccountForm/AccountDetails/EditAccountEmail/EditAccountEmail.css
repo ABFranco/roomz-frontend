@@ -1,0 +1,39 @@
+.email-container {
+    padding: 40px;
+    width: 80vw;
+    max-width: 400px;
+}
+
+.email-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 20px 0px;
+}
+
+.email-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.email-form-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 400px;
+    text-align: left;
+}
+
+
+label {
+    margin: 4px 0px;
+}
+
+input {
+    margin: 4px 0px 20px;
+}
+
