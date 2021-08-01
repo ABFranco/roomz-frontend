@@ -10,8 +10,8 @@ function Video(props) {
   }, [props.stream])
 
   return (
-    <div className="video" id={props.peerId}>
-      <video ref={mediaRef} id="egress-video" autoPlay muted={props.muted}/>
+    <div className="room-video-object-container" id={props.peerId}>
+      <video className="room-video-object" ref={mediaRef} id="egress-video" autoPlay muted={props.muted} style={{ width: props.width }}/>
     </div>
   )
 }

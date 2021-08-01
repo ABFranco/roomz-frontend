@@ -1,4 +1,7 @@
-video {
-  width: 40vw;
-  border-radius: 25px;
+.room-video-object {
+  border-radius: 2vw;
+}
+
+.room-video-object-container {
+  flex-grow: 1;
 }
