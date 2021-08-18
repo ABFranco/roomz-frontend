@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Video from '../../Video';
 import './VideoGrid.css';
 
 function VideoGrid(props) {
+  const [width, setWidth] = useState('100vw');
+
+  useEffect(() => {
+    // update width of each video based on number of clients
+    let numStreams = props.roomMediaStreams.length;
+    setWidth((100 / Math.ceil(Math.sqrt(numStreams))).toString() + 'vw');
+  }, [props.roomMediaStreams]);
+
+
   return (
     <div className="room-video-grid">
       {props.roomMediaStreams.map((v, index) => (
@@ -11,6 +20,7 @@ function VideoGrid(props) {
           stream={v.stream}
           peerId={v.peerId}
           muted={v.muted}
+          width={width}
           />
       ))}
     </div>

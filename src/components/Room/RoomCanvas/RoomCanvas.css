@@ -1,6 +1,7 @@
 .room-canvas {
   width: 100%;
   height: calc(100% - 109px);
+  overflow: hidden;
 
   display: flex;
   flex-direction: row;
