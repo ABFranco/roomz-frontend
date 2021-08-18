@@ -8,9 +8,7 @@ function VideoGrid(props) {
   useEffect(() => {
     // update width of each video based on number of clients
     let numStreams = props.roomMediaStreams.length;
-    let viewWidth = (100 / Math.ceil(Math.sqrt(numStreams))).toString() + 'vw';
-    // console.log('numStreams=%s, viewWidth=%s', numStreams, viewWidth)
-    setWidth(viewWidth);
+    setWidth((100 / Math.ceil(Math.sqrt(numStreams))).toString() + 'vw');
   }, [props.roomMediaStreams]);
 
 
